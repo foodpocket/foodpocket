@@ -1,8 +1,10 @@
 <template>
   <div class="foodpocket">
 
+    <!-- 主畫面 -->
     <div class="container">
-      <div class="input-group mb-3"> <!-- 輸入新資訊區 -->
+      <!-- 輸入新資訊區 -->
+      <div class="input-group mb-3">
 
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
@@ -23,8 +25,8 @@
         </div>
 
       </div>
-
-      <div class="card text-center"> <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
+      <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
+      <div class="card text-center">
 
         <div class="card-header"> <!-- card-header 過濾資訊標籤(頭) -->
           <ul class="nav nav-tabs card-header-tabs">
@@ -83,8 +85,9 @@
       </div>
     </div>
 
+    <!-- 編輯鈕按下之後的編輯卡片區 -->
     <div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog"
-      aria-labelledby="restaurantModalLabel" aria-hidden="true"> <!-- 編輯鈕按下之後的編輯卡片區 -->
+      aria-labelledby="restaurantModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
 
@@ -139,9 +142,9 @@
           </div>
 
           <div class="modal-footer"> <!-- 編輯卡片區-footer (按鈕*3)-->
-            <button class="btn btn-outline-danger btn-sm" @click="delModal()">刪除</button>
+            <button class="btn btn-outline-danger btn-sm" @click="opendelModal()">刪除</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-primary btn-sm" @click="updateProduct">確認</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="updateRestaurant">確認</button>
           </div>
 
         </div>
@@ -183,6 +186,8 @@ export default {
         }
       ],
       visibility: 'all', // 'all' 'recommend' 'record' 基本顯示all全部
+
+      // ----------------以下尚未用到
       cacheTodo: {},
       cacheTitle: ''
     }
@@ -241,12 +246,10 @@ export default {
       $('#restaurantModal').modal('show')
       this.modelRestaurant = Object.assign({}, item)
     },
-    delModal: function () {
+    opendelModal: function () {
       $('#delRestaurantModal').modal('show')
-      // item
-      // this.tempProduct = Object.assign({}, item)
     },
-    updateProduct: function () {
+    updateRestaurant: function () {
       $('#restaurantModal').modal('hide')
       console.log('成功編輯')
     },
@@ -258,7 +261,7 @@ export default {
       $('#delRestaurantModal').modal('hide')
       console.log('取消刪除')
     },
-
+    // ----------------以下尚未用到
     removeRestaurant: function (todo) {
       var newIndex = ''
       var vm = this
@@ -268,9 +271,6 @@ export default {
         }
       })
       this.restaurants.splice(newIndex, 1)
-    },
-    clear: function () {
-      this.restaurants = []
     }
   },
   computed: {
@@ -297,6 +297,11 @@ export default {
 
 <style lang="scss" scoped>
 
+.add-new{
+  .form-control{
+    border-right: none;
+  }
+}
 .restaurantList {
   .name {
     font-size: 1.2rem;
@@ -309,9 +314,5 @@ export default {
     }
   }
 }
-.add-new{
-  .form-control{
-    border-right: none;
-  }
-}
+
 </style>
