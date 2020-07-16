@@ -2,8 +2,7 @@
   <div class="foodpocket">
 
     <div class="container">
-
-      <div class="input-group mb-3">
+      <div class="input-group mb-3"> <!-- 輸入新資訊區 -->
 
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
@@ -20,14 +19,14 @@
         </div>
 
         <div class="col-12 input-group mb-3">
-          <button class="btn btn-primary w-100" type="button" @click="addRestaurant">新增</button> <!-- @click="openModal()" -->
+          <button class="btn btn-primary w-100" type="button" @click="addRestaurant">新增</button>
         </div>
 
       </div>
 
-      <div class="card text-center">
+      <div class="card text-center"> <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
 
-        <div class="card-header">
+        <div class="card-header"> <!-- card-header 過濾資訊標籤(頭) -->
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
               <a
@@ -37,26 +36,26 @@
                 href="#"
               >全部</a>
             </li>
-            <!-- <li class="nav-item">
+            <li class="nav-item">
               <a
                 class="nav-link"
-                :class="{'active':visibility == 'active'}"
-                @click="visibility = 'active'"
+                :class="{'active':visibility == 'recommend'}"
+                @click="visibility = 'recommend'"
                 href="#"
-              >進行中</a>
+              >推薦餐廳</a>
             </li>
             <li class="nav-item">
               <a
                 class="nav-link"
-                :class="{'active':visibility == 'completed'}"
-                @click="visibility = 'completed'"
+                :class="{'active':visibility == 'record'}"
+                @click="visibility = 'record'"
                 href="#"
-              >已完成</a>
-            </li>-->
+              >歷史紀錄</a>
+            </li>
           </ul>
         </div>
 
-        <ul class="list-group list-group-flush text-left">
+        <ul class="list-group list-group-flush text-left"> <!-- list內容區域(身體) -->
           <li class="list-group-item" v-for="(item, key) in restaurantList" :key="key">
             <div class="d-flex">   <!-- v-if="item.id !== cacheTodo.id" -->
               <div class="restaurantList">
@@ -77,25 +76,20 @@
           </li>
         </ul>
 
-        <div class="card-footer d-flex justify-content-between">
+        <div class="card-footer d-flex justify-content-between"> <!-- card-footer註腳區域(腳) -->
           <span>總共有 {{number}} 家好吃的餐廳</span>
         </div>
 
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      id="restaurantModal"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="exampleModalLabel"
-      aria-hidden="true"
-    >
+    <div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog"
+      aria-labelledby="restaurantModalLabel" aria-hidden="true"> <!-- 編輯鈕按下之後的編輯卡片區 -->
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header bg-dark text-white">
-            <h5 class="modal-title">  <!-- id="exampleModalLabel" 再看看能不能刪-->
+
+          <div class="modal-header bg-dark text-white"> <!-- 編輯卡片區-header -->
+            <h5 class="modal-title" id="restaurantModalLabel">
               <span>編輯到訪餐廳資訊</span>
             </h5>
             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -103,58 +97,55 @@
             </button>
           </div>
 
-          <div class="modal-body">
+          <div class="modal-body"> <!-- 編輯卡片區-body (2題) -->
 
             <div class="form-group">
               <label for="name">餐廳名稱</label>
-              <input type="text" class="form-control" id="name" v-model="tempRestaurant.restaurant_name"/>
+              <input type="text" class="form-control" id="name" v-model="modelRestaurant.restaurant_name"/>
             </div>
 
             <div class="form-group">
               <label for="date">最近到訪日期</label>
-              <input type="date" class="form-control" id="date" :value="tempRestaurant.visit_record[0]">
-              <!-- v-model="tempRestaurant.date" -->
+              <input type="date" class="form-control" id="date" :value="modelRestaurant.visit_record[0]">
+              <!-- v-model="modelRestaurant.date" -->
             </div>
+          </div>
 
-            <div
-              class="modal fade"
-              id="delRestaurantModal"
-              tabindex="-1"
-              role="dialog"
-              aria-labelledby="exampleModalLabel"
-              aria-hidden="true"
-            >   <!-- 以下是delRestaurantModal -->
-              <div class="modal-dialog" role="document">
-                <div class="modal-content border-0">
-                  <div class="modal-header bg-danger text-white">
-                    <h5 class="modal-title" id="exampleModalLabel">
-                      <span>刪除產品</span>
-                    </h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                      <span aria-hidden="true">&times;</span>
-                    </button>
-                  </div>
-                  <div class="modal-body">
-                    是否刪除
-                    <strong class="text-danger">title</strong> 商品(刪除後將無法恢復)。
-                  </div>
-                  <div class="modal-footer">
-                    <button type="button" class="btn btn-outline-secondary" @click="dontdelRestaurant">取消</button>
-                    <button type="button" class="btn btn-danger" @click="delRestaurant" data-dismiss="modal">確認刪除</button>
-                  </div>
+          <div class="modal fade" id="delRestaurantModal" tabindex="-1" role="dialog"
+          aria-labelledby="delRestaurantModalLabel" aria-hidden="true">   <!-- 刪除按鈕按下去後的刪除卡片確認區 -->
+            <div class="modal-dialog" role="document">
+              <div class="modal-content border-0">
+
+                <div class="modal-header bg-danger text-white"> <!-- modal-header -->
+                  <h5 class="modal-title" id="delRestaurantModalLabel">
+                    <span>刪除產品</span>
+                  </h5>
+                  <button type="button" class="close" aria-label="Close" @click="dontdelRestaurant">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+
+                <div class="modal-body"> <!-- 刪除卡片確認區-body -->
+                  是否刪除<strong class="text-danger">{{modelRestaurant.restaurant_name}}</strong> 餐廳？
+                  <br>(刪除後將無法恢復)
+                </div>
+
+                <div class="modal-footer"> <!-- 刪除卡片確認區-footer -->
+                  <button type="button" class="btn btn-outline-secondary btn-sm" @click="dontdelRestaurant">取消</button>
+                  <button type="button" class="btn btn-danger btn-sm" @click="delRestaurant" data-dismiss="modal">確認刪除</button>
                 </div>
               </div>
             </div>
           </div>
 
-          <div class="modal-footer">
+          <div class="modal-footer"> <!-- 編輯卡片區-footer (按鈕*3)-->
             <button class="btn btn-outline-danger btn-sm" @click="delModal()">刪除</button>
-            <button type="button" class="btn btn-outline-secondary" data-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-primary" @click="updateProduct">確認</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="updateProduct">確認</button>
           </div>
+
         </div>
       </div>
-
     </div>
 
   </div>
@@ -167,11 +158,11 @@ export default {
   data () {
     return {
       username: 'brayce',
-      newRestaurant: '',
-      newDate: '(未填)',
-      newRestaurant_uid: '',
+      newRestaurant: '', // 取得內容暫放處
+      newDate: '', // 取得內容暫放處
+      newRestaurant_uid: '', // 取得內容暫放處
       restaurantList: [], // 由API匯入
-      tempRestaurant: { // model取得內容暫放處
+      modelRestaurant: { // model取得內容暫放處
         restaurant_uid: '',
         restaurant_name: '',
         visited: '',
@@ -191,7 +182,7 @@ export default {
           visit_record: ['2020-07-10', '2020-07-03', '2020-06-18']
         }
       ],
-      visibility: 'all',
+      visibility: 'all', // 'all' 'recommend' 'record' 基本顯示all全部
       cacheTodo: {},
       cacheTitle: ''
     }
@@ -204,22 +195,8 @@ export default {
       const api = 'https://brycehuang.com/api/rest/getRestaurantList/'
       const vm = this
       this.$http.get(api, { params: { username: vm.username } }).then(response => {
-        console.log(response.data)
+        console.log('getRestaurantList:', response.data)
         vm.restaurantList = response.data.data
-        console.log(vm.restaurantList[0])
-      })
-    },
-    postNewRestaurant: function (restaurantName, timestamp) {
-      const api = 'https://brycehuang.com/api/rest/newRestaurant/'
-      const formdata = new FormData()
-      formdata.append('name', restaurantName)
-      this.axios.post(api, formdata).then((response) => {
-        console.log(response.data)
-        this.newRestaurant_uid = response.data.data.restaurant_uid // 取得該餐廳(restaurantName)的uid
-        console.log(restaurantName, 'newRestaurant_uid:', this.newRestaurant_uid)
-
-        this.postNewVisit(this.username, this.newRestaurant_uid, timestamp)
-        this.getRestaurantList() // 沒有自動重新讀取
       })
     },
     postNewVisit: function (username, id, timestamp) {
@@ -228,47 +205,41 @@ export default {
       formdata.append('username', username)
       formdata.append('restaurant_uid', id)
       formdata.append('visit_date', timestamp)
-      console.log(formdata)
       this.axios.post(api, formdata).then((response) => {
-        console.log(response.data)
+        console.log('postNewVisit:', response.data)
+        this.getRestaurantList()
+      })
+    },
+    postNewRestaurant: function (restaurantName, timestamp) {
+      const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+      const formdata = new FormData()
+      formdata.append('name', restaurantName)
+      this.axios.post(api, formdata).then((response) => {
+        console.log('postNewRestaurant:', response.data)
+        this.newRestaurant_uid = response.data.data.restaurant_uid // 取得該餐廳(restaurantName)的uid
+        console.log('restaurantName:', restaurantName, 'newRestaurant_uid:', this.newRestaurant_uid)
+
+        this.postNewVisit(this.username, this.newRestaurant_uid, timestamp)
       })
     },
     addRestaurant: function () {
-      const timestamp = Math.floor(new Date().getTime() / 1000)
+      if (this.newDate === '') {
+        this.newDate = Math.floor(Date.now())
+      }
+      const timestamp = Math.floor(new Date(this.newDate).getTime() / 1000)
+      console.log('timestamp:', timestamp)
       const restaurantName = this.newRestaurant.trim() // 修掉輸入的空白
       if (!restaurantName) {
         return
       }
-
       this.postNewRestaurant(restaurantName, timestamp)
 
-      this.newRestaurant = '' // 輸入完成之後 把newRestaurant的輸入空位還原
+      this.newRestaurant = ''
       this.newDate = ''
     },
-    // addRestaurant: function () {
-    //   const timestamp = Math.floor(Date.now())
-    //   const value = this.newRestaurant.trim() // 修掉輸入的空白
-    //   if (!value) {
-    //     return
-    //   }
-    //   const visitDate = this.newDate
-    //   console.log(value, timestamp, visitDate)
-
-    //   const visitDates = []
-    //   visitDates.push(visitDate)
-
-    //   this.restaurantList.push({
-    //     restaurant_uid: timestamp,
-    //     restaurant_name: value,
-    //     visited: 1,
-    //     visit_record: visitDates
-    //   })
-    //   this.newRestaurant = '' // 輸入完成之後 把newRestaurant的輸入空位還原
-    //   this.newDate = ''
-    // },
     openModal: function (item) {
       $('#restaurantModal').modal('show')
-      this.tempRestaurant = Object.assign({}, item)
+      this.modelRestaurant = Object.assign({}, item)
     },
     delModal: function () {
       $('#delRestaurantModal').modal('show')
