@@ -6,6 +6,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '*',
+    redirect: '/loginpage'
+  },
+  {
     path: '/',
     name: 'Home',
     component: Home
@@ -13,18 +17,18 @@ const routes = [
   {
     path: '/loginpage',
     name: 'LoginPage',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/LoginPage.vue')
+    component: () => import('../views/LoginPage.vue')
   },
   {
     path: '/foodpocket',
     name: 'FoodPocket',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/FoodPocket.vue')
+    component: () => import('../views/FoodPocket.vue')
+  },
+  {
+    path: '/foodpocket2',
+    name: 'FoodPocket2',
+    component: () => import('../views/FoodPocket2.vue'),
+    meta: { requiresAuth: true }
   }
 ]
 

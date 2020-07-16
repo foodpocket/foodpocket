@@ -14,3 +14,26 @@ new Vue({
   router,
   render: (h) => h(App)
 }).$mount('#app')
+
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth) {
+    console.log('需要驗證')
+    const api = '' // 還沒有
+    console.log(api)
+    next({
+      path: '/loginpage'
+    })
+    // axios.post(api).then((response) => {
+    //   console.log(response.data)
+    //   if (response.data.success) {
+    //     next()
+    //   } else {
+    //     next({
+    //       path: '/login'
+    //     })
+    //   }
+    // })
+  } else {
+    next()
+  }
+})
