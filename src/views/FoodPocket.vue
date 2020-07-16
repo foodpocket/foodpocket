@@ -166,8 +166,10 @@ import $ from 'jquery'
 export default {
   data () {
     return {
+      username: 'brayce',
       newRestaurant: '',
       newDate: '(未填)',
+      newRestaurant_uid: '',
       restaurantList: [], // 由API匯入
       tempRestaurant: { // model取得內容暫放處
         restaurant_uid: '',
@@ -199,35 +201,71 @@ export default {
   },
   methods: {
     getRestaurantList: function () {
-      const api = 'https://brycehuang.com/api/rest/getRestaurantList/?username=brayce'
+      const api = 'https://brycehuang.com/api/rest/getRestaurantList/'
       const vm = this
-      this.$http.get(api).then(response => {
+      this.$http.get(api, { params: { username: vm.username } }).then(response => {
         console.log(response.data)
         vm.restaurantList = response.data.data
         console.log(vm.restaurantList[0])
       })
     },
+    postNewRestaurant: function (restaurantName, timestamp) {
+      const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+      const formdata = new FormData()
+      formdata.append('name', restaurantName)
+      this.axios.post(api, formdata).then((response) => {
+        console.log(response.data)
+        this.newRestaurant_uid = response.data.data.restaurant_uid // 取得該餐廳(restaurantName)的uid
+        console.log(restaurantName, 'newRestaurant_uid:', this.newRestaurant_uid)
+
+        this.postNewVisit(this.username, this.newRestaurant_uid, timestamp)
+        this.getRestaurantList() // 沒有自動重新讀取
+      })
+    },
+    postNewVisit: function (username, id, timestamp) {
+      const api = 'https://brycehuang.com/api/rest/newVisit/'
+      const formdata = new FormData()
+      formdata.append('username', username)
+      formdata.append('restaurant_uid', id)
+      formdata.append('visit_date', timestamp)
+      console.log(formdata)
+      this.axios.post(api, formdata).then((response) => {
+        console.log(response.data)
+      })
+    },
     addRestaurant: function () {
-      const timestamp = Math.floor(Date.now())
-      const value = this.newRestaurant.trim() // 修掉輸入的空白
-      if (!value) {
+      const timestamp = Math.floor(new Date().getTime() / 1000)
+      const restaurantName = this.newRestaurant.trim() // 修掉輸入的空白
+      if (!restaurantName) {
         return
       }
-      const visitDate = this.newDate
-      console.log(value, timestamp, visitDate)
 
-      const visitDates = []
-      visitDates.push(visitDate)
+      this.postNewRestaurant(restaurantName, timestamp)
 
-      this.restaurantList.push({
-        restaurant_uid: timestamp,
-        restaurant_name: value,
-        visited: 1,
-        visit_record: visitDates
-      })
       this.newRestaurant = '' // 輸入完成之後 把newRestaurant的輸入空位還原
       this.newDate = ''
     },
+    // addRestaurant: function () {
+    //   const timestamp = Math.floor(Date.now())
+    //   const value = this.newRestaurant.trim() // 修掉輸入的空白
+    //   if (!value) {
+    //     return
+    //   }
+    //   const visitDate = this.newDate
+    //   console.log(value, timestamp, visitDate)
+
+    //   const visitDates = []
+    //   visitDates.push(visitDate)
+
+    //   this.restaurantList.push({
+    //     restaurant_uid: timestamp,
+    //     restaurant_name: value,
+    //     visited: 1,
+    //     visit_record: visitDates
+    //   })
+    //   this.newRestaurant = '' // 輸入完成之後 把newRestaurant的輸入空位還原
+    //   this.newDate = ''
+    // },
     openModal: function (item) {
       $('#restaurantModal').modal('show')
       this.tempRestaurant = Object.assign({}, item)
@@ -294,7 +332,7 @@ export default {
   }
   .description {
     display: flex;
-    font-size: 0.3rem;
+    font-size: 0.8rem;
     .times {
       margin-right: 5px;
     }
