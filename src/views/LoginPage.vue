@@ -1,0 +1,111 @@
+<template>
+  <div class="login">
+    <div class="wrap">
+      <div class="container">
+        <form class="form">
+          <h2>會員登入</h2>
+          <div class="group">
+            <label for="user_id">帳號</label>
+            <input type="text" id="user_id" placeholder="請輸入帳號" />
+          </div>
+          <div class="group">
+            <label for="user_password">密碼</label>
+            <input type="password" id="user_password" placeholder="請輸入密碼" />
+          </div>
+          <div class="btn-group">
+            <button type="button" class="btn">取消</button>
+            <button type="button" class="btn">登入</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</template>
+
+<script>
+</script>
+
+<style lang="scss" scoped>
+* {
+  margin: 0;
+}
+
+.login {
+  background: url("https://picsum.photos/500/500?random=16");
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  position: fixed;
+  .wrap {
+    // height: inherit;
+    // display: flex;
+    // align-items: center;
+    // justify-content: center;
+
+    .container {
+      width: 90%;
+      margin: auto;
+      margin-top: 30%;
+      height: 500px;
+      background-color: rgba(0, 0, 0, 0.5);
+      border: #fff 5px solid;
+      border-radius: 10px;
+      -webkit-backdrop-filter: blur(5px);
+      backdrop-filter: blur(3px);
+      box-shadow: 0 0 30px #000;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      .form {
+        width: 100%;
+        color: #fff;
+        h2 {
+          margin-bottom: 20px;
+          padding-bottom: 20px;
+          border-bottom: 1px solid #fff;
+        }
+        .group {
+          margin-bottom: 20px;
+          label {
+            line-height: 2;
+          }
+          input {
+            font-size: 16px;
+            width: 100%;
+            border-radius: 5px;
+            border: 1px solid #aaa;
+            line-height: 2;
+            padding: 0 10px;
+          }
+          input:focus {
+            outline: none;
+          }
+        }
+        .btn-group {
+          font-size: 0;
+          margin-top: 50px;
+          .btn {
+            border: none;
+            font-size: 20px;
+            border-radius: 5px;
+            background-color: #edab19;
+            width: 100px;
+            padding: 5px 0;
+          }
+          .btn:focus {
+            outline: none;
+          }
+          .btn:hover {
+            background-color: #d27575;
+            color: #fff;
+          }
+          .btn + .btn {
+            margin-left: 20px;
+          }
+        }
+      }
+    }
+  }
+}
+</style>
