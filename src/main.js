@@ -18,14 +18,14 @@ new Vue({
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth) {
     console.log('需要驗證')
-    const api = '' // 還沒有
+    const api = 'https://brycehuang.com/api/rest/loginAccount/'
     console.log(api)
     next({
       path: '/loginpage'
     })
     // axios.post(api).then((response) => {
     //   console.log(response.data)
-    //   if (response.data.success) {
+    //   if (response.data.result === 'successful') {
     //     next()
     //   } else {
     //     next({

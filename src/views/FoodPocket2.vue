@@ -64,7 +64,7 @@
                 <div class="name">{{ item.restaurant_name }}</div>
                 <div class="description">
                   <div class="times">吃過 {{item.visited}} 次</div>
-                  <div class="lastTime">上次到訪日期： {{item.visit_record[0]}}</div>
+                  <div class="lastTime">上次到訪日期： {{item.visit_record}}</div>
                 </div>
               </div>
               <!-- <button type="button" class="close ml-auto" aria-label="Close" @click="removeRestaurant(item)">
@@ -109,7 +109,7 @@
 
             <div class="form-group">
               <label for="date">最近到訪日期</label>
-              <input type="date" class="form-control" id="date" :value="modelRestaurant.visit_record[0]">
+              <input type="date" class="form-control" id="date" :value="modelRestaurant.visit_record">
               <!-- v-model="modelRestaurant.date" -->
             </div>
           </div>

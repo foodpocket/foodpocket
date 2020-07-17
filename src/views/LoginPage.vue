@@ -2,19 +2,19 @@
   <div class="login">
     <div class="wrap">
       <div class="container">
-        <form class="form">
+        <form class="form" @submit.prevent="signin">
           <h2>會員登入</h2>
           <div class="group">
             <label for="user_id">帳號</label>
-            <input type="text" id="user_id" placeholder="請輸入帳號" />
+            <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
           </div>
           <div class="group">
             <label for="user_password">密碼</label>
-            <input type="password" id="user_password" placeholder="請輸入密碼" />
+            <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
           </div>
           <div class="btn-group">
             <button type="button" class="btn">取消</button>
-            <button type="button" class="btn">登入</button>
+            <button type="submit" class="btn">登入</button>
           </div>
         </form>
       </div>
@@ -23,6 +23,30 @@
 </template>
 
 <script>
+export default {
+  data () {
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    signin: function () {
+      const api = 'https://brycehuang.com/api/rest/loginAccount/'
+      const vm = this
+      console.log(api)
+      const formdata = new FormData()
+      formdata.append('username', vm.username)
+      formdata.append('password', vm.password)
+      this.$http.post(api, formdata).then((response) => {
+        console.log(response.data)
+        if (response.data.result === 'successful') {
+          this.$router.push('/foodpocket')
+        }
+      })
+    }
+  }
+}
 </script>
 
 <style lang="scss" scoped>
