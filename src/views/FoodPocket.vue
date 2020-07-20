@@ -62,7 +62,7 @@
               <div class="restaurantList">
                 <div class="name">{{ item.restaurant_name }}</div>
                 <div class="description">
-                  <!-- <div class="times">吃過 15 次</div> -->
+                  <div class="times" v-if="visibility == 'all'">吃過 {{getTimes[key]}} 次</div>
                   <div class="lastTime">上次到訪日期： {{item.visit_date}}</div>
                 </div>
               </div>
@@ -77,7 +77,8 @@
         <div class="card-footer d-flex justify-content-between">
           <!-- card-footer註腳區域(腳) -->
           <!-- <span>總共有 {{number}} 家好吃的餐廳</span> -->
-          <span>總共吃了 {{number}} 餐</span>
+          <span v-if="visibility == 'all'">總共有 {{getTimes.length}} 家好吃的餐廳</span>
+          <span v-if="visibility == 'record'">總共吃了 {{number}} 餐</span>
         </div>
       </div>
     </div>
@@ -269,9 +270,29 @@ export default {
       }
 
       return this.restaurantList.length
+    },
+    getTimes () {
+      const length = this.restaurantList.length
+      console.log('length:', length)
+      const nameList = []
+      console.log('nameList:', nameList)
+      this.restaurantList.forEach(item => {
+        nameList.push(item.restaurant_name)
+      })
+      console.log('nameList:', nameList)
+
+      const magazineObj = {}
+      nameList.forEach(word => {
+        if (!magazineObj[word]) magazineObj[word] = 0
+        magazineObj[word]++
+      })
+      console.log('magazineObj:', magazineObj)
+      console.log('Object.values():', Object.values(magazineObj))
+      return Object.values(magazineObj)
     }
   },
   methods: {
+
     getVisitRecords: function () {
       const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
       const vm = this
