@@ -23,52 +23,50 @@
         </div>
       </div>
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
-      <div class="card text-center">
+      <div class="main-area card text-center">
         <div class="card-header">
           <!-- card-header 過濾資訊標籤(頭) -->
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
               <a
                 class="nav-link"
-                :class="{'active':visibility == 'record'}"
-                @click="visibility = 'record'"
+                :class="{'active':visibility == 'all'}"
+                @click.prevent="visibility = 'all'"
                 href="#"
-              >歷史紀錄</a>
+              >全部餐廳</a>
             </li>
             <li class="nav-item">
               <a
                 class="nav-link"
                 :class="{'active':visibility == 'recommend'}"
-                @click="visibility = 'recommend'"
+                @click.prevent="visibility = 'recommend'"
                 href="#"
               >推薦餐廳</a>
             </li>
             <li class="nav-item">
               <a
                 class="nav-link"
-                :class="{'active':visibility == 'all'}"
-                @click="visibility = 'all'"
+                :class="{'active':visibility == 'record'}"
+                @click.prevent="visibility = 'record'"
                 href="#"
-              >全部餐廳</a>
+              >歷史紀錄</a>
             </li>
           </ul>
         </div>
 
         <ul class="list-group list-group-flush text-left">
           <!-- list內容區域(身體) -->
-          <li class="list-group-item" v-for="(item, key) in filteredRestaurantList" :key="key">
+          <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex">
               <!-- v-if="item.id !== cacheTodo.id" -->
-              <div class="restaurantList">
-                <div class="name">{{ item.restaurant_name }}</div>
-                <div class="description">
-                  <div class="times" v-if="visibility == 'all'">吃過 {{getTimes[key]}} 次</div>
+              <div class="restaurant-list">
+                <div class="restaurant-name">{{ item.restaurant_name }}</div>
+                <div class="restaurant-description">
+                  <div class="visited-times" v-if="visibility == 'all'">吃過 {{rightvisitedTimes[key]}} 次</div>
+                  <!-- <div class="visited-times" v-if="visibility == 'recommend'">吃過 {{reversedvisitedTimes[key]}} 次</div> -->
                   <div class="lastTime">上次到訪日期： {{item.visit_date}}</div>
                 </div>
               </div>
-              <!-- <button type="button" class="close ml-auto" aria-label="Close" @click="removeRestaurant(item)">
-                <span aria-hidden="true">&times;</span>
-              </button>-->
               <button class="btn btn-outline-primary btn-sm ml-auto" @click="openModal(item)">編輯</button>
             </div>
           </li>
@@ -76,9 +74,8 @@
 
         <div class="card-footer d-flex justify-content-between">
           <!-- card-footer註腳區域(腳) -->
-          <!-- <span>總共有 {{number}} 家好吃的餐廳</span> -->
-          <span v-if="visibility == 'all'">總共有 {{getTimes.length}} 家好吃的餐廳</span>
-          <span v-if="visibility == 'record'">總共吃了 {{number}} 餐</span>
+          <span v-if="visibility == 'all'">總共有 {{visitedTimes.length}} 家好吃的餐廳</span>
+          <span v-if="visibility == 'record'">總共吃了 {{recordsNumber}} 餐</span>
         </div>
       </div>
     </div>
@@ -189,11 +186,11 @@ export default {
   data () {
     return {
       token:
-        'uSOg54B6lsYNxvuPWUftPHwTwJ9Z5vjMweYgH6jt6aXNyUtWCmdxouz6CMZwyDpaebK1y4McMACeP0dPypjOqTq70byZ7InLsXKtS6YC8NZYlWELFdb4jCasAiaUwMuoaIOv4FzwZM0P87J0M8v5PCE5P3WoNw8Z',
+        '52lwOI76wrj0INnQUzOc2dhF8T4Jx7BmeKzzw9QLrpkQt4WpeclNVO0wBF7rZjKAY6KiNO8HRIXcxDQCxb07WM9NOJ3f3RKHh8qKdjlaxlz4TYcbqmslu4uOASa8kn1IbBxUFGIVZbgKhynD5lFApXaXJcXGAUPc',
       newRestaurant: '', // 取得內容暫放處
       newDate: '', // 取得內容暫放處
       newRestaurant_uid: '', // 取得內容暫放處
-      restaurantList: [], // 由API匯入
+      visitRecords: [], // 由API匯入
       isNew: false,
       modelRestaurant: {
         // model取得內容暫放處
@@ -202,97 +199,96 @@ export default {
         restaurant_name: '',
         visit_date: ''
       },
-      restaurants: [
-        // 測試時使用的
-        {
-          restaurant_uid: '1',
-          restaurant_name: '牛肉麵',
-          visited: 3,
-          visit_record: ['2020-07-05', '2020-07-02', '2020-06-01']
-        },
-        {
-          restaurant_uid: '2',
-          restaurant_name: '拉麵',
-          visited: 3,
-          visit_record: ['2020-07-10', '2020-07-03', '2020-06-18']
-        }
-      ],
-      visibility: 'record', // 'all' 'recommend' 'record' 原始資料送來的是record
-      // ----------------以下尚未用到
-      visited: 0,
-      cacheTodo: {},
-      cacheTitle: ''
+      visibility: 'all' // 'all' 'recommend' 'record' 原始資料送來的是record
     }
   },
   created () {
     this.getVisitRecords()
   },
-  computed: {
-    number: function () {
-      return this.restaurantList.length
+  computed: { // visitedTimes的部分有點分不清楚 並沒有被加入原本object中 顯得不同步
+    recordsNumber: function () {
+      return this.visitRecords.length
     },
-    filteredRestaurantList: function () {
-      if (this.visibility === 'record') {
-        console.log('restaurantList:', this.restaurantList)
-        return this.restaurantList
-      } else if (this.visibility === 'recommend') {
-        const recommendList = []
-        console.log('recommendList:', recommendList)
-        return recommendList
-      } else if (this.visibility === 'all') {
-        const repeatindex = []
-        const nameList = []
-        const newnew = []
-        console.log('nameList:', nameList)
-        this.restaurantList.forEach(item => {
-          nameList.push(item.restaurant_name)
-        })
-        console.log('nameList:', nameList)
+    visitedTimes: function () {
+      if (this.visibility === 'all') {
+        return this.rightvisitedTimes
+      } else if (this.visibility === 'record') {
+        return this.reversedvisitedTimes
+      }
+      return ''
+    },
+    rightvisitedTimes: function () {
+      const obj = {}
+      this.recordNameList.forEach(word => {
+        if (!obj[word]) obj[word] = 0
+        obj[word]++
+      })
+      // console.log('obj:', obj)
+      console.log('Object.values():', Object.values(obj))
+      return Object.values(obj)
+    },
+    reversedvisitedTimes: function () {
+      const array = []
+      const list = this.visitedTimes
+      list.forEach(item => {
+        const reverse = Object.assign({}, item)
+        array.push(reverse)
+      })
+      const reversedvisitedTimes = list.reverse()
+      console.log('reversedvisitedTimes:', reversedvisitedTimes)
+      return reversedvisitedTimes
+    },
+    recordNameList: function () {
+      const recordNameList = []
+      const list = this.visitRecords
+      list.forEach(item => {
+        recordNameList.push(item.restaurant_name)
+      })
+      return recordNameList
+    },
+    restaurantList: function () {
+      const repeatindex = []
+      this.recordNameList.forEach(item => {
+        const index = this.recordNameList.indexOf(item)
+        repeatindex.push(index)
+      }) // console.log('repeatindex:', repeatindex)
 
-        nameList.forEach(item => {
-          const index = nameList.indexOf(item)
-          console.log('array.indexOf:', index)
-          repeatindex.push(index)
-        })
-        console.log('repeatindex:', repeatindex)
+      const norepeat = Array.from(new Set(repeatindex))
+      // console.log('norepeat:', norepeat)
 
-        const norepeat = Array.from(new Set(repeatindex))
-        console.log('norepeat:', norepeat)
-
-        for (let index = 0; index < norepeat.length; index++) {
-          const element = norepeat[index]
-          console.log('element:', element)
-          newnew.push(this.restaurantList[element])
-        }
-        console.log('newnew:', newnew)
-
-        return newnew
+      const restaurantList = []
+      for (let index = 0; index < norepeat.length; index++) {
+        const element = norepeat[index]
+        restaurantList.push(this.visitRecords[element])
       }
 
-      return this.restaurantList.length
+      return restaurantList
     },
-    getTimes () {
-      const length = this.restaurantList.length
-      console.log('length:', length)
-      const nameList = []
-      console.log('nameList:', nameList)
-      this.restaurantList.forEach(item => {
-        nameList.push(item.restaurant_name)
+    recommendList: function () {
+      const array = []
+      const list = this.restaurantList
+      list.forEach(item => {
+        const reverse = Object.assign({}, item)
+        array.push(reverse)
       })
-      console.log('nameList:', nameList)
-
-      const magazineObj = {}
-      nameList.forEach(word => {
-        if (!magazineObj[word]) magazineObj[word] = 0
-        magazineObj[word]++
-      })
-      console.log('magazineObj:', magazineObj)
-      console.log('Object.values():', Object.values(magazineObj))
-      return Object.values(magazineObj)
+      const recommendList = array.reverse()
+      return recommendList
+    },
+    filteredMethod: function () {
+      if (this.visibility === 'all') {
+        console.log('all_List:', this.restaurantList)
+        return this.restaurantList
+      } else if (this.visibility === 'record') {
+        console.log('record_List:', this.visitRecords)
+        return this.visitRecords
+      } else if (this.visibility === 'recommend') {
+        console.log('recommend_List:', this.recommendList)
+        return this.recommendList
+      }
+      return '沒有出現什麼問題 但不知道為什麼這裡非需要一個return'
     }
   },
   methods: {
-
     getVisitRecords: function () {
       const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
       const vm = this
@@ -300,7 +296,7 @@ export default {
         .get(api, { params: { user_token: vm.token } })
         .then(response => {
           console.log('getVisitRecords:', response.data)
-          vm.restaurantList = response.data.data
+          vm.visitRecords = response.data.data
         })
     },
     addRestaurant: function () {
@@ -322,7 +318,8 @@ export default {
       }
       // --------------------- 確定輸入的名稱是否曾經輸入過
       const array = []
-      this.restaurantList.forEach(item => {
+      const list = this.visitRecords
+      list.forEach(item => {
         const restaurant = item.restaurant_name
         array.push(restaurant)
       })
@@ -339,8 +336,8 @@ export default {
         this.postNewRestaurant(restaurantName, timestamp)
       } else {
         console.log('這間餐廳已經存在')
-        this.restaurant_name = this.restaurantList[index].restaurant_name
-        this.newRestaurant_uid = this.restaurantList[index].restaurant_uid
+        this.restaurant_name = this.visitRecords[index].restaurant_name
+        this.newRestaurant_uid = this.visitRecords[index].restaurant_uid
         console.log(
           'restaurant_name:',
           this.restaurant_name,
@@ -447,37 +444,24 @@ export default {
           String(year) + '-' + String(month) + '-' + String(day)
         return currentDateTime
       }
-    },
-    // ----------------以下尚未用到
-    removeRestaurant: function (todo) {
-      var newIndex = ''
-      var vm = this
-      vm.restaurants.forEach(function (item, key) {
-        if (todo.id === item.id) {
-          newIndex = key
-        }
-      })
-      this.restaurants.splice(newIndex, 1)
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-.add-new {
-  .form-control {
-    border-right: none;
-  }
-}
-.restaurantList {
-  .name {
-    font-size: 1.2rem;
-  }
-  .description {
-    display: flex;
-    font-size: 0.8rem;
-    .times {
-      margin-right: 5px;
+.main-area{
+  margin: 20px auto;
+  .restaurant-list {
+    .restaurant-name {
+      font-size: 1.2rem;
+    }
+    .restaurant-description {
+      display: flex;
+      font-size: 0.8rem;
+      .visited-times {
+        margin-right: 5px;
+      }
     }
   }
 }

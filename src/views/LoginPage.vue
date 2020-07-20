@@ -55,18 +55,12 @@ export default {
 }
 
 .login {
-  // background: url("https://picsum.photos/500/500?random=16");
-  // height: 100%;
-  // width: 100%;
-  // background-size: 100% 100%;
-  // background-repeat: no-repeat;
-  // position: fixed;
+  background: url("https://picsum.photos/500/500?random=16");
+  height: 100%;
+  width: 100%;
+  background-size: 100% 100%;
   .wrap {
-    // height: inherit;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-
+    padding: 30px 0;
     .container {
       width: 90%;
       margin: 40px auto;
@@ -75,8 +69,8 @@ export default {
       background-color: rgba(0, 0, 0, 0.5);
       border: #fff 5px solid;
       border-radius: 10px;
-      box-shadow: 0 0 30px #000;
-      // -webkit-backdrop-filter: blur(5px);
+      box-shadow: 0 0 15px #000;
+      // -webkit-backdrop-filter: blur(3px);
       // backdrop-filter: blur(3px);
       .form {
         width: 100%;

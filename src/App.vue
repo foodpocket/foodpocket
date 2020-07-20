@@ -4,7 +4,7 @@
       <router-link to="/">Home</router-link> |
       <router-link to="/loginpage">LoginPage</router-link> |
       <router-link to="/foodpocket">FoodPocket</router-link> |
-      <router-link to="/foodpocket2">FoodPocket2(已鎖住)</router-link>
+      <router-link to="/foodpocket2">HELLO(已鎖住)</router-link>
     </div>
     <router-view/>
   </div>
