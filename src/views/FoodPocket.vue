@@ -239,7 +239,7 @@ export default {
         console.log('recommendList:', recommendList)
         return recommendList
       } else if (this.visibility === 'all') {
-        const repectindex = []
+        const repeatindex = []
         const nameList = []
         const newnew = []
         console.log('nameList:', nameList)
@@ -251,15 +251,15 @@ export default {
         nameList.forEach(item => {
           const index = nameList.indexOf(item)
           console.log('array.indexOf:', index)
-          repectindex.push(index)
+          repeatindex.push(index)
         })
-        console.log('repectindex:', repectindex)
+        console.log('repeatindex:', repeatindex)
 
-        const norepect = Array.from(new Set(repectindex))
-        console.log('norepect:', norepect)
+        const norepeat = Array.from(new Set(repeatindex))
+        console.log('norepeat:', norepeat)
 
-        for (let index = 0; index < norepect.length; index++) {
-          const element = norepect[index]
+        for (let index = 0; index < norepeat.length; index++) {
+          const element = norepeat[index]
           console.log('element:', element)
           newnew.push(this.restaurantList[element])
         }
