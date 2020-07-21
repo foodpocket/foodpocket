@@ -10,9 +10,14 @@ const routes = [
     redirect: '/loginpage'
   },
   {
-    path: '/',
+    path: '/Home',
     name: 'Home',
     component: Home
+  },
+  {
+    path: '/',
+    name: 'LoginPage',
+    component: () => import('../views/LoginPage.vue')
   },
   {
     path: '/loginpage',
@@ -23,12 +28,6 @@ const routes = [
     path: '/foodpocket',
     name: 'FoodPocket',
     component: () => import('../views/FoodPocket.vue')
-  },
-  {
-    path: '/foodpocket2',
-    name: 'FoodPocket2',
-    component: () => import('../views/FoodPocket2.vue'),
-    meta: { requiresAuth: true }
   }
 ]
 

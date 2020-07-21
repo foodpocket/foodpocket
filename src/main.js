@@ -5,35 +5,15 @@ import Loading from 'vue-loading-overlay'
 import 'bootstrap'
 import App from './App'
 import router from './router'
+import VueCookies from 'vue-cookies'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.component('Loading', Loading)
+Vue.use(VueCookies)
+Vue.$cookies.config('1d')
 
 new Vue({
   router,
   render: (h) => h(App)
 }).$mount('#app')
-
-router.beforeEach((to, from, next) => {
-  if (to.meta.requiresAuth) {
-    console.log('需要驗證')
-    const api = 'https://brycehuang.com/api/rest/loginAccount/'
-    console.log(api)
-    next({
-      path: '/loginpage'
-    })
-    // axios.post(api).then((response) => {
-    //   console.log(response.data)
-    //   if (response.data.result === 'successful') {
-    //     next()
-    //   } else {
-    //     next({
-    //       path: '/login'
-    //     })
-    //   }
-    // })
-  } else {
-    next()
-  }
-})

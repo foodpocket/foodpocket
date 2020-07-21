@@ -2,6 +2,9 @@
   <div class="foodpocket">
     <!-- 主畫面 -->
     <div class="container">
+      <div class="logout">
+        <button class="btn btn-danger btn-sm mb-2" @click="logout">登出</button>
+      </div>
       <!-- 輸入新資訊區 -->
       <div class="input-group mb-3">
         <div class="col-12 input-group mb-3">
@@ -185,8 +188,7 @@ import $ from 'jquery'
 export default {
   data () {
     return {
-      token:
-        '52lwOI76wrj0INnQUzOc2dhF8T4Jx7BmeKzzw9QLrpkQt4WpeclNVO0wBF7rZjKAY6KiNO8HRIXcxDQCxb07WM9NOJ3f3RKHh8qKdjlaxlz4TYcbqmslu4uOASa8kn1IbBxUFGIVZbgKhynD5lFApXaXJcXGAUPc',
+      token: '',
       newRestaurant: '', // 取得內容暫放處
       newDate: '', // 取得內容暫放處
       newRestaurant_uid: '', // 取得內容暫放處
@@ -203,6 +205,7 @@ export default {
     }
   },
   created () {
+    this.getToken()
     this.getVisitRecords()
   },
   computed: { // visitedTimes的部分有點分不清楚 並沒有被加入原本object中 顯得不同步
@@ -289,6 +292,21 @@ export default {
     }
   },
   methods: {
+    logout () {
+      if (this.$cookies.isKey('token')) {
+        this.$cookies.remove('token')
+        window.alert('登出成功')
+        this.$router.push('/loginpage')
+      }
+    },
+    getToken: function () {
+      if (this.$cookies.isKey('token')) {
+        this.token = this.$cookies.get('token')
+        console.log('getToken:', this.token)
+      } else {
+        this.$router.push('/loginpage')
+      }
+    },
     getVisitRecords: function () {
       const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
       const vm = this
@@ -450,6 +468,14 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.logout{
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  .btn{
+    padding: 3px;
+  }
+}
 .main-area{
   margin: 20px auto;
   .restaurant-list {

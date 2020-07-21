@@ -23,6 +23,7 @@
 </template>
 
 <script>
+
 export default {
   data () {
     return {
@@ -41,6 +42,9 @@ export default {
       this.$http.post(api, formdata).then((response) => {
         console.log(response.data)
         if (response.data.result === 'successful') {
+          const token = response.data.data.token
+          console.log(token)
+          this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
         }
       })
