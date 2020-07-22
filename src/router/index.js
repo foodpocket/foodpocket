@@ -1,33 +1,27 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '*',
-    redirect: '/loginpage'
-  },
-  {
-    path: '/Home',
-    name: 'Home',
-    component: Home
+    redirect: '/foodpocket'
   },
   {
     path: '/',
-    name: 'LoginPage',
-    component: () => import('../views/LoginPage.vue')
-  },
-  {
-    path: '/loginpage',
-    name: 'LoginPage',
-    component: () => import('../views/LoginPage.vue')
+    name: 'FoodPocket',
+    component: () => import('../views/FoodPocket.vue')
   },
   {
     path: '/foodpocket',
     name: 'FoodPocket',
     component: () => import('../views/FoodPocket.vue')
+  },
+  {
+    path: '/loginpage',
+    name: 'LoginPage',
+    component: () => import('../views/LoginPage.vue')
   }
 ]
 

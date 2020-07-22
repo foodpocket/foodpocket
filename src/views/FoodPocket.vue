@@ -67,17 +67,20 @@
                 <div class="restaurant-description">
                   <div class="visited-times" v-if="visibility == 'all'">吃過 {{rightvisitedTimes[key]}} 次</div>
                   <!-- <div class="visited-times" v-if="visibility == 'recommend'">吃過 {{reversedvisitedTimes[key]}} 次</div> -->
-                  <div class="lastTime">上次到訪日期： {{item.visit_date}}</div>
+                  <div class="lastTime" v-if="visibility == 'all'">上次到訪日期： {{item.visit_date}}</div>
+                  <div class="lastTime" v-if="visibility == 'recommend'">上次到訪日期： {{item.visit_date}}</div>
+                  <div class="lastTime" v-if="visibility == 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
-              <button class="btn btn-outline-primary btn-sm ml-auto" @click="openModal(item)">編輯</button>
+              <button class="btn btn-outline-primary btn-sm ml-auto" v-if="visibility == 'record'" @click="openModal(item)">編輯</button>
             </div>
           </li>
         </ul>
 
         <div class="card-footer d-flex justify-content-between">
           <!-- card-footer註腳區域(腳) -->
-          <span v-if="visibility == 'all'">總共有 {{visitedTimes.length}} 家好吃的餐廳</span>
+          <span v-if="visibility == 'all'">總共有 {{rightvisitedTimes.length}} 家好吃的餐廳</span>
+          <span v-if="visibility == 'recommend'">總共有 {{rightvisitedTimes.length}} 家好吃的餐廳</span>
           <span v-if="visibility == 'record'">總共吃了 {{recordsNumber}} 餐</span>
         </div>
       </div>
@@ -206,20 +209,19 @@ export default {
   },
   created () {
     this.getToken()
-    this.getVisitRecords()
   },
   computed: { // visitedTimes的部分有點分不清楚 並沒有被加入原本object中 顯得不同步
     recordsNumber: function () {
       return this.visitRecords.length
     },
-    visitedTimes: function () {
-      if (this.visibility === 'all') {
-        return this.rightvisitedTimes
-      } else if (this.visibility === 'record') {
-        return this.reversedvisitedTimes
-      }
-      return ''
-    },
+    // visitedTimes: function () {
+    //   if (this.visibility === 'all') {
+    //     return this.rightvisitedTimes
+    //   } else if (this.visibility === 'record') {
+    //     return this.reversedvisitedTimes
+    //   }
+    //   return ''
+    // },
     rightvisitedTimes: function () {
       const obj = {}
       this.recordNameList.forEach(word => {
@@ -303,6 +305,7 @@ export default {
       if (this.$cookies.isKey('token')) {
         this.token = this.$cookies.get('token')
         console.log('getToken:', this.token)
+        this.getVisitRecords()
       } else {
         this.$router.push('/loginpage')
       }
@@ -315,6 +318,10 @@ export default {
         .then(response => {
           console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
+        }).catch((err) => {
+          if (err.response.status === 401) {
+            this.$router.push('/loginpage')
+          }
         })
     },
     addRestaurant: function () {
@@ -386,6 +393,10 @@ export default {
         )
 
         this.postNewVisit(this.newRestaurant_uid, timestamp)
+      }).catch((err) => {
+        if (err.response.status === 401) {
+          this.$router.push('/loginpage')
+        }
       })
     },
     postNewVisit: function (id, timestamp) {
@@ -398,6 +409,10 @@ export default {
       this.axios.post(api, formdata).then(response => {
         console.log('postNewVisit:', response.data)
         this.getVisitRecords()
+      }).catch((err) => {
+        if (err.response.status === 401) {
+          this.$router.push('/loginpage')
+        }
       })
     },
     openModal: function (item) {

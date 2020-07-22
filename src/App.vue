@@ -1,9 +1,7 @@
 <template>
   <div id="app">
     <div id="nav">
-      <router-link to="/Home">Home</router-link> |
-      <router-link to="/loginpage">LoginPage</router-link> |
-      <router-link to="/foodpocket">FoodPocket</router-link>
+      FoodPocket 食物口袋
     </div>
     <router-view/>
   </div>
@@ -22,14 +20,13 @@
 
 #nav {
   padding: 30px;
+  font-size: 1.6rem;
+}
 
-  a {
-    font-weight: bold;
-    color: #2c3e50;
-
-    &.router-link-exact-active {
-      color: #42b983;
-    }
+a {
+  color: #2c3e50;
+  &.router-link-exact-active {
+    color: #42b983;
   }
 }
 </style>
