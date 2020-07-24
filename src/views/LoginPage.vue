@@ -1,5 +1,8 @@
 <template>
   <div class="login">
+    <div id="nav">
+      FoodPocket 食物口袋
+    </div>
     <div class="wrap">
       <div class="container">
         <form class="form" @submit.prevent="signin">
@@ -46,6 +49,9 @@ export default {
           console.log(token)
           this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
+        } else {
+          window.alert('帳號或密碼輸入錯誤，請再試一次')
+          this.password = ''
         }
       })
     }
@@ -59,11 +65,15 @@ export default {
 }
 
 .login {
-  background: url("https://picsum.photos/500/500?random=16");
-  height: 100%;
-  width: 100%;
-  background-size: 100% 100%;
+  #nav {
+    padding: 30px;
+    font-size: 1.6rem;
+  }
   .wrap {
+    background: url("https://picsum.photos/500/500?random=16");
+    height: 100%;
+    width: 100%;
+    background-size: 100% 100%;
     padding: 30px 0;
     .container {
       width: 90%;

@@ -1,10 +1,13 @@
 <template>
   <div class="foodpocket">
+    <div id="nav">
+      <h1>FoodPocket 食物口袋</h1>
+      <div class="logout">
+        <button class="btn btn-info btn-sm" @click="logout">登出</button>
+      </div>
+    </div>
     <!-- 主畫面 -->
     <div class="container">
-      <div class="logout">
-        <button class="btn btn-danger btn-sm mb-2" @click="logout">登出</button>
-      </div>
       <!-- 輸入新資訊區 -->
       <div class="input-group mb-3">
         <div class="col-12 input-group mb-3">
@@ -60,7 +63,7 @@
         <ul class="list-group list-group-flush text-left">
           <!-- list內容區域(身體) -->
           <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
-            <div class="d-flex">
+            <div class="d-flex align-items-center">
               <!-- v-if="item.id !== cacheTodo.id" -->
               <div class="restaurant-list">
                 <div class="restaurant-name">{{ item.restaurant_name }}</div>
@@ -72,7 +75,7 @@
                   <div class="lastTime" v-if="visibility == 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
-              <button class="btn btn-outline-primary btn-sm ml-auto" v-if="visibility == 'record'" @click="openModal(item)">編輯</button>
+              <button class="btn btn-outline-primary btn-sm ml-auto" v-if="visibility == 'record'" @click="openeditModal(item)">編輯</button>
             </div>
           </li>
         </ul>
@@ -100,7 +103,7 @@
           <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片區-header -->
             <h5 class="modal-title" id="restaurantModalLabel">
-              <span>編輯到訪餐廳資訊</span>
+              <span>編輯到訪 {{modelRestaurant.restaurant_name}} 日期</span>
             </h5>
             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
@@ -110,7 +113,7 @@
           <div class="modal-body">
             <!-- 編輯卡片區-body (2題) -->
 
-            <div class="form-group">
+            <div class="form-group" v-if="visibility !== 'record'">
               <label for="name">餐廳名稱</label>
               <input
                 type="text"
@@ -122,62 +125,61 @@
 
             <div class="form-group">
               <label for="date">最近到訪日期</label>
-              <input type="date" class="form-control" id="date" :value="modelRestaurant.visit_date" />
+              <input type="date" class="form-control" id="date" v-model="modelRestaurant.visit_date" />
               <!-- v-model="modelRestaurant.date" -->
-            </div>
-          </div>
-
-          <div
-            class="modal fade"
-            id="delRestaurantModal"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="delRestaurantModalLabel"
-            aria-hidden="true"
-          >
-            <!-- 刪除按鈕按下去後的刪除卡片確認區 -->
-            <div class="modal-dialog" role="document">
-              <div class="modal-content border-0">
-                <div class="modal-header bg-danger text-white">
-                  <!-- modal-header -->
-                  <h5 class="modal-title" id="delRestaurantModalLabel">
-                    <span>刪除產品</span>
-                  </h5>
-                  <button type="button" class="close" aria-label="Close" @click="dontdelRestaurant">
-                    <span aria-hidden="true">&times;</span>
-                  </button>
-                </div>
-
-                <div class="modal-body">
-                  <!-- 刪除卡片確認區-body -->
-                  是否刪除
-                  <strong class="text-danger">{{modelRestaurant.restaurant_name}}</strong> 餐廳？
-                  <br />(刪除後將無法恢復)
-                </div>
-
-                <div class="modal-footer">
-                  <!-- 刪除卡片確認區-footer -->
-                  <button
-                    type="button"
-                    class="btn btn-outline-secondary btn-sm"
-                    @click="dontdelRestaurant"
-                  >取消</button>
-                  <button
-                    type="button"
-                    class="btn btn-danger btn-sm"
-                    @click="delRestaurant"
-                    data-dismiss="modal"
-                  >確認刪除</button>
-                </div>
-              </div>
             </div>
           </div>
 
           <div class="modal-footer">
             <!-- 編輯卡片區-footer (按鈕*3)-->
-            <button class="btn btn-outline-danger btn-sm" @click="opendelModal()">刪除</button>
+            <button class="btn btn-outline-danger btn-sm" @click="opendeleteModal()">刪除</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-primary btn-sm" @click="updateRestaurant">確認</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(modelRestaurant)">確認</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 刪除按鈕按下去後的刪除卡片確認區 -->
+    <div
+      class="modal fade"
+      id="delRestaurantModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="delRestaurantModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-danger text-white">
+            <!-- modal-header -->
+            <h5 class="modal-title" id="delRestaurantModalLabel"><span>刪除產品</span></h5>
+            <button type="button" class="close" aria-label="Close" @click="dontdelRestaurant(modelRestaurant)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <!-- 刪除卡片確認區-body -->
+            是否刪除
+            <strong class="text-danger">{{modelRestaurant.visit_date}}</strong>
+            到訪<strong>{{modelRestaurant.restaurant_name}}</strong>的紀錄？
+            <br />(刪除後將無法恢復)
+          </div>
+
+          <div class="modal-footer">
+            <!-- 刪除卡片確認區-footer -->
+            <button
+              type="button"
+              class="btn btn-outline-secondary btn-sm"
+              @click="dontdelRestaurant(modelRestaurant)"
+            >取消</button>
+            <button
+              type="button"
+              class="btn btn-danger btn-sm"
+              @click="removeVisitRecord(modelRestaurant)"
+              data-dismiss="modal"
+            >確認刪除</button>
           </div>
         </div>
       </div>
@@ -202,7 +204,8 @@ export default {
         create_time: '',
         restaurant_uid: '',
         restaurant_name: '',
-        visit_date: ''
+        visit_date: '',
+        visitrecord_uid: ''
       },
       visibility: 'all' // 'all' 'recommend' 'record' 原始資料送來的是record
     }
@@ -294,6 +297,39 @@ export default {
     }
   },
   methods: {
+    editVisitRecord: function (item) {
+      const api = 'https://brycehuang.com/api/rest/editVisitRecord/'
+      const formdata = new FormData()
+      formdata.append('user_token', this.token)
+      formdata.append('visitrecord_uid', item.visitrecord_uid)
+      formdata.append('visit_date', item.visit_date)
+      this.axios.post(api, formdata).then(response => {
+        // console.log('editVisitRecord:', response.data)
+        console.log('成功編輯')
+        $('#restaurantModal').modal('hide')
+        this.getVisitRecords()
+      }).catch((err) => {
+        if (err.response.status === 401) {
+          this.$router.push('/loginpage')
+        }
+      })
+    },
+    removeVisitRecord: function (item) {
+      const api = 'https://brycehuang.com/api/rest/removeVisitRecord/'
+      const formdata = new FormData()
+      formdata.append('user_token', this.token)
+      formdata.append('visitrecord_uid', item.visitrecord_uid)
+      this.axios.post(api, formdata).then(response => {
+        // console.log('removeVisitRecord:', response.data)
+        console.log('成功刪除')
+        $('#delRestaurantModal').modal('hide')
+        this.getVisitRecords()
+      }).catch((err) => {
+        if (err.response.status === 401) {
+          this.$router.push('/loginpage')
+        }
+      })
+    },
     logout () {
       if (this.$cookies.isKey('token')) {
         this.$cookies.remove('token')
@@ -316,7 +352,7 @@ export default {
       this.$http
         .get(api, { params: { user_token: vm.token } })
         .then(response => {
-          console.log('getVisitRecords:', response.data)
+          // console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
         }).catch((err) => {
           if (err.response.status === 401) {
@@ -384,14 +420,10 @@ export default {
         console.log('postNewRestaurant:', response.data)
         this.newRestaurant_uid = response.data.data.restaurant_uid
         console.log(
-          'restaurantName:',
-          restaurantName,
-          'newRestaurant_uid:',
-          this.newRestaurant_uid,
-          'timestamp:',
-          timestamp
+          'restaurantName:', restaurantName,
+          'newRestaurant_uid:', this.newRestaurant_uid,
+          'timestamp:', timestamp
         )
-
         this.postNewVisit(this.newRestaurant_uid, timestamp)
       }).catch((err) => {
         if (err.response.status === 401) {
@@ -405,7 +437,6 @@ export default {
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', id)
       formdata.append('visit_date', timestamp)
-      // this.visited = this.visited + 1,
       this.axios.post(api, formdata).then(response => {
         console.log('postNewVisit:', response.data)
         this.getVisitRecords()
@@ -415,23 +446,17 @@ export default {
         }
       })
     },
-    openModal: function (item) {
+    openeditModal: function (item) {
       $('#restaurantModal').modal('show')
       this.modelRestaurant = Object.assign({}, item)
     },
-    opendelModal: function () {
+    opendeleteModal: function () {
       $('#delRestaurantModal').modal('show')
-    },
-    updateRestaurant: function () {
       $('#restaurantModal').modal('hide')
-      console.log('成功編輯')
     },
-    delRestaurant: function () {
+    dontdelRestaurant: function (item) {
       $('#delRestaurantModal').modal('hide')
-      console.log('成功刪除')
-    },
-    dontdelRestaurant: function () {
-      $('#delRestaurantModal').modal('hide')
+      this.openeditModal(item)
       console.log('取消刪除')
     },
     changedateFormat: function (timestamp) {
@@ -483,12 +508,21 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.logout{
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  .btn{
-    padding: 3px;
+#nav {
+  padding: 30px 0;
+  display: flex;
+  justify-content: space-around;
+  margin-bottom: 30px;
+  h1{
+    margin: 0;
+    font-size: 1.6rem;
+  }
+  .logout{
+    align-self: center;
+    .btn{
+      padding: 3px;
+      font-weight: lighter;
+    }
   }
 }
 .main-area{
