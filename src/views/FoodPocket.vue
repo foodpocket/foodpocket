@@ -9,7 +9,7 @@
     <!-- 主畫面 -->
     <div class="container">
       <!-- 輸入新資訊區 -->
-      <div class="input-group mb-3">
+      <div class="input-group mt-3">
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
@@ -60,11 +60,17 @@
           </ul>
         </div>
 
+        <!-- 搜尋區 -->
+        <div class="input-group mt-3" v-if="visibility == 'all'">
+          <div class="col-12 input-group mb-3">
+            <input type="text" class="form-control" placeholder="快速搜尋" v-model="searchRestaurant" />
+          </div>
+        </div>
+
         <ul class="list-group list-group-flush text-left">
           <!-- list內容區域(身體) -->
           <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex align-items-center">
-              <!-- v-if="item.id !== cacheTodo.id" -->
               <div class="restaurant-list">
                 <div class="restaurant-name">{{ item.restaurant_name }}</div>
                 <div class="restaurant-description">
@@ -74,7 +80,10 @@
                   <div class="lastTime" v-if="visibility == 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
-              <button class="btn btn-outline-primary btn-sm ml-auto" v-if="visibility == 'record'" @click="openEditModal(item)">編輯</button>
+              <!-- <a v-if="visibility == 'all'" @click.prevent="openEditModal(item)">編輯</a>
+              <a v-if="visibility == 'all'" @click.prevent="openEditModal(item)">加</a> -->
+              <button class="btn btn-outline-primary btn-sm ml-auto"
+              v-if="visibility == 'record'" @click="openEditModal(item)">編輯</button>
             </div>
           </li>
         </ul>
@@ -183,6 +192,7 @@
         </div>
       </div>
     </div>
+
   </div>
 </template>
 
@@ -193,10 +203,12 @@ export default {
   data () {
     return {
       token: '',
+      searchRestaurant: '', // 搜尋的字串
       newRestaurant: '', // 取得內容暫放處
       newDate: '', // 取得內容暫放處
       newRestaurant_uid: '', // 取得內容暫放處
       visitRecords: [], // 由API匯入
+      restaurantListAPI: [], // 由API匯入
       isNew: false,
       modelRestaurant: {
         // model取得內容暫放處
@@ -266,7 +278,7 @@ export default {
       this.visitRecords.forEach(record => {
         if (!map.has(record.restaurant_name)) { // 如果api來的資料中沒有這個名字的話
           map.set(record.restaurant_name, {
-            // 就加入restaurant_uid、restaurant_name、visit_dates(自己創的(?)前端才有的(?))
+            // 就加入restaurant_uid、restaurant_name、visit_dates(自己創的)
             restaurant_uid: record.restaurant_uid,
             restaurant_name: record.restaurant_name,
             visit_dates: [record.visit_date]
@@ -285,10 +297,33 @@ export default {
     recommendList () {
       return Array.from(this.restaurantMap.values()).reverse()
     },
+    searchResult: function () {
+      const nameArray = []
+      this.restaurantList.forEach(restaurantObject => {
+        const indexOf = restaurantObject.restaurant_name.indexOf(this.searchRestaurant)
+        if (indexOf >= 0) {
+          nameArray.push(restaurantObject.restaurant_name)
+        }
+      })
+      const result = []
+      for (let index = 0; index < this.restaurantList.length; index++) {
+        nameArray.forEach(searchname => {
+          if (this.restaurantList[index].restaurant_name === searchname) {
+            result.push(this.restaurantList[index])
+          }
+        })
+      }
+      console.log('result:', result)
+      return result
+    },
     filteredMethod: function () {
       if (this.visibility === 'all') {
-        console.log('all_List:', this.restaurantList)
-        return this.restaurantList
+        if (this.searchRestaurant !== '') {
+          return this.searchResult
+        } else {
+          console.log('all_List:', this.restaurantList)
+          return this.restaurantList
+        }
       } else if (this.visibility === 'record') {
         console.log('record_List:', this.visitRecords)
         return this.visitRecords
@@ -300,10 +335,25 @@ export default {
     }
   },
   methods: {
+    getRestaurantList: function () {
+      const api = 'https://brycehuang.com/api/rest/getRestaurantList/'
+      const vm = this
+      this.$http
+        .get(api, { params: { user_token: vm.token } })
+        .then(response => {
+          // console.log('restaurantListAPI:', response.data)
+          vm.restaurantListAPI = response.data.data
+        }).catch((err) => {
+          if (err.response.status === 401) {
+            this.$router.push('/loginpage')
+          }
+        })
+    },
     init_getToken: function () {
       if (this.$cookies.isKey('token')) {
         this.token = this.$cookies.get('token')
         console.log('getToken:', this.token)
+        this.getRestaurantList()
         this.getVisitRecords()
       } else {
         this.$router.push('/loginpage')
@@ -322,7 +372,7 @@ export default {
       this.$http
         .get(api, { params: { user_token: vm.token } })
         .then(response => {
-          // console.log('getVisitRecords:', response.data)
+          console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
         }).catch((err) => {
           if (err.response.status === 401) {
@@ -515,7 +565,6 @@ export default {
   padding: 30px 0;
   display: flex;
   justify-content: space-around;
-  margin-bottom: 30px;
   h1{
     margin: 0;
     font-size: 1.6rem;
