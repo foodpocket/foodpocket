@@ -312,9 +312,9 @@ export default {
     logout () {
       if (this.$cookies.isKey('token')) {
         this.$cookies.remove('token')
-        window.alert('登出成功')
-        this.$router.push('/loginpage')
       }
+      window.alert('登出成功')
+      this.$router.push('/loginpage')
     },
     getVisitRecords: function () {
       const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
