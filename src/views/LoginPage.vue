@@ -15,9 +15,9 @@
             <label for="user_password">密碼</label>
             <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
           </div>
-          <div class="btn-group">
-            <button type="button" class="btn">取消</button>
-            <button type="submit" class="btn">登入</button>
+          <div class="login-group">
+            <button type="button" class="btn btn-dark" @click="clear">取消</button>
+            <button type="submit" class="btn btn-primary">登入</button>
           </div>
         </form>
       </div>
@@ -35,6 +35,10 @@ export default {
     }
   },
   methods: {
+    clear: function () {
+      this.username = ''
+      this.password = ''
+    },
     signin: function () {
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
@@ -70,34 +74,24 @@ export default {
     font-size: 1.6rem;
   }
   .wrap {
-    background: url("https://picsum.photos/500/500?random=16");
-    height: 100%;
-    width: 100%;
-    background-size: 100% 100%;
-    padding: 30px 0;
     .container {
+      margin: 0px auto;
+      padding: 50px 30px;
       width: 90%;
-      margin: 40px auto;
-      height: 100%;
-      padding: 30px;
-      background-color: rgba(0, 0, 0, 0.5);
-      border: #fff 5px solid;
+      border: #000 1px solid;
       border-radius: 10px;
-      box-shadow: 0 0 15px #000;
-      // -webkit-backdrop-filter: blur(3px);
-      // backdrop-filter: blur(3px);
       .form {
         width: 100%;
-        color: #fff;
+        color: #000;
         h2 {
           margin-bottom: 20px;
           padding-bottom: 20px;
-          border-bottom: 1px solid #fff;
+          border-bottom: 1px solid #000;
         }
         .group {
           margin-bottom: 20px;
           label {
-            line-height: 2;
+            line-height: 3;
           }
           input {
             font-size: 16px;
@@ -111,23 +105,14 @@ export default {
             outline: none;
           }
         }
-        .btn-group {
+        .login-group {
           font-size: 0;
           margin-top: 50px;
           .btn {
-            border: none;
-            font-size: 20px;
-            border-radius: 5px;
-            background-color: #edab19;
             width: 100px;
-            padding: 5px 0;
           }
           .btn:focus {
             outline: none;
-          }
-          .btn:hover {
-            background-color: #d27575;
-            color: #fff;
           }
           .btn + .btn {
             margin-left: 20px;

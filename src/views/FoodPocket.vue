@@ -25,7 +25,7 @@
         </div>
 
         <div class="col-12 input-group mb-3">
-          <button class="btn btn-primary w-100" type="button" @click="oldaddRest">快速新增</button>
+          <button class="btn btn-primary w-100" type="button" @click="quicklyAdd">快速新增</button>
         </div>
       </div>
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
@@ -40,6 +40,14 @@
                 @click.prevent="visibility = 'all',justifyContent = 'between'"
                 href="#"
               >全部餐廳</a>
+            </li>
+            <li class="nav-item">
+              <a
+                class="nav-link"
+                :class="{'active':visibility === 'recommed'}"
+                @click.prevent="visibility = 'recommed',justifyContent = 'between'"
+                href="#"
+              >推薦餐廳</a>
             </li>
             <li class="nav-item">
               <a
@@ -69,19 +77,19 @@
               <div class="restaurant-list">
                 <div class="restaurant-name">{{ item.restaurant_name }}</div>
                 <div class="restaurant-description">
-                  <div class="visited-times" v-if="visibility === 'all'">吃過 {{item.visited}} 次</div>
+                  <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
                   <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
                   <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
               <div class="button-area" :class="justifyContent">
-                <a @click.prevent="openEditModal(item)"><i class="fas fa-pen"></i></a>
+                <a v-if="visibility !== 'recommed'" @click.prevent="openEditModal(item)"><i class="fas fa-pen"></i></a>
                 <a v-if="visibility === 'all'" @click.prevent="openAddrecordModal(item)"><i class="fas fa-plus-circle"></i></a>
 
               </div>
             </div>
           </li>
-          <li class="list-group-item" v-if="visibility === 'all'&& searchRestaurant!==''">
+          <li class="list-group-item" v-if="visibility === 'all' && searchRestaurant!==''">
             <div class="d-flex align-items-center justify-content-center">
               <div class="restaurant-list">
                 <div class="restaurant-name">
@@ -94,8 +102,8 @@
 
         <!-- card-footer註腳區域(腳) -->
         <div class="card-footer d-flex justify-content-between">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家好吃的餐廳</span>
-          <span v-if="visibility === 'all'&& searchRestaurant !==''">總共有 {{searchResult.length}} 家相符的餐廳</span>
+          <span v-if="visibility !== 'record'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家好吃的餐廳</span>
+          <span v-if="visibility !== 'record'&& searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
       </div>
@@ -108,7 +116,7 @@
           <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片區-header -->
             <h5 class="modal-title" id="restaurantModalLabel">
-              <span v-if="visibility === 'all'">編輯 {{tempname}} 名稱</span>
+              <span v-if="visibility !== 'record'">編輯 {{tempname}} 名稱</span>
               <span v-if="visibility === 'record'">編輯到訪 {{tempname}} 日期</span>
             </h5>
             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -118,7 +126,7 @@
 
           <div class="modal-body">
             <!-- 編輯卡片區-body-->
-            <div class="form-group" v-if="visibility === 'all'">
+            <div class="form-group" v-if="visibility !== 'record'">
               <label for="name">餐廳名稱</label>
               <input type="text" class="form-control" id="name" v-model="modelRestaurant.restaurant_name"/>
             </div>
@@ -132,7 +140,7 @@
             <!-- 編輯卡片區-footer (按鈕*3)-->
             <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal">刪除</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">取消</button>
-            <button v-if="visibility === 'all'" type="button" class="btn btn-primary btn-sm"
+            <button v-if="visibility !== 'record'" type="button" class="btn btn-primary btn-sm"
               @click="editRestaurant(modelRestaurant)">確認</button>
             <button v-if="visibility === 'record'" type="button" class="btn btn-primary btn-sm"
               @click="editVisitRecord(modelRestaurant)">確認</button>
@@ -177,7 +185,7 @@
         <div class="modal-content border-0">
           <div class="modal-header bg-danger text-white">
             <!-- modal-header -->
-            <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'all'"><span>刪除餐廳</span></h5>
+            <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility !== 'record'"><span>刪除餐廳</span></h5>
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'"><span>刪除到訪紀錄</span></h5>
             <button type="button" class="close" aria-label="Close" @click="doNotDelete(modelRestaurant)">
               <span aria-hidden="true">&times;</span>
@@ -186,7 +194,7 @@
 
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
-            <div v-if="visibility === 'all'">
+            <div v-if="visibility !== 'record'">
               警告！<br>
               刪除<strong class="text-danger"> {{tempname}} </strong>餐廳後<br>
               所有造訪此餐廳的紀錄也將⼀併刪除
@@ -205,7 +213,7 @@
               class="btn btn-outline-secondary btn-sm"
               @click="doNotDelete(modelRestaurant)"
             >取消</button>
-            <button type="button" class="btn btn-danger btn-sm" @click="removeRestaurant(modelRestaurant)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button>
+            <button type="button" class="btn btn-danger btn-sm" @click="removeRestaurant(modelRestaurant)" data-dismiss="modal" v-if="visibility !== 'record'">確認刪除</button>
             <button type="button" class="btn btn-danger btn-sm" @click="removeVisitRecord(modelRestaurant)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button>
           </div>
         </div>
@@ -223,9 +231,9 @@ export default {
     return {
       token: '',
       searchRestaurant: '', // 搜尋的字串
-      newRestaurant: '', // 取得內容暫放處
-      newDate: this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)), // 取得內容暫放處
-      newRestaurant_uid: '', // 取得內容暫放處
+      newRestaurant: '', // 快速新增內容暫放處
+      newRestaurant_uid: '', // 快速新增內容暫放處
+      newDate: this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)), // 快速新增內容暫放處
       visitRecords: [], // 由API匯入
       restaurantList: [], // 由API匯入
       modelRestaurant: { // model取得內容暫放處
@@ -236,9 +244,9 @@ export default {
         visitrecord_uid: ''
       },
       tempname: '', // model取得餐廳名字暫放處
-      tempdate: '',
+      tempdate: '', // model取得到訪日期暫放處
       isNew: false,
-      visibility: 'all', // 'all' 'record' 原始資料送來的是record
+      visibility: 'all', // 'all' 'record' 'recommed'
       justifyContent: 'between' // 'between' 'end'
     }
   },
@@ -246,7 +254,7 @@ export default {
     this.getToken()
   },
   computed: {
-    searchResult () {
+    searchList () {
       const nameArray = []
       this.restaurantList.forEach(restaurantObject => {
         const indexOf = restaurantObject.restaurant_name.indexOf(this.searchRestaurant)
@@ -265,14 +273,24 @@ export default {
       console.log('result:', result)
       return result
     },
+    trimSearchRestaurant () {
+      const name = this.searchRestaurant.trim() // 修掉輸入的空白
+      if (!name) { return name }
+      return name
+    },
     filteredMethod () {
       if (this.visibility === 'all') {
-        if (this.searchRestaurant !== '') {
-          return this.searchResult
+        if (this.trimSearchRestaurant !== '') {
+          return this.searchList
         } else {
-          console.log('all_List:', this.restaurantList)
-          return this.restaurantList
+          const allList = this.restaurantList.slice(0)
+          allList.reverse()
+          console.log('all_List:', allList)
+          return allList
         }
+      } else if (this.visibility === 'recommed') {
+        console.log('recommed_List:', this.restaurantList)
+        return this.restaurantList
       } else if (this.visibility === 'record') {
         console.log('record_List:', this.visitRecords)
         return this.visitRecords
@@ -390,18 +408,15 @@ export default {
       this.$router.push('/loginpage')
     },
 
-    // 更新中------------------------------
-    oldaddRest () { // 同時增加Restaurant及VisitRecord的處理
+    // 快速新增鈕------------------------------
+    quicklyAdd () {
       // 這裡處理日期欄位------------------------
-      // if (this.newDate === '') {
-      //   this.newDate = Math.floor(Date.now())
-      // }
       const timestampNumber = Math.floor(
         new Date(this.newDate).getTime() / 1000
       )
       const timestamp = this.changedateFormat(timestampNumber)
-      console.log('timestampNumber:', timestampNumber)
-      console.log('timestampFormat:', timestamp)
+      // console.log('timestampNumber:', timestampNumber)
+      // console.log('timestampFormat:', timestamp)
 
       // 這裡處理餐廳名稱欄位------------------------
       const restaurantName = this.newRestaurant.trim() // 修掉輸入的空白
@@ -425,40 +440,39 @@ export default {
       // --------------------- 用isNew分辨是否是新的餐廳，再做出相應的動作
       if (this.isNew === true) {
         console.log('這是新的餐廳')
-        this.postNewRestaurant(restaurantName, timestamp) // 輸入的字
+        this.quicklyAddRestaurant(restaurantName, timestamp) // 輸入的字
       } else {
         console.log('這間餐廳已經存在')
-        this.restaurant_name = this.visitRecords[index].restaurant_name // 取出記錄中的餐廳名
         this.newRestaurant_uid = this.visitRecords[index].restaurant_uid // 取出記錄中的餐廳id
-        this.postNewVisit(this.newRestaurant_uid, timestamp) // 增加歷史紀錄
+        this.quicklyAddVisit(this.newRestaurant_uid, timestamp) // 增加歷史紀錄
       }
-      // 完成後將input復原成空的------------------------
+      // 完成後將input復原原樣的------------------------
       this.newRestaurant = ''
       this.newDate = this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)) // 恢復
     },
-    postNewRestaurant (restaurantName, timestamp) { // addRestaurant()
+    quicklyAddRestaurant (restaurantName, timestamp) { // 類似addRestaurant() + addVisitRecord()
       const api = 'https://brycehuang.com/api/rest/newRestaurant/'
       const formdata = new FormData()
       formdata.append('name', restaurantName)
       formdata.append('user_token', this.token)
       this.axios.post(api, formdata).then(response => {
-        console.log('postNewRestaurant:', response.data)
+        console.log('quicklyAddRestaurant:', response.data)
         this.newRestaurant_uid = response.data.data.restaurant_uid
-        this.postNewVisit(this.newRestaurant_uid, timestamp)
+        this.quicklyAddVisit(this.newRestaurant_uid, timestamp)
       }).catch((err) => {
         if (err.response.status === 401) {
           this.$router.push('/loginpage')
         }
       })
     },
-    postNewVisit (id, timestamp) { // addVisitRecord()
+    quicklyAddVisit (id, timestamp) { // 類似addVisitRecord()
       const api = 'https://brycehuang.com/api/rest/newVisit/'
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', id)
       formdata.append('visit_date', timestamp)
       this.axios.post(api, formdata).then(response => {
-        console.log('postNewVisit:', response.data)
+        console.log('quicklyAddVisit:', response.data)
         this.initList()
       }).catch((err) => {
         if (err.response.status === 401) {
@@ -469,13 +483,14 @@ export default {
 
     // Restaurant--------------------------
     addRestaurant (restaurantName) {
+      const name = restaurantName.trim() // 修掉輸入的空白
+      if (!name) { return }
       const api = 'https://brycehuang.com/api/rest/newRestaurant/'
       const formdata = new FormData()
       formdata.append('user_token', this.token)
-      formdata.append('name', restaurantName)
+      formdata.append('name', name)
       this.axios.post(api, formdata).then(response => {
         console.log('addRestaurant:', response.data)
-        this.newRestaurant_uid = response.data.data.restaurant_uid
         this.initList()
       }).catch((err) => {
         if (err.response.status === 401) {
