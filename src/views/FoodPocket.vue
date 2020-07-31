@@ -304,65 +304,6 @@ export default {
       }
       return ''
     },
-    // 以下取消使用，以此紀念-----
-    visitedTimes () {
-      const map = {}
-      this.recordNameList.forEach(restaurantName => {
-        if (!map[restaurantName]) map[restaurantName] = 0
-        map[restaurantName]++
-      })
-      // console.log('obj:', obj)
-      console.log('Object.values():', Object.values(map))
-      return Object.values(map)
-    },
-    recordNameList () {
-      const recordNameList = []
-      const list = this.visitRecords
-      list.forEach(item => {
-        recordNameList.push(item.restaurant_name)
-      })
-      return recordNameList
-    },
-    allList1 () {
-      const repeatindex = []
-      this.recordNameList.forEach(item => {
-        const index = this.recordNameList.indexOf(item)
-        repeatindex.push(index)
-      }) // console.log('repeatindex:', repeatindex)
-
-      const norepeat = Array.from(new Set(repeatindex))
-      // console.log('norepeat:', norepeat)
-
-      const allList = []
-      for (let index = 0; index < norepeat.length; index++) {
-        const element = norepeat[index]
-        allList.push(this.visitRecords[element])
-      }
-
-      return allList
-    },
-    restaurantMap () {
-      const map = new Map()
-      this.visitRecords.forEach(record => {
-        if (!map.has(record.restaurant_name)) { // 如果api來的資料中沒有這個名字的話
-          map.set(record.restaurant_name, {
-            // 就加入restaurant_uid、restaurant_name、visit_dates(自己創的)
-            restaurant_uid: record.restaurant_uid,
-            restaurant_name: record.restaurant_name,
-            visit_dates: [record.visit_date]
-          })
-        } else { // 如果有的話
-          map.get(record.restaurant_name).visit_dates.push(record.visit_date)
-          // 就把這個餐廳的visit_dates加到visit_dates的array中
-        }
-      })
-      // console.log('map:', map)
-      return map
-    },
-    allList2 () {
-      return Array.from(this.restaurantMap.values())
-    }
-    // -----------------------
   },
   methods: {
     // 必備----------------------------
