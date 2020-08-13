@@ -78,15 +78,16 @@ export default {
       margin: 0px auto;
       padding: 50px 30px;
       width: 90%;
-      border: #000 1px solid;
+      // border: #000 1px solid;
       border-radius: 10px;
+      box-shadow: 0 0 5px #aaa;
       .form {
         width: 100%;
-        color: #000;
+        color: #555;
         h2 {
           margin-bottom: 20px;
           padding-bottom: 20px;
-          border-bottom: 1px solid #000;
+          border-bottom: 1px solid #aaa;
         }
         .group {
           margin-bottom: 20px;

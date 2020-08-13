@@ -1,15 +1,11 @@
 <template>
   <div class="foodpocket">
-    <div id="nav">
-      <h1>FoodPocket 食物口袋</h1>
-      <div class="logout">
-        <button class="btn btn-info btn-sm" @click="logout">登出</button>
-      </div>
-    </div>
+    <navbar/>
     <!-- 主畫面 -->
+      <!-- <quicklyAdd/> -->
     <div class="container">
       <!-- 輸入新資訊區 -->
-      <div class="input-group mt-3">
+      <div class="input-group pt-3">
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
@@ -72,7 +68,7 @@
         </div>
         <!-- 內容區 -->
         <div class="list-length text-right mr-3">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
+          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳(含0次餐廳)</span>
           <span v-if="visibility === 'recommed'">推薦 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
@@ -80,20 +76,27 @@
         <ul class="list-group list-group-flush text-left">
           <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex align-items-center">
+
               <div class="restaurant-list">
-                <div class="restaurant-name">{{ item.restaurant_name }}</div>
+                <div class="restaurant-name">
+                  {{ item.restaurant_name }}
+                  <i v-if="visibility !== 'record' && item.note !== ''"
+                    class="fas fa-exclamation-circle" @click.prevent="openNoteModal(item)"></i>
+                </div>
+
                 <div class="restaurant-description">
                   <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
                   <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
                   <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
-              <div class="button-area" :class="justifyContent">
-                <a v-if="visibility === 'all'" @click.prevent="openEditModal(item)"><i class="fas fa-pen"></i></a>
-                <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)"><i class="fas fa-plus-circle"></i></a>
-                <a v-if="visibility === 'record'" @click.prevent="openEditModal(item)"><i class="fas fa-calendar"></i></a>
 
+              <div class="button-area" :class="justifyContent">
+                <a v-if="visibility === 'all'" @click.prevent="openEditModal(item)" class="pencil-icon"><i class="fas fa-pen"></i></a>
+                <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
+                <a v-if="visibility === 'record'" @click.prevent="openEditModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
               </div>
+
             </div>
           </li>
           <li class="list-group-item" v-if="visibility === 'all' && searchRestaurant!==''">
@@ -117,6 +120,33 @@
       </div>
     </div>
 
+    <!-- 驚嘆號 按下後的備註卡片區 -->
+    <div class="modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+
+          <!-- modal-header -->
+          <div class="modal-header bg-warning text-dark py-2">
+            <h5 class="modal-title" id="noteModalLabel"><span>備註</span></h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <div class="text-left">
+              {{tempnote}}
+            </div>
+          </div>
+
+          <!-- <div class="modal-footer">
+            <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">關閉視窗</button>
+          </div> -->
+
+        </div>
+      </div>
+    </div>
+
     <!-- 鉛筆鈕 按下之後的編輯卡片區 -->
     <div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog" aria-labelledby="restaurantModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-lg" role="document">
@@ -136,7 +166,9 @@
             <!-- 編輯卡片區-body-->
             <div class="form-group" v-if="visibility === 'all'">
               <label for="name">餐廳名稱</label>
-              <input type="text" class="form-control" id="name" placeholder="請輸入餐廳名稱" v-model="modelRestaurant.restaurant_name"/>
+              <input type="text" class="form-control mb-2" id="name" placeholder="請輸入餐廳名稱" v-model="modelRestaurant.restaurant_name"/>
+              <label for="note">備註</label>
+              <input type="text" class="form-control" id="note" placeholder="任何備註都可以打在這裡" v-model="modelRestaurant.note"/>
             </div>
             <div class="form-group" v-if="visibility === 'record'">
               <label for="date">最近到訪日期</label>
@@ -233,8 +265,14 @@
 
 <script>
 import $ from 'jquery'
+import navbar from '@/components/navbar.vue'
+// import quicklyAdd from '@/components/quicklyAdd.vue'
 
 export default {
+  components: {
+    navbar
+    // quicklyAdd
+  },
   data () {
     return {
       token: '',
@@ -253,6 +291,8 @@ export default {
       },
       tempname: '', // model取得餐廳名字暫放處
       tempdate: '', // model取得到訪日期暫放處
+      tempnote: '任何備註都可以打在這裡', // model取得note暫放處
+      openNote: 'false',
       isNew: false,
       visibility: 'all', // 'all' 'record' 'recommed'
       justifyContent: 'between' // 'between' 'end'
@@ -260,6 +300,7 @@ export default {
   },
   created () {
     this.getToken()
+    this.active()
   },
   computed: {
     reverseRestaurantList () {
@@ -295,15 +336,15 @@ export default {
         if (this.trimSearchRestaurant !== '') {
           return this.searchList
         } else {
-          return this.reverseRestaurantList
+          return this.restaurantList
         }
       } else if (this.visibility === 'recommed') {
-        return this.restaurantList
+        return this.reverseRestaurantList
       } else if (this.visibility === 'record') {
         return this.visitRecords
       }
       return ''
-    },
+    }
   },
   methods: {
     // 必備----------------------------
@@ -347,13 +388,6 @@ export default {
     initList () {
       this.getRestaurantList()
       this.getVisitRecords()
-    },
-    logout () {
-      if (this.$cookies.isKey('token')) {
-        this.$cookies.remove('token')
-      }
-      window.alert('登出成功')
-      this.$router.push('/loginpage')
     },
 
     // 快速新增鈕------------------------------
@@ -466,24 +500,30 @@ export default {
       }
     },
     editRestaurant (item) {
-      if (this.tempname !== item.restaurant_name && item.restaurant_name !== '') {
-        const api = 'https://brycehuang.com/api/rest/editRestaurant/'
-        const formdata = new FormData()
-        formdata.append('user_token', this.token)
-        formdata.append('restaurant_uid', item.restaurant_uid)
-        formdata.append('name', item.restaurant_name)
-        this.axios.post(api, formdata).then(response => {
+      if (this.tempnote !== item.note || this.tempname !== item.restaurant_name) {
+        if (item.restaurant_name !== '') {
+          const api = 'https://brycehuang.com/api/rest/editRestaurant/'
+          const formdata = new FormData()
+          formdata.append('user_token', this.token)
+          formdata.append('restaurant_uid', item.restaurant_uid)
+          formdata.append('name', item.restaurant_name)
+          formdata.append('note', item.note)
+          this.axios.post(api, formdata).then(response => {
           // console.log('editRestaurant:', response.data)
-          console.log('成功編輯餐廳名稱')
+            console.log('成功編輯餐廳名稱或備註')
+            $('#restaurantModal').modal('hide')
+            this.initList()
+          }).catch((err) => {
+            if (err.response.status === 401) {
+              this.$router.push('/loginpage')
+            }
+          })
+        } else {
+          console.log('並未改變')
           $('#restaurantModal').modal('hide')
-          this.initList()
-        }).catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage')
-          }
-        })
+        }
       } else {
-        console.log('餐廳名稱並未改變')
+        console.log('並未改變')
         $('#restaurantModal').modal('hide')
       }
     },
@@ -573,10 +613,16 @@ export default {
       this.modelRestaurant = Object.assign({}, item)
       this.tempname = this.modelRestaurant.restaurant_name
       this.tempdate = this.modelRestaurant.visit_date
+      this.tempnote = this.modelRestaurant.note
     },
     openDeleteModal () {
       $('#delRestaurantModal').modal('show')
       $('#restaurantModal').modal('hide')
+    },
+    openNoteModal (item) {
+      $('#openNoteModal').modal('show')
+      this.modelRestaurant = Object.assign({}, item)
+      this.tempnote = this.modelRestaurant.note
     },
 
     // 其他---------------------------------
@@ -628,28 +674,16 @@ export default {
           String(year) + '-' + String(month) + '-' + String(day)
         return currentDateTime
       }
+    },
+    active () {
+      document.body.addEventListener('touchend', function () { })
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-#nav {
-  padding: 30px 0;
-  display: flex;
-  justify-content: space-around;
-  h1{
-    margin: 0;
-    font-size: 1.6rem;
-  }
-  .logout{
-    align-self: center;
-    .btn{
-      padding: 3px;
-      font-weight: lighter;
-    }
-  }
-}
+
 .main-area{
   margin: 20px auto;
   .list-length{
@@ -659,24 +693,43 @@ export default {
     width: 75%;
     .restaurant-name {
       font-size: 1.2rem;
+      i {
+        font-size: 0.7rem;
+        margin-left: 10px;
+        color: #ffd000;
+      }
     }
     .restaurant-description {
       font-size: 0.8rem;
     }
   }
   .button-area{
-    width: 25%;
+    width: 40%;
     display: flex;
     a{
-      display: block;
-      .fa-plus-circle{
-        color: rgb(84, 204, 36);
-        font-size: 1.5rem;
-      }
-      .fa-pen, .fa-calendar{
-        // color: rgb(109, 109, 109);
-        font-size: 1.1rem;
-      }
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 100%;
+      font-size: 1.1rem;
+      transition: transform 0.3s;
+    }
+    a:active, a:hover{
+      transform: scale(1.2,1.2);
+    }
+    .pencil-icon{
+      border: solid 1px #ffc107;
+      color: #ffc107;
+    }
+    .plus-icon{
+      border: solid 1px #54cc24;
+      color: #54cc24;
+    }
+    .calendar-icon{
+      border: solid 1px #ffc107;
+      color: #ffc107;
     }
   }
 }
