@@ -77,16 +77,15 @@
           <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex align-items-center">
 
-              <div class="restaurant-list">
+              <div class="restaurant-list" @click.prevent="openNoteModal(item)">
                 <div class="restaurant-name">
                   {{ item.restaurant_name }}
-                  <i v-if="visibility !== 'record' && item.note !== ''"
-                    class="fas fa-exclamation-circle" @click.prevent="openNoteModal(item)"></i>
+                  <i v-if="visibility !== 'record' && item.note !== ''" class="fas fa-exclamation-circle"></i>
                 </div>
 
                 <div class="restaurant-description">
-                  <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
                   <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
+                  <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
                   <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                 </div>
               </div>
@@ -99,11 +98,12 @@
 
             </div>
           </li>
-          <li class="list-group-item" v-if="visibility === 'all' && searchRestaurant!==''">
+          <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
             <div class="d-flex align-items-center justify-content-center">
               <div class="restaurant-list">
                 <div class="restaurant-name">
-                  <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">新增<strong>- {{searchRestaurant}} -</strong>餐廳</button>
+                  <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)"
+                    style="font-weight: 100;">新增<strong>- {{searchRestaurant}} -</strong>餐廳</button>
                 </div>
               </div>
             </div>
@@ -113,8 +113,8 @@
         <!-- card-footer註腳區域(腳) -->
         <div class="card-footer d-flex justify-content-between">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
-          <span v-if="visibility === 'recommed'">推薦 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
+          <span v-if="visibility === 'recommed'">推薦 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
       </div>
@@ -125,7 +125,6 @@
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
 
-          <!-- modal-header -->
           <div class="modal-header bg-warning text-dark py-2">
             <h5 class="modal-title" id="noteModalLabel"><span>備註</span></h5>
             <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
@@ -138,10 +137,6 @@
               {{tempnote}}
             </div>
           </div>
-
-          <!-- <div class="modal-footer">
-            <button type="button" class="btn btn-warning btn-sm" data-dismiss="modal">關閉視窗</button>
-          </div> -->
 
         </div>
       </div>
@@ -292,7 +287,6 @@ export default {
       tempname: '', // model取得餐廳名字暫放處
       tempdate: '', // model取得到訪日期暫放處
       tempnote: '任何備註都可以打在這裡', // model取得note暫放處
-      openNote: 'false',
       isNew: false,
       visibility: 'all', // 'all' 'record' 'recommed'
       justifyContent: 'between' // 'between' 'end'
@@ -308,28 +302,30 @@ export default {
       allList.reverse()
       return allList
     },
-    searchList () {
-      const nameArray = []
-      this.reverseRestaurantList.forEach(restaurantObject => {
-        const indexOf = restaurantObject.restaurant_name.indexOf(this.searchRestaurant)
-        if (indexOf >= 0) {
-          nameArray.push(restaurantObject.restaurant_name)
-        }
-      })
-      const result = []
-      for (let index = 0; index < this.reverseRestaurantList.length; index++) {
-        nameArray.forEach(searchname => {
-          if (this.reverseRestaurantList[index].restaurant_name === searchname) {
-            result.push(this.reverseRestaurantList[index])
-          }
-        })
-      }
-      return result
-    },
     trimSearchRestaurant () {
       const name = this.searchRestaurant.trim() // 修掉輸入的空白
       if (!name) { return name }
       return name
+    },
+    searchList () {
+      const fitnameArray = []
+      this.restaurantList.forEach(restaurantObject => {
+        const listName = restaurantObject.restaurant_name
+        const inputName = this.trimSearchRestaurant
+        const indexOf = listName.toUpperCase().indexOf(inputName.toUpperCase())
+        if (indexOf >= 0) {
+          fitnameArray.push(listName)
+        }
+      })
+      const result = []
+      for (let i = 0; i < this.restaurantList.length; i++) {
+        fitnameArray.forEach(fitname => {
+          if (this.restaurantList[i].restaurant_name === fitname) {
+            result.push(this.restaurantList[i])
+          }
+        })
+      }
+      return result
     },
     filteredMethod () {
       if (this.visibility === 'all') {
@@ -405,14 +401,16 @@ export default {
       if (!restaurantName) {
         return
       }
+      const NEWupper = restaurantName.toUpperCase()
       // --------------------- 確定輸入的名稱是否曾經輸入過
       const array = []
-      const list = this.visitRecords
+      const list = this.restaurantList
       list.forEach(item => {
         const restaurant = item.restaurant_name
-        array.push(restaurant)
+        const upperrestaurant = restaurant.toUpperCase()
+        array.push(upperrestaurant)
       })
-      const index = array.indexOf(restaurantName)
+      const index = array.indexOf(NEWupper)
       // console.log('array.indexOf:', index)
       if (index === -1) {
         this.isNew = true // 新的
@@ -425,7 +423,7 @@ export default {
         this.quicklyAddRestaurant(restaurantName, timestamp) // 輸入的字
       } else {
         console.log('這間餐廳已經存在，已增加次數一次')
-        this.newRestaurant_uid = this.visitRecords[index].restaurant_uid // 取出記錄中的餐廳id
+        this.newRestaurant_uid = this.restaurantList[index].restaurant_uid // 取出記錄中的餐廳id
         this.quicklyAddVisit(this.newRestaurant_uid, timestamp) // 增加歷史紀錄
       }
       // 完成後將input復原原樣的------------------------
@@ -464,17 +462,19 @@ export default {
     },
 
     // Restaurant--------------------------
-    addRestaurant (restaurantName) {
-      const name = restaurantName.trim() // 修掉輸入的空白
-      if (!name) { return }
+    addRestaurant (name) {
+      const restaurantName = name.trim() // 修掉輸入的空白
+      if (!restaurantName) { return }
+      const NEWupper = restaurantName.toUpperCase()
 
       const array = []
       const list = this.restaurantList
       list.forEach(item => {
         const restaurant = item.restaurant_name
-        array.push(restaurant)
+        const upperrestaurant = restaurant.toUpperCase()
+        array.push(upperrestaurant)
       })
-      const index = array.indexOf(restaurantName)
+      const index = array.indexOf(NEWupper)
       if (index === -1) {
         this.isNew = true // 新的
       } else {
@@ -486,7 +486,7 @@ export default {
         const api = 'https://brycehuang.com/api/rest/newRestaurant/'
         const formdata = new FormData()
         formdata.append('user_token', this.token)
-        formdata.append('name', name)
+        formdata.append('name', restaurantName)
         this.axios.post(api, formdata).then(response => {
           // console.log('addRestaurant:', response.data)
           this.initList()
@@ -497,6 +497,7 @@ export default {
         })
       } else {
         console.log('這間餐廳已經存在')
+        // document.getElementsByClassName('addnew').style.display = 'none'
       }
     },
     editRestaurant (item) {
@@ -620,9 +621,11 @@ export default {
       $('#restaurantModal').modal('hide')
     },
     openNoteModal (item) {
-      $('#openNoteModal').modal('show')
-      this.modelRestaurant = Object.assign({}, item)
-      this.tempnote = this.modelRestaurant.note
+      if (item.note) {
+        $('#openNoteModal').modal('show')
+        this.modelRestaurant = Object.assign({}, item)
+        this.tempnote = this.modelRestaurant.note
+      }
     },
 
     // 其他---------------------------------
@@ -694,9 +697,9 @@ export default {
     .restaurant-name {
       font-size: 1.2rem;
       i {
-        font-size: 0.7rem;
+        font-size: 1.2rem;
         margin-left: 10px;
-        color: #ffd000;
+        color: #ffa600;
       }
     }
     .restaurant-description {
