@@ -6,6 +6,7 @@ import 'bootstrap'
 import App from './App'
 import router from './router'
 import VueCookies from 'vue-cookies'
+import './bus'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)

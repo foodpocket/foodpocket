@@ -1,6 +1,7 @@
 <template>
   <div class="foodpocket">
     <navbar/>
+    <Alert/>
     <!-- 主畫面 -->
       <!-- <quicklyAdd/> -->
     <div class="container">
@@ -261,11 +262,13 @@
 <script>
 import $ from 'jquery'
 import navbar from '@/components/navbar.vue'
+import Alert from '@/components/Alertmessages.vue'
 // import quicklyAdd from '@/components/quicklyAdd.vue'
 
 export default {
   components: {
-    navbar
+    navbar,
+    Alert
     // quicklyAdd
   },
   data () {
@@ -496,8 +499,7 @@ export default {
           }
         })
       } else {
-        console.log('這間餐廳已經存在')
-        // document.getElementsByClassName('addnew').style.display = 'none'
+        this.$bus.$emit('message:push', '這間餐廳已經存在', 'danger')
       }
     },
     editRestaurant (item) {
