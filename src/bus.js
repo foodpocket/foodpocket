@@ -6,3 +6,5 @@ Vue.prototype.$bus = new Vue()
 // vm.$bus.$emit('message:push', message, status);
 // message(String): 訊息內容
 // status(String):Alert的樣式
+
+// this.$bus.$emit('message:push', '輸入錯誤', 'danger')

@@ -3,6 +3,7 @@
     <div id="nav">
       FoodPocket 食物口袋
     </div>
+    <Alert/>
     <div class="wrap">
       <div class="container">
         <form class="form" @submit.prevent="signin">
@@ -26,6 +27,7 @@
 </template>
 
 <script>
+import Alert from '@/components/Alertmessages.vue'
 
 export default {
   data () {
@@ -40,6 +42,7 @@ export default {
       this.password = ''
     },
     signin: function () {
+      this.$bus.$emit('message:push', '請稍等', 'danger')
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
       console.log(api)
@@ -59,6 +62,9 @@ export default {
         }
       })
     }
+  },
+  components: {
+    Alert
   }
 }
 </script>
