@@ -42,7 +42,7 @@ export default {
       this.password = ''
     },
     signin: function () {
-      this.$bus.$emit('message:push', '請稍等', 'danger')
+      this.$bus.$emit('message:push', '請稍等', 'info')
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
       console.log(api)

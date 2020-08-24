@@ -17,6 +17,10 @@ export default {
   data () {
     return {
       messages: [
+        // {
+        //   message: '輸入錯誤',
+        //   status: 'danger'
+        // }
       ]
     }
   },
@@ -61,9 +65,11 @@ export default {
 <style scope>
 .message-alert {
   position: fixed;
-  max-width: 100%;
-  top: 50%;
-  right: 20px;
+  width: 100%;
+  bottom: 0px;
   z-index: 1100;
+}
+.alert {
+  border-radius: 0;
 }
 </style>

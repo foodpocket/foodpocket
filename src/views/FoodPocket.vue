@@ -11,7 +11,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
           </div>
-          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="newRestaurant" />
+          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" />
         </div>
 
         <div class="col-12 input-group mb-3">
@@ -75,31 +75,32 @@
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
         <ul class="list-group list-group-flush text-left">
-          <li class="list-group-item" v-for="(item, key) in filteredMethod" :key="key">
+          <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex align-items-center">
 
-              <div class="restaurant-list" @click.prevent="openNoteModal(item)">
+              <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openNoteModal(item)">
                 <div class="restaurant-name">
                   {{ item.restaurant_name }}
                   <i v-if="visibility !== 'record' && item.note !== ''" class="fas fa-exclamation-circle"></i>
                 </div>
 
-                <!-- 測試區 -->
-                <div class="text-danger">
-                  <div>
-                    status：{{item.status}}
-                  </div>
-                  <div style="font-size:10px;">
-                    hide_until：{{item.hide_until}}
-                  </div>
-                </div>
-                <!-- 測試區 -->
+                <div>
 
-                <div class="restaurant-description">
-                  <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
-                  <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
-                  <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
+                  <!-- 測試區 -->
+                  <div class="text-danger">
+                    <div>
+                      status：{{item.status}}
+                    </div>
+                  </div>
+                  <!-- 測試區 -->
+
+                  <div class="restaurant-description">
+                    <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
+                    <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
+                    <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
+                  </div>
                 </div>
+
               </div>
 
               <div class="button-area" :class="justifyContent">
@@ -107,7 +108,6 @@
                 <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
                 <a v-if="visibility === 'record'" @click.prevent="openEditModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
               </div>
-
             </div>
           </li>
           <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
@@ -132,8 +132,27 @@
       </div>
     </div>
 
+    <!-- 測試區 按下後的備註卡片區 -->
+    <div class="text modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content border-0">
+
+          <div class="modal-header bg-warning text-dark py-2">
+            <h5 class="modal-title" id="noteModalLabel"><span>備註</span></h5>
+          </div>
+
+          <div class="modal-body">
+            <div class="text-left">
+              {{tempnote}}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div>
+
     <!-- 驚嘆號 按下後的備註卡片區 -->
-    <div class="modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
+    <!-- <div class="modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
 
@@ -152,7 +171,7 @@
 
         </div>
       </div>
-    </div>
+    </div> -->
 
     <!-- 鉛筆鈕 按下之後的編輯卡片區 -->
     <div class="modal fade" id="restaurantModal" tabindex="-1" role="dialog" aria-labelledby="restaurantModalLabel" aria-hidden="true">
@@ -179,19 +198,19 @@
               <label for="status">狀態</label>
               <div class="status text-left d-flex">
                 <div class="active-input m-0 mr-4">
-                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="modelRestaurant.status" @click="hideuntil=0">
-                  <label for="active" @click="hideuntil=0">active</label>
+                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="modelRestaurant.status" @click="hidedays=0">
+                  <label for="active" @click="hidedays=0">active</label>
                 </div>
                 <div class="random-input m-0 mr-4">
-                  <input type="radio" id="random"  name="status" value="RANDOM" class="mr-2" v-model="modelRestaurant.status" @click="hideuntil=0">
-                  <label for="random" @click="hideuntil=0">random</label>
+                  <input type="radio" id="random"  name="status" value="RANDOM" class="mr-2" v-model="modelRestaurant.status" @click="hidedays=0">
+                  <label for="random" @click="hidedays=0">random</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
-                  <input type="radio" id="hide"  name="status" value="HIDE" class="mr-2" v-model="modelRestaurant.status" @click="hideuntil=2">
-                  <label for="hide" @click="hideuntil=2">hide</label>
+                  <input type="radio" id="hide"  name="status" value="HIDE" class="mr-2" v-model="modelRestaurant.status" @click="hidedays=2">
+                  <label for="hide" @click="hidedays=2">hide</label>
                   <div v-if="modelRestaurant.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
-                    <select name="days" id="days" v-model="hideuntil">
+                    <select name="days" id="days" v-model="hidedays">
                       <option value="2">2天</option>
                       <option value="7">7天</option>
                       <option value="10">10天</option>
@@ -201,13 +220,15 @@
                   </div>
                 </div>
               </div>
-            </div>
-
-            <div class="text-left">
+              <div class="text-left">
+              ---觀測區--- <br>
               status: {{modelRestaurant.status}} <br>
-              hide_until上次的紀錄: {{modelRestaurant.hide_until}}  <br>
-              (input v-model data)hideuntil隱藏的天數: {{hideuntil}}  <br>
-              <!-- hideUntil經過計算之後: {{hideUntil}} -->
+              <div v-if="modelRestaurant.status === 'HIDE'">
+                上次設定隱藏至: {{modelRestaurant.hide_until}}  <br>
+                預計隱藏天數: {{hidedays}}天<br>
+                經過計算之後隱藏至: {{hideUntil}}
+              </div>
+            </div>
             </div>
 
             <div class="form-group" v-if="visibility === 'record'"> <!-- 只有在歷史紀錄才會看到 -->
@@ -319,23 +340,18 @@ export default {
     return {
       token: '',
       searchRestaurant: '', // 搜尋的字串
-      newRestaurant: '', // 快速新增內容暫放處
-      newRestaurant_uid: '', // 快速新增內容暫放處
+      tempRestaurant_name: '', // 快速新增內容暫放處
+      tempRestaurant_uid: '', // 快速新增內容暫放處
       newDate: this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)), // 快速新增內容暫放處
       restaurantList: [], // 由API匯入
       visitRecords: [], // 由API匯入
-      modelRestaurant: { // model取得內容暫放處
-        create_time: '',
-        restaurant_uid: '',
-        restaurant_name: '',
-        visit_date: '',
-        visitrecord_uid: ''
-      },
+      modelRestaurant: {}, // model取得內容暫放處
       tempname: '', // model取得餐廳名字暫放處
       tempdate: '', // model取得到訪日期暫放處
       tempnote: '任何備註都可以打在這裡', // model取得note暫放處
       tempstatus: '', // status暫放處，用於比較有沒有改變
-      hideuntil: '2',
+      temphideUntil: '', // 更改前hideUntil的暫存區，用於判斷
+      hidedays: '2',
       isNew: false,
       visibility: 'all', // 'all' 'record' 'recommed'
       justifyContent: 'between' // 'between' 'end'
@@ -346,30 +362,16 @@ export default {
     this.active()
   },
   computed: {
-    // hideUntil () {
-    //   const today = Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)
-    //   if (this.hideuntil === 0) {
-    //     const result = this.changedateFormat(today)
-    //     return result
-    //   } else {
-    //     const result = this.changedateFormat(today + (86400 * this.hideuntil)) // 加幾天的運算
-    //     return result
-    //   }
-    // },
-    // checkuntildate () { // 未完成
-    //   const result = []
-    //   this.restaurantList.forEach(item => {
-    //     if (item.status === 'RANDOM') {
-    //       const today = Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000) // 格式是時間戳
-    //       const itemdate = item.hide_until // 的時間戳
-    //       if (itemdate < today) { // 已經過了隱藏到期日的話
-    //         item.status = 'ACTIVE' // 把status的hide改為active
-    //       }
-    //     }
-    //     result.push(item)
-    //   })
-    //   return result
-    // },
+    hideUntil () {
+      const today = Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)
+      if (this.hidedays === 0) {
+        const result = this.changedateFormat(today)
+        return result
+      } else {
+        const result = this.changedateFormat(today + (86400 * this.hidedays)) // 加幾天的運算
+        return result
+      }
+    },
     recommedRestaurantList () {
       const result = []
       this.restaurantList.forEach(item => {
@@ -483,7 +485,7 @@ export default {
       // console.log('timestampFormat:', timestamp)
 
       // 這裡處理餐廳名稱欄位------------------------
-      const restaurantName = this.newRestaurant.trim() // 修掉輸入的空白
+      const restaurantName = this.tempRestaurant_name.trim() // 修掉輸入的空白
       if (!restaurantName) {
         return
       }
@@ -509,11 +511,11 @@ export default {
         this.quicklyAddRestaurant(restaurantName, timestamp) // 輸入的字
       } else {
         console.log('這間餐廳已經存在，已增加次數一次')
-        this.newRestaurant_uid = this.restaurantList[index].restaurant_uid // 取出記錄中的餐廳id
-        this.quicklyAddVisit(this.newRestaurant_uid, timestamp) // 增加歷史紀錄
+        this.tempRestaurant_uid = this.restaurantList[index].restaurant_uid // 取出記錄中的餐廳id
+        this.quicklyAddVisit(this.tempRestaurant_uid, timestamp) // 增加歷史紀錄
       }
       // 完成後將input復原原樣的------------------------
-      this.newRestaurant = ''
+      this.tempRestaurant_name = ''
       this.newDate = this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)) // 恢復
     },
     quicklyAddRestaurant (restaurantName, timestamp) { // 類似addRestaurant() + addVisitRecord()
@@ -523,8 +525,8 @@ export default {
       formdata.append('user_token', this.token)
       this.axios.post(api, formdata).then(response => {
         // console.log('quicklyAddRestaurant:', response.data)
-        this.newRestaurant_uid = response.data.data.restaurant_uid
-        this.quicklyAddVisit(this.newRestaurant_uid, timestamp)
+        this.tempRestaurant_uid = response.data.data.restaurant_uid
+        this.quicklyAddVisit(this.tempRestaurant_uid, timestamp)
       }).catch((err) => {
         if (err.response.status === 401) {
           this.$router.push('/loginpage')
@@ -586,7 +588,8 @@ export default {
       }
     },
     editRestaurant (item) {
-      if (this.tempnote !== item.note || this.tempname !== item.restaurant_name || this.tempstatus !== item.status) { // 確認note有改過、餐廳名稱、餐廳狀態有改過(其一即可)
+      if (this.tempnote !== item.note || this.tempname !== item.restaurant_name || this.tempstatus !== item.status || this.temphideUntil !== this.hideUntil) {
+        // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
           const api = 'https://brycehuang.com/api/rest/editRestaurant/'
           const formdata = new FormData()
@@ -595,17 +598,22 @@ export default {
           formdata.append('name', item.restaurant_name) // 更改name
           formdata.append('note', item.note) // 更改note
           formdata.append('status', item.status) // 更改status
-          // formdata.append('hide_until', this.hideUntil) // 更改hide_until
-          this.axios.post(api, formdata).then(response => {
+          formdata.append('hide_until', this.hideUntil) // 更改hide_until
+          this.axios.post(api, formdata).then(response => { // 發送api成功的話
             // console.log('editRestaurant:', response.data)
-            if (this.tempname !== item.restaurant_name) {
+            if (this.tempname !== item.restaurant_name) { // 狀況一：更改名稱
               this.$bus.$emit('message:push', '成功編輯餐廳名稱', 'success')
             }
-            if (this.tempnote !== item.note) {
+            if (this.tempnote !== item.note) { // 狀況二：更改備註
               this.$bus.$emit('message:push', '成功編輯餐廳備註', 'success')
             }
-            if (this.tempstatus !== item.status) {
+            if (this.tempstatus !== item.status) { // 狀況三：更改狀態
               this.$bus.$emit('message:push', '已將狀態從' + this.tempstatus + '改成' + item.status, 'success')
+            }
+            if (this.tempstatus === item.status) { // 狀況四：維持HIDE狀態
+              if (this.temphideUntil !== this.hideUntil) { // 隱藏時間改變
+                this.$bus.$emit('message:push', '成功編輯hide_until', 'success') // 就只顯示成功編輯hide_until的提示
+              }
             }
             $('#restaurantModal').modal('hide')
             this.initList()
@@ -614,12 +622,16 @@ export default {
               this.$bus.$emit('message:push', 'err.response.status === 401', 'danger')
               this.$router.push('/loginpage')
             }
+            if (err.response.status === 400) {
+              this.$bus.$emit('message:push', '餐廳名稱不可重複', 'danger')
+              item.restaurant_name = this.tempname // 將input恢復原狀
+            }
           })
         } else {
           this.$bus.$emit('message:push', '餐廳名稱不能為空', 'danger')
         }
       } else {
-        console.log('三個條件都並未改變')
+        console.log('所有條件都並未改變')
         $('#restaurantModal').modal('hide')
       }
     },
@@ -711,7 +723,7 @@ export default {
       this.tempdate = this.modelRestaurant.visit_date
       this.tempnote = this.modelRestaurant.note
       this.tempstatus = this.modelRestaurant.status
-      this.temphideuntil = this.hide_until
+      this.temphideUntil = this.modelRestaurant.hide_until
     },
     openDeleteModal () {
       $('#delRestaurantModal').modal('show')
@@ -724,7 +736,6 @@ export default {
         this.tempnote = this.modelRestaurant.note
       }
     },
-
     // 其他---------------------------------
     doNotDelete (item) {
       $('#delRestaurantModal').modal('hide')
@@ -833,6 +844,8 @@ export default {
     }
   }
 }
+
+// :class
 .between{
   justify-content: space-between;
 }
