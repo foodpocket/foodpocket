@@ -132,26 +132,69 @@
       </div>
     </div>
 
-    <!-- 測試區 按下後的備註卡片區 -->
-    <div class="text modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
+    <!-- 資訊欄 按下後的資訊欄卡片區 -->
+    <div class="modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="openNoteModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-
-          <div class="modal-header bg-warning text-dark py-2">
-            <h5 class="modal-title" id="noteModalLabel"><span>備註</span></h5>
+          <div class="modal-header bg-dark text-white">
+            <h5 class="modal-title" id="openNoteModalLabel">
+              <span>{{tempname}} 資訊欄</span>
+              {{modelRestaurant.visit_date}}
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close"> <!-- 叉叉鈕 -->
+              <span aria-hidden="true">&times;</span>
+            </button>
           </div>
 
           <div class="modal-body">
-            <div class="text-left">
-              {{tempnote}}
+            <div class="text-left form-group">
+              <div>
+                <label>餐廳名稱</label><span>：{{tempname}}</span>
+                <!-- <p><span class="text-primary">tempname:</span>{{tempname}}</p>
+                <p><span class="text-primary">modelRestaurant.restaurant_name:</span>{{modelRestaurant.restaurant_name}}</p> -->
+              </div>
+
+              <div>
+                <label>備註</label><span>：{{tempnote}}</span>
+                <!-- <p><span class="text-primary">tempnote:</span>{{tempnote}}</p>
+                <p><span class="text-primary">modelRestaurant.note:</span>{{modelRestaurant.note}}</p> -->
+              </div>
+
+              <div>
+                <label>狀態</label><span>：{{tempstatus}}</span>
+                <!-- <p><span class="text-primary">tempstatus:</span>{{tempstatus}}</p>
+                <p><span class="text-primary">modelRestaurant.status:</span>{{modelRestaurant.status}}</p> -->
+              </div>
+
+              <div v-if="visibility !== 'record'" >
+                <label>到訪日期</label><span>：{{tempdates[0]}}</span>
+                <!-- <p><span class="text-primary">tempdates:</span>{{tempdates[0]}}</p>
+                <p><span class="text-primary">modelRestaurant.visit_dates:</span></p> -->
+                <ul>
+                  <li class="mb-0" v-if="modelRestaurant.visit_dates[0]">最近1次：{{modelRestaurant.visit_dates[0]}}</li>
+                  <li class="mb-0" v-if="modelRestaurant.visit_dates[1]">最近2次：{{modelRestaurant.visit_dates[1]}}</li>
+                  <li class="mb-0" v-if="modelRestaurant.visit_dates[2]">最近3次：{{modelRestaurant.visit_dates[2]}}</li>
+                </ul>
+                <!-- <p v-for="(item,key) in modelRestaurant.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</p> -->
+              </div>
+
+              <div v-if="visibility === 'record'" >
+                <label>到訪日期</label>
+                <p><span class="text-primary">tempdate:</span>{{tempdate}}</p>
+                <p><span class="text-primary">modelRestaurant.visit_date:</span>{{modelRestaurant.visit_date}}</p>
+              </div>
+
             </div>
           </div>
 
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">確定</button>
+          </div>
         </div>
       </div>
     </div>
 
-    <!-- 驚嘆號 按下後的備註卡片區 -->
+    <!-- 驚嘆號 按下後的備註卡片區 現與資訊欄同一個開啟點 -->
     <!-- <div class="modal fade" id="openNoteModal" tabindex="-1" role="dialog" aria-labelledby="noteModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
@@ -195,6 +238,7 @@
               <input type="text" class="form-control mb-2" id="name" placeholder="請輸入餐廳名稱" v-model="modelRestaurant.restaurant_name"/>
               <label for="note">備註</label>
               <input type="text" class="form-control mb-2" id="note" placeholder="任何備註都可以打在這裡" v-model="modelRestaurant.note"/>
+
               <label for="status">狀態</label>
               <div class="status text-left d-flex">
                 <div class="active-input m-0 mr-4">
@@ -221,14 +265,15 @@
                 </div>
               </div>
               <div class="text-left">
-              ---觀測區--- <br>
-              status: {{modelRestaurant.status}} <br>
-              <div v-if="modelRestaurant.status === 'HIDE'">
-                上次設定隱藏至: {{modelRestaurant.hide_until}}  <br>
-                預計隱藏天數: {{hidedays}}天<br>
-                經過計算之後隱藏至: {{hideUntil}}
+                ---觀測區--- <br>
+                status: {{modelRestaurant.status}} <br>
+                <div v-if="modelRestaurant.status === 'HIDE'">
+                  上次設定隱藏至: {{modelRestaurant.hide_until}}  <br>
+                  預計隱藏天數: {{hidedays}}天<br>
+                  經過計算之後隱藏至: {{hideUntil}}
+                </div>
               </div>
-            </div>
+
             </div>
 
             <div class="form-group" v-if="visibility === 'record'"> <!-- 只有在歷史紀錄才會看到 -->
@@ -347,7 +392,8 @@ export default {
       visitRecords: [], // 由API匯入
       modelRestaurant: {}, // model取得內容暫放處
       tempname: '', // model取得餐廳名字暫放處
-      tempdate: '', // model取得到訪日期暫放處
+      tempdate: '', // model取得到訪日期暫放處(只有在record列表中可用，且只有一次)
+      tempdates: [], // model取得到訪日期暫放處(record列表不可用，有數個)
       tempnote: '任何備註都可以打在這裡', // model取得note暫放處
       tempstatus: '', // status暫放處，用於比較有沒有改變
       temphideUntil: '', // 更改前hideUntil的暫存區，用於判斷
@@ -730,11 +776,15 @@ export default {
       $('#restaurantModal').modal('hide')
     },
     openNoteModal (item) {
-      if (item.note) {
-        $('#openNoteModal').modal('show')
-        this.modelRestaurant = Object.assign({}, item)
-        this.tempnote = this.modelRestaurant.note
-      }
+      $('#openNoteModal').modal('show')
+      this.modelRestaurant = Object.assign({}, item)
+      this.tempname = this.modelRestaurant.restaurant_name
+      this.tempdate = this.modelRestaurant.visit_date
+      this.tempdates = this.modelRestaurant.visit_dates
+      this.tempnote = this.modelRestaurant.note
+      this.tempstatus = this.modelRestaurant.status
+      this.temphideUntil = this.modelRestaurant.hide_until
+      console.log('this.modelRestaurant:', this.modelRestaurant)
     },
     // 其他---------------------------------
     doNotDelete (item) {
