@@ -4,7 +4,7 @@
     <Alert />
     <!-- 主畫面 -->
     <div class="container">  <!-- 主頁 -->
-      <!-- 輸入新資訊區 -->
+      <!-- 快速新增 -->
       <div class="input-group pt-3">
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
@@ -52,13 +52,13 @@
             </div>
           </div>
         </div>
-        <!-- 列表顯示區 -->
         <div class="list-length text-right mr-3">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'recommed'">推薦 {{recommedRestaurantList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="initList()"></i></span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
+        <!-- 列表顯示區 -->
         <ul class="list-group list-group-flush text-left">
           <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
             <div class="d-flex align-items-center">
