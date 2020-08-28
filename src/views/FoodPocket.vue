@@ -27,38 +27,23 @@
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
       <div class="main-area card text-center">
         <div class="card-header">
-          <!-- card-header 過濾資訊標籤(頭) -->
+          <!-- card-header 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
-              <a
-                class="nav-link"
-                :class="{'active':visibility === 'all'}"
-                @click.prevent="visibility = 'all',justifyContent = 'end'"
-                href="#"
-              >全部餐廳</a>
+              <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
             </li>
             <li class="nav-item">
-              <a
-                class="nav-link"
-                :class="{'active':visibility === 'recommed'}"
-                @click.prevent="visibility = 'recommed',justifyContent = 'end'"
-                href="#"
-              >推薦餐廳</a>
+              <a class="nav-link" :class="{'active':visibility === 'recommed'}" @click.prevent="visibility = 'recommed',justifyContent = 'end'">推薦餐廳</a>
             </li>
             <li class="nav-item">
-              <a
-                class="nav-link"
-                :class="{'active':visibility === 'record'}"
-                @click.prevent="visibility = 'record',justifyContent = 'end'"
-                href="#"
-              >歷史紀錄</a>
+              <a class="nav-link" :class="{'active':visibility === 'record'}" @click.prevent="visibility = 'record',justifyContent = 'end'">歷史紀錄</a>
             </li>
           </ul>
         </div>
 
         <!-- list內容區域(身體) -->
 
-        <!-- 全部列表的搜尋區 -->
+        <!-- 搜尋區 -->
         <div class="input-group mt-3" v-if="visibility === 'all'">
           <div class="col-12 input-group">
             <input type="text" class="form-control" placeholder="搜尋或新增餐廳"  v-model="searchRestaurant"/>
@@ -120,12 +105,8 @@
 
         <!-- card-footer註腳區域(腳) -->
         <div class="card-footer d-flex justify-content-between">
-          <span
-            v-if="visibility === 'all'&& searchRestaurant ===''"
-          >總共有 {{restaurantList.length}} 家餐廳</span>
-          <span
-            v-if="visibility === 'all' && searchRestaurant !==''"
-          >總共有 {{searchList.length}} 家相符的餐廳</span>
+          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
+          <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'recommed'">推薦 {{recommedRestaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
@@ -173,11 +154,7 @@
               <div v-if="visibility !== 'record'">
                 <label>狀態：</label>
                 <span>{{infoModalObj.status}} </span>
-                <span v-if="infoModalObj.status === 'HIDE'">
-                  <span v-if="hideUntil === '2020-08-26'">(設定失敗)</span>
-                  <span v-if="hideUntil !== '2020-08-26'">(隱藏至{{infoModalObj.hide_until}})</span>
-                </span>
-                <span v-if="infoModalObj.status !== 'HIDE'"> (無需擁有到期日)</span>
+                <span v-if="infoModalObj.status === 'HIDE'"> (隱藏至{{infoModalObj.hide_until}})</span>
               </div>
 
               <div v-if="visibility !== 'record' && infoModalObj.visit_dates">
@@ -198,10 +175,7 @@
               </div>
 
               <div class="test">
-                <p><span class="text-primary">infoModalObj資訊欄: </span>{{infoModalObj.hide_until}}(真實日)</p>
-                <!-- <p><span class="text-primary">editModalObj編輯區: </span>{{editModalObj.hide_until}}</p> -->
-                <p><span class="text-primary">hidedays預計隱藏天數: </span>{{hidedays}}</p>
-                <p><span class="text-primary">今日加上預計隱藏天數<br>估計hideUntil至: </span>{{hideUntil}}</p>
+                <p class="text-primary"><span>infoModalObj資訊欄: </span>{{infoModalObj.hide_until}}(真實日)</p>
               </div>
 
             </div>
@@ -251,50 +225,40 @@
               <label for="status">狀態</label>
               <div class="status text-left d-flex">
                 <div class="active-input m-0 mr-4">
-                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="editModalObj.status" @click="hidedays=''"/>
-                  <label for="active" @click="hidedays=''">active</label>
+                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="editModalObj.status"/>
+                  <label for="active">active</label>
                 </div>
                 <div class="random-input m-0 mr-4">
-                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status" @click="hidedays=''"/>
-                  <label for="random" @click="hidedays=''">random</label>
+                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status"/>
+                  <label for="random">random</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
-                  <input type="radio" id="hide" name="status" value="HIDE" class="mr-2" v-model="editModalObj.status" @click="hidedays='2'"/>
-                  <label for="hide" @click="hidedays=2">hide</label>
+                  <input type="radio" id="hide" name="status" value="HIDE" class="mr-2" v-model="editModalObj.status"/>
+                  <label for="hide">hide</label>
                   <div v-if="editModalObj.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
-                    <select name="days" id="days" v-model="hidedays">
-                      <option value="2">2天</option>
-                      <option value="7">7天</option>
-                      <option value="10">10天</option>
-                      <option value="30">30天</option>
-                      <option value="60">60天</option>
+                    <select name="days" id="days" v-model="nextHideDay">
+                      <option v-for="(option, index) in editModalObj.hideDayOptions" :value="option" :key="index">{{option}}天</option>
                     </select>
                   </div>
                 </div>
               </div>
               <div v-if="editModalObj.status === 'HIDE'">
                 <hr>
-                <p><span>隱藏至: </span>{{hideUntil}}</p>
+                <p>隱藏至: {{nextHideUntil}}</p>
                 <hr>
               </div>
-              <div class="test text-left">
-                <p><span class="text-primary">infoModalObj資訊欄: </span>{{infoModalObj.hide_until}}(真實日)</p>
-                <!-- <p><span class="text-primary">editModalObj編輯區: </span>{{editModalObj.hide_until}}</p> -->
-                <p><span class="text-primary">hidedays預計隱藏天數: </span>{{hidedays}}</p>
-                <p><span class="text-primary">今日加上預計隱藏天數<br>估計hideUntil至: </span>{{hideUntil}}</p>
+              <div v-if="editModalObj.status !== 'HIDE'">
+                <hr>
+                <p class="text-primary">隱藏至: {{nextHideUntil}}</p>
+                <hr>
               </div>
             </div>
 
             <div class="form-group" v-if="visibility === 'record'">
               <!-- 只有在歷史紀錄才會看到 -->
               <label for="date">最近到訪日期</label>
-              <input
-                type="date"
-                class="form-control"
-                id="date"
-                v-model="infoModalObj.visit_date"
-              />
+              <input type="date" class="form-control" id="date" v-model="infoModalObj.visit_date"/>
             </div>
           </div>
 
@@ -302,20 +266,10 @@
             <!-- 編輯卡片-footer (按鈕*3)-->
             <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal">刪除</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" @click="backtoNote()" data-dismiss="modal">取消</button>
-            <button
-              v-if="visibility === 'all'"
-              type="button"
-              class="btn btn-primary btn-sm"
-              @click="editRestaurant(editModalObj)"
-            >確認</button>
             <!-- 全部餐廳列表的編輯區確認鈕 -->
-            <button
-              v-if="visibility === 'record'"
-              type="button"
-              class="btn btn-primary btn-sm"
-              @click="editVisitRecord(editModalObj)"
-            >確認</button>
+            <button v-if="visibility === 'all'" type="button" class="btn btn-primary btn-sm"  @click="editRestaurant(editModalObj)">確認</button>
             <!-- 歷史紀錄編輯區確認鈕 -->
+            <button v-if="visibility === 'record'" type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -428,7 +382,6 @@ export default {
   components: {
     navbar,
     Alert
-    // quicklyAdd
   },
   data () {
     return {
@@ -441,7 +394,7 @@ export default {
       visitRecords: [], // 由API匯入
       infoModalObj: {}, // 資訊欄-Modal取得object暫放處
       editModalObj: {}, // 編輯頁-Modal取得object暫放處
-      hidedays: '2',
+      nextHideDay: 0, // only use this in edit modal
       isNew: false,
       visibility: 'all', // 'all' 'record' 'recommed'
       justifyContent: 'end' // 'between' 'end'
@@ -452,15 +405,15 @@ export default {
     this.touchendActive()
   },
   computed: {
-    hideUntil () {
+    nextHideUntil () {
       const today = Math.floor(
         new Date(Math.floor(Date.now())).getTime() / 1000
       )
-      if (this.hidedays === 0) {
+      if (this.nextHideDay === undefined || this.nextHideDay === 0) {
         const result = this.changedateFormat(today)
         return result
       } else {
-        const result = this.changedateFormat(today + 86400 * this.hidedays) // 加幾天的運算
+        const result = this.changedateFormat(today + 86400 * this.nextHideDay) // 加幾天的運算
         return result
       }
     },
@@ -470,17 +423,14 @@ export default {
         const copyobject = Object.assign({}, item)
         if (copyobject.status === 'RANDOM') {
           const randomNum = Math.floor(Math.random() * Math.floor(10))
-          // console.log('randomNum:', randomNum)
           if (randomNum < 5) {
             copyobject.status = 'ACTIVE'
           }
         }
         if (copyobject.status === 'ACTIVE') {
-          // 改成HIDE的話可以查看HIDE的 但因為前面已有改變RANDOM所以不會有RANDOM出現
           result.push(copyobject)
         }
       })
-      // console.log('result:', result)
       return result
     },
     trimSearchRestaurant () {
@@ -666,6 +616,16 @@ export default {
       $('#openInfoModal').modal('hide')
       $('#editInfoModal').modal('show')
       this.editModalObj = Object.assign({}, item)
+
+      this.editModalObj.hideDay = this.calculateDiffDate(new Date(this.editModalObj.hide_until), Date.now())
+      this.nextHideDay = this.editModalObj.hideDay
+      if (this.editModalObj.hideDay !== 2 && this.editModalObj.hideDay !== 7 && this.editModalObj.hideDay !== 10 && this.editModalObj.hideDay !== 30 && this.editModalObj.hideDay !== 60) {
+        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60, this.editModalObj.hideDay] // hard copy hideDay into options
+        this.editModalObj.hideDayOptions.sort((a, b) => a - b) // sort array
+      } else {
+        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60]
+      }
+
       console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
     },
     openAddrecordModal (item) { // 按加號鈕 這裡也有用assign而且重複變數名 再注意
@@ -730,7 +690,10 @@ export default {
         this.infoModalObj.restaurant_name !== item.restaurant_name ||
         this.infoModalObj.note !== item.note ||
         this.infoModalObj.status !== item.status ||
-        this.infoModalObj.hide_ntil !== this.hideUntil // 非editModalObj.hide_ntil
+        (
+          item.status === 'HIDE' &&
+          this.infoModalObj.hide_ntil !== this.nextHideUntil
+        )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
           const api = 'https://brycehuang.com/api/rest/editRestaurant/'
@@ -740,8 +703,10 @@ export default {
           formdata.append('name', item.restaurant_name) // 更改name
           formdata.append('note', item.note) // 更改note
           formdata.append('status', item.status) // 更改status
-          formdata.append('hide_until', this.hideUntil) // 更改hide_until
-          item.hide_until = this.hideUntil
+          if (item.status === 'HIDE') {
+            formdata.append('hide_until', this.nextHideUntil) // 更改hide_until
+          }
+
           this.axios.post(api, formdata).then((response) => {
             // console.log('editRestaurant:', response.data) // 發送api成功的話
             if (this.infoModalObj.restaurant_name !== item.restaurant_name) {
@@ -758,11 +723,17 @@ export default {
             }
             if (this.infoModalObj.status === item.status && item.status === 'HIDE') {
               // 狀況四：維持HIDE狀態
-              if (this.infoModalObj.hide_until !== this.hideUntil) {
+              if (this.infoModalObj.hide_until !== this.nextHideUntil) {
                 // 隱藏時間改變
                 this.$bus.$emit('message:push', '成功編輯hide_until', 'success') // 就只顯示成功編輯hide_until的提示
+
+                // dirty fix: update hide_until for infoModalObj
+                item.hide_until = this.nextHideUntil
               }
             }
+
+            // DANGEROUS: infoModalObj will reference to editModalObj (which is item), infoModalObj SHOULD reference to restaurantList item
+            // API會更新整個restaurantList, 用restaurant uid找到API更新過後的原始object in restaurantList
             this.openInfoModal(item)
             $('#editInfoModal').modal('hide')
             this.initList()
@@ -931,6 +902,14 @@ export default {
     },
     touchendActive () {
       document.body.addEventListener('touchend', function () {})
+    },
+    calculateDiffDate (date1, date2) { // date1 and date2 are Date object
+      const diffTime = Math.abs(date2 - date1)
+      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+      return diffDays
+    },
+    findRestaurantByUid (uid) {
+      return this.restaurantList.find(rest => rest.restaurant_uid === uid)
     }
   }
 }
