@@ -1,13 +1,13 @@
 <template>
   <div class="login">
-    <div id="nav">
-      FoodPocket 食物口袋
-    </div>
     <Alert/>
     <div class="wrap">
       <div class="container">
         <form class="form" @submit.prevent="signin">
-          <h2>會員登入</h2>
+          <div class="logo-wrapper">
+            <img class="logo" :src="foodPocketLogo" />
+          </div>
+          <h2>FoodPocket</h2>
           <div class="group">
             <label for="user_id">帳號</label>
             <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
@@ -28,10 +28,12 @@
 
 <script>
 import Alert from '@/components/Alertmessages.vue'
+import foodPocketLogo from '@/assets/foodpocket_logo.png'
 
 export default {
   data () {
     return {
+      foodPocketLogo,
       username: '',
       password: ''
     }
@@ -81,7 +83,7 @@ export default {
   }
   .wrap {
     .container {
-      margin: 0px auto;
+      margin: 3vw auto;
       padding: 50px 30px;
       width: 90%;
       // border: #000 1px solid;
@@ -90,6 +92,19 @@ export default {
       .form {
         width: 100%;
         color: #555;
+        .logo-wrapper {
+          width: 100%;
+          height: 30vw;
+          margin-bottom: 5vw;
+          object-fit: contain;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+
+          .logo {
+            height: 100%;
+          }
+        }
         h2 {
           margin-bottom: 20px;
           padding-bottom: 20px;
