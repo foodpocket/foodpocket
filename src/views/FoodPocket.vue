@@ -66,7 +66,9 @@
               <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
                 <div class="restaurant-name">
                   {{ item.restaurant_name }}
-                  <i v-if="visibility !== 'record' && item.note !== ''" class="fas fa-exclamation-circle"></i>
+                  <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
+                  <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
+                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-times-circle"></i>
                 </div>
                 <div>
                   <div class="restaurant-description">
@@ -151,9 +153,9 @@
 
               <div v-if="visibility !== 'record'">
                 <label>推薦模式：</label>
-                <span v-if="infoModalObj.status === 'RANDOM'">隨機</span>
-                <span v-if="infoModalObj.status === 'ACTIVE'">永遠</span>
-                <span v-if="infoModalObj.status === 'HIDE'">不推薦 (直到{{infoModalObj.hide_until}})</span>
+                <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
+                <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:0.7rem;"></i>永遠</span>
+                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-times-circle" style="font-size:0.7rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
               </div>
 
               <div v-if="visibility !== 'record' && infoModalObj.visit_dates">
@@ -215,13 +217,13 @@
 
               <label for="status" class="mt-3">推薦模式</label>
               <div class="status text-left d-flex">
+                <div class="random-input m-0 mr-4">
+                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status"/>
+                  <label for="random">隨機(預設)</label>
+                </div>
                 <div class="active-input m-0 mr-4">
                   <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="editModalObj.status"/>
                   <label for="active">永遠</label>
-                </div>
-                <div class="random-input m-0 mr-4">
-                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status"/>
-                  <label for="random">隨機</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
                   <input type="radio" id="hide" name="status" value="HIDE" class="mr-2" v-model="editModalObj.status"/>
@@ -436,17 +438,26 @@ export default {
     recommedRestaurantList () {
       const result = []
       this.restaurantList.forEach((item) => {
-        const copyobject = Object.assign({}, item)
-        if (copyobject.status === 'RANDOM') {
+        const copyobject = Object.assign({}, item) // 用於增加copyobject.show
+        copyobject.show = false
+        if (item.status === 'RANDOM') {
           const randomNum = Math.floor(Math.random() * Math.floor(10))
-          if (randomNum < 5) {
-            copyobject.status = 'ACTIVE'
+          if (randomNum < 3) {
+            copyobject.show = true
           }
+          // if (item.visited === 0) {
+          //   copyobject.show = true
+          // }
         }
-        if (copyobject.status === 'ACTIVE') {
+        if (item.status === 'ACTIVE') {
+          copyobject.show = true
+        }
+        if (copyobject.show === true) {
           result.push(copyobject)
         }
       })
+      console.log(result) // 可以
+      console.log(result.reverse) // 行不通
       return result
     },
     trimSearchRestaurant () {
@@ -952,10 +963,15 @@ export default {
     width: 75%;
     .restaurant-name {
       font-size: 1.2rem;
-      i {
-        font-size: 1.2rem;
+      i{
         margin-left: 10px;
+      }
+      .note-icon {
+        font-size: 1.2rem;
         color: #ffa600;
+      }
+      .status-icon{
+        font-size: 0.5rem;
       }
     }
     .restaurant-description {
