@@ -83,7 +83,7 @@
               <!-- icon-btn -->
               <div class="button-area" :class="justifyContent">
                 <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
-                <a v-if="visibility === 'record'" @click.prevent="openEditModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
+                <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
               </div>
 
             </div>
@@ -202,10 +202,10 @@
           <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editInfoModalLabel">
-              <span v-if="visibility === 'all'">編輯 {{infoModalObj.restaurant_name}}</span>
               <!-- 全部餐廳列表顯示編輯餐廳 -->
-              <span v-if="visibility === 'record'">編輯到訪 {{infoModalObj.restaurant_name}} 日期</span>
+              <span v-if="visibility === 'all'">編輯 {{infoModalObj.restaurant_name}}</span>
               <!-- 歷史紀錄顯示編輯到訪日期 -->
+              <!-- <span v-if="visibility === 'record'">編輯到訪 {{infoModalObj.restaurant_name}} 日期</span> -->
             </h5>
             <button type="button" class="close text-white" @click="backtoNote()" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
@@ -255,11 +255,11 @@
               </div>
             </div>
 
-            <div class="form-group" v-if="visibility === 'record'">
-              <!-- 只有在歷史紀錄才會看到 -->
+            <!-- <div class="form-group" v-if="visibility === 'record'">
+              只有在歷史紀錄才會看到
               <label for="date">最近到訪日期</label>
               <input type="date" class="form-control" id="date" v-model="infoModalObj.visit_date"/>
-            </div>
+            </div> -->
           </div>
 
           <div class="modal-footer">
@@ -269,7 +269,44 @@
             <!-- 全部餐廳列表的編輯區確認鈕 -->
             <button v-if="visibility === 'all'" type="button" class="btn btn-primary btn-sm"  @click="editRestaurant(editModalObj)">確認</button>
             <!-- 歷史紀錄編輯區確認鈕 -->
-            <button v-if="visibility === 'record'" type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editModalObj)">確認</button>
+            <!-- <button v-if="visibility === 'record'" type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editModalObj)">確認</button> -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 行事曆鈕 按下之後的編輯卡片區 -->
+    <div
+      class="modal fade"
+      id="editVisitModal"
+      tabindex="-1"
+      role="dialog"
+      aria-labelledby="editVisitModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content border-0">
+          <div class="modal-header bg-dark text-white">
+            <!-- 編輯卡片-header -->
+            <h5 class="modal-title" id="editVisitModalLabel">
+              <span v-if="visibility === 'record'">編輯到訪 {{editVisitModalObj.restaurant_name}} 日期</span>
+            </h5>
+            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+              <!-- 叉叉鈕 -->
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+
+          <div class="modal-body">
+            <!-- 編輯卡片-body-->
+            <div class="form-group">
+              <label for="date">最近到訪日期</label>
+              <input type="date" class="form-control" id="date" v-model="editVisitModalObj.visit_date"/>
+            </div>
+          </div>
+
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editVisitModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -394,6 +431,8 @@ export default {
       visitRecords: [], // 由API匯入
       infoModalObj: {}, // 資訊欄-Modal取得object暫放處
       editModalObj: {}, // 編輯頁-Modal取得object暫放處
+      editVisitModalObj: {}, // 造訪日期編輯頁-Modal取得object暫放處
+      tempdate: '',
       nextHideDay: 0, // only use this in edit modal
       isNew: false,
       visibility: 'all', // 'all' 'record' 'recommed'
@@ -628,6 +667,11 @@ export default {
 
       console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
     },
+    openEditVisitModal (item) {
+      $('#editVisitModal').modal('show')
+      this.editVisitModalObj = Object.assign({}, item)
+      this.tempdate = this.editVisitModalObj.visit_date
+    },
     openAddrecordModal (item) { // 按加號鈕 這裡也有用assign而且重複變數名 再注意
       $('#addRecordModal').modal('show')
       this.infoModalObj = Object.assign({}, item)
@@ -692,7 +736,7 @@ export default {
         this.infoModalObj.status !== item.status ||
         (
           item.status === 'HIDE' &&
-          this.infoModalObj.hide_ntil !== this.nextHideUntil
+          this.infoModalObj.hide_until !== this.nextHideUntil
         )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
@@ -792,6 +836,7 @@ export default {
         .then((response) => {
           // console.log('addVisitRecord:', response.data)
           $('#addRecordModal').modal('hide')
+          this.$bus.$emit('message:push', '成功增加造訪次數', 'success')
           this.initList()
         })
         .catch((err) => {
@@ -812,7 +857,8 @@ export default {
           .then((response) => {
             // console.log('editVisitRecord:', response.data)
             console.log('成功編輯造訪日期')
-            $('#editInfoModal').modal('hide')
+            this.$bus.$emit('message:push', '成功編輯造訪日期', 'success')
+            $('#editVisitModal').modal('hide')
             this.initList()
           })
           .catch((err) => {
@@ -822,7 +868,7 @@ export default {
           })
       } else {
         console.log('造訪日期並未改變')
-        $('#editInfoModal').modal('hide')
+        $('#editVisitModal').modal('hide')
       }
     },
     removeVisitRecord (item) {
@@ -904,8 +950,6 @@ export default {
       document.body.addEventListener('touchend', function () {})
     },
     calculateDiffDate (date1, date2) { // date1 and date2 are Date object
-      console.log('date1:', date1)
-      console.log('date2:', date2)
       if (date2 >= date1) {
         return 0
       }
