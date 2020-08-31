@@ -72,6 +72,8 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+
 * {
   margin: 0;
 }
@@ -88,7 +90,7 @@ export default {
       width: 90%;
       // border: #000 1px solid;
       border-radius: 10px;
-      box-shadow: 0 0 5px #aaa;
+      // box-shadow: 0 0 5px #aaa;
       .form {
         width: 100%;
         color: #555;
@@ -109,6 +111,7 @@ export default {
           margin-bottom: 20px;
           padding-bottom: 20px;
           border-bottom: 1px solid #aaa;
+          font-family: 'Monda', sans-serif;
         }
         .group {
           margin-bottom: 20px;
@@ -118,10 +121,11 @@ export default {
           input {
             font-size: 16px;
             width: 100%;
-            border-radius: 5px;
+            border-radius: 25px;
             border: 1px solid #aaa;
             line-height: 2;
-            padding: 0 10px;
+            outline: none;
+            padding: 5px 15px;
           }
           input:focus {
             outline: none;

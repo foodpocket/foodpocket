@@ -904,9 +904,16 @@ export default {
       document.body.addEventListener('touchend', function () {})
     },
     calculateDiffDate (date1, date2) { // date1 and date2 are Date object
-      const diffTime = Math.abs(date2 - date1)
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-      return diffDays
+      console.log('date1:', date1)
+      console.log('date2:', date2)
+      if (date2 >= date1) {
+        return 0
+      }
+      if (date2 < date1) {
+        const diffTime = Math.abs(date2 - date1)
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
+        return diffDays
+      }
     },
     findRestaurantByUid (uid) {
       return this.restaurantList.find(rest => rest.restaurant_uid === uid)
@@ -993,6 +1000,11 @@ export default {
       padding: 0 10px;
     }
   }
+}
+.modal{
+  max-height: 100%;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 // :class
