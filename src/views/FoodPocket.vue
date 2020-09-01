@@ -68,7 +68,7 @@
                   {{ item.restaurant_name }}
                   <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
                   <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
-                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-times-circle"></i>
+                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
                 </div>
                 <div>
                   <div class="restaurant-description">
@@ -155,7 +155,7 @@
                 <label>推薦模式：</label>
                 <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
                 <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:0.7rem;"></i>永遠</span>
-                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-times-circle" style="font-size:0.7rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
+                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:0.7rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
               </div>
 
               <div v-if="visibility !== 'record' && infoModalObj.visit_dates">
@@ -238,7 +238,8 @@
               </div>
               <div v-if="editModalObj.status === 'HIDE'">
                 <hr>
-                <p>直到 {{nextHideUntil}} 以前都不要再推薦</p>
+                <p v-if="nextHideDay === 0">選擇天數為0將自動設為隨機模式</p>
+                <p v-if="nextHideDay !== 0">直到 {{nextHideUntil}} 以前都不要再推薦</p>
               </div>
             </div>
           </div>
@@ -733,6 +734,9 @@ export default {
           formdata.append('restaurant_uid', item.restaurant_uid)
           formdata.append('name', item.restaurant_name) // 更改name
           formdata.append('note', item.note) // 更改note
+          if (item.status === 'HIDE' && this.nextHideDay === 0) {
+            item.status = 'RANDOM'
+          }
           formdata.append('status', item.status) // 更改status
           if (item.status === 'HIDE') {
             formdata.append('hide_until', this.nextHideUntil) // 更改hide_until
@@ -750,14 +754,13 @@ export default {
             }
             if (this.infoModalObj.status !== item.status) {
               // 狀況三：更改狀態
-              this.$bus.$emit('message:push', '已將狀態從' + this.infoModalObj.status + '改成' + item.status, 'success')
+              this.$bus.$emit('message:push', '成功編輯推薦模式', 'success')
             }
             if (this.infoModalObj.status === item.status && item.status === 'HIDE') {
               // 狀況四：維持HIDE狀態
               if (this.infoModalObj.hide_until !== this.nextHideUntil) {
                 // 隱藏時間改變
-                this.$bus.$emit('message:push', '成功編輯hide_until', 'success') // 就只顯示成功編輯hide_until的提示
-
+                this.$bus.$emit('message:push', '成功編輯隱藏天數', 'success') // 就只顯示成功編輯hide_until的提示
                 // dirty fix: update hide_until for infoModalObj
                 item.hide_until = this.nextHideUntil
               }
@@ -971,7 +974,7 @@ export default {
         color: #ffa600;
       }
       .status-icon{
-        font-size: 0.5rem;
+        font-size: 0.8rem;
       }
     }
     .restaurant-description {
