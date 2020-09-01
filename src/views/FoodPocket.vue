@@ -10,7 +10,7 @@
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
           </div>
-          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name"/>
+          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" @keyup.enter="quicklyAdd"/>
         </div>
 
         <div class="col-12 input-group mb-3">
@@ -122,7 +122,6 @@
       role="dialog"
       aria-labelledby="openInfoModalLabel"
       aria-hidden="true"
-      v-if="visibility !== 'record'"
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
@@ -137,7 +136,7 @@
           </div>
 
           <div class="modal-body" v-if="infoModalObj.restaurant_name">
-            <a class="pencil-icon" v-if="visibility === 'all'" @click.prevent="openEditModal(infoModalObj)">
+            <a class="pencil-icon" v-if="visibility !== 'record'" @click.prevent="openEditModal(infoModalObj)">
               <i class="fas fa-pen"></i>
             </a>
             <div class="text-left form-group">
@@ -146,38 +145,34 @@
                 <span>{{infoModalObj.restaurant_name}}</span>
               </div>
 
-              <div v-if="visibility !== 'record'">
+              <div>
                 <label>備註：</label>
                 <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
               </div>
 
-              <div v-if="visibility !== 'record'">
+              <div>
                 <label>推薦模式：</label>
                 <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
                 <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:0.7rem;"></i>永遠</span>
                 <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:0.7rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
               </div>
 
-              <div v-if="visibility !== 'record' && infoModalObj.visit_dates">
+              <div v-if="infoModalObj.visit_dates">
                 <label>造訪次數：</label>
                 <span>{{infoModalObj.visit_dates.length}}次</span>
               </div>
 
-              <div v-if="visibility !== 'record' && infoModalObj.visit_dates">
+              <div v-if="infoModalObj.visit_dates">
                 <label>到訪日期：</label>
                 <ul>
                   <li v-for="(item,key) in infoModalObj.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</li>
                 </ul>
               </div>
-
-              <div v-if="visibility === 'record' && infoModalObj.visit_date">
-                <label>到訪日期：</label>
-                <span>{{infoModalObj.visit_date}}</span>
-              </div>
             </div>
           </div>
 
           <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal"><i class="fas fa-trash-alt"></i></button>
             <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">確定</button>
           </div>
         </div>
@@ -246,7 +241,6 @@
 
           <div class="modal-footer">
             <!-- 編輯卡片-footer (按鈕*3)-->
-            <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal">刪除</button>
             <button type="button" class="btn btn-outline-secondary btn-sm" @click="backtoNote()" data-dismiss="modal">取消</button>
             <button type="button" class="btn btn-primary btn-sm"  @click="editRestaurant(editModalObj)">確認</button>
           </div>
@@ -254,7 +248,7 @@
       </div>
     </div>
 
-    <!-- 行事曆鈕 按下之後的編輯卡片區 -->
+    <!-- 日曆鈕 按下之後的編輯卡片區 -->
     <div
       class="modal fade"
       id="editVisitModal"
@@ -285,6 +279,7 @@
           </div>
 
           <div class="modal-footer">
+            <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal"><i class="fas fa-trash-alt"></i></button>
             <button type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editVisitModalObj)">確認</button>
           </div>
         </div>
@@ -347,12 +342,7 @@
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'">
               <span>刪除到訪紀錄</span>
             </h5>
-            <button
-              type="button"
-              class="close"
-              aria-label="Close"
-              @click="doNotDelete(infoModalObj)"
-            >
+            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -360,27 +350,21 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div v-if="visibility === 'all'">
-              警告！
-              <br />刪除
-              <strong class="text-danger">{{infoModalObj.restaurant_name}}</strong>餐廳後
-              <br />所有造訪此餐廳的紀錄也將⼀併刪除
+              警告！<br />刪除<strong class="text-danger">{{infoModalObj.restaurant_name}}</strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
             </div>
             <div v-if="visibility === 'record'">
-              是否刪除
-              <br />
-              <strong class="text-danger">{{infoModalObj.visit_date}}</strong>到訪
-              <strong>{{infoModalObj.restaurant_name}}</strong>的紀錄？
+              是否刪除<br /><strong class="text-danger">{{editVisitModalObj.visit_date}}</strong>到訪<strong>{{editVisitModalObj.restaurant_name}}</strong>的紀錄？
             </div>
             <div>(刪除後將無法恢復)</div>
           </div>
 
           <div class="modal-footer">
             <!-- 刪除卡片確認區-footer -->
-            <button type="button" class="btn btn-outline-secondary btn-sm" @click="doNotDelete(infoModalObj)" >取消</button>
+            <button type="button" class="btn btn-outline-secondary btn-sm" @click="doNotDelete" >取消</button>
             <button type="button" class="btn btn-danger btn-sm"
             @click="removeRestaurant(infoModalObj)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button>
             <button type="button" class="btn btn-danger btn-sm"
-            @click="removeVisitRecord(infoModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button>
+            @click="removeVisitRecord(editVisitModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button>
           </div>
         </div>
       </div>
@@ -457,8 +441,8 @@ export default {
           result.push(copyobject)
         }
       })
-      console.log(result) // 可以
-      console.log(result.reverse) // 行不通
+      // console.log(result) // 可以
+      // console.log(result.reverse) // 行不通
       return result
     },
     trimSearchRestaurant () {
@@ -636,9 +620,11 @@ export default {
 
     // openModal---------------------------
     openInfoModal (item) { // 按資訊欄
-      $('#openInfoModal').modal('show')
-      this.infoModalObj = item
-      console.log('打開資訊欄、將item內容放入infoModalObj')
+      if (this.visibility !== 'record') {
+        $('#openInfoModal').modal('show')
+        this.infoModalObj = item
+        console.log('打開資訊欄、將item內容放入infoModalObj')
+      }
     },
     openEditModal (item) { // 按鉛筆鈕
       $('#openInfoModal').modal('hide')
@@ -656,7 +642,7 @@ export default {
 
       console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
     },
-    openEditVisitModal (item) { // 按行事曆
+    openEditVisitModal (item) { // 按日曆
       $('#editVisitModal').modal('show')
       this.editVisitModalObj = Object.assign({}, item)
       this.tempdate = this.editVisitModalObj.visit_date
@@ -671,7 +657,12 @@ export default {
     },
     openDeleteModal () { // 按刪除鈕
       $('#delRestaurantModal').modal('show')
-      $('#editInfoModal').modal('hide')
+      if (this.visibility === 'all') {
+        $('#openInfoModal').modal('hide')
+      }
+      if (this.visibility === 'record') {
+        $('#editVisitModal').modal('hide')
+      }
     },
 
     // Restaurant--------------------------
@@ -802,8 +793,8 @@ export default {
       this.axios
         .post(api, formdata)
         .then((response) => {
-          // console.log('removeVisitRecord:', response.data)
-          console.log('成功刪除')
+          // console.log('removeRestaurant:', response.data)
+          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', 'success')
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -870,7 +861,7 @@ export default {
         .post(api, formdata)
         .then((response) => {
           // console.log('removeVisitRecord:', response.data)
-          console.log('成功刪除')
+          this.$bus.$emit('message:push', '成功刪除Record', 'success')
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -887,10 +878,16 @@ export default {
       $('#openInfoModal').modal('show')
       console.log('回到資訊欄 (關閉編輯卡片、開啟資訊欄卡片)')
     },
-    doNotDelete (item) { // item是infoModalObj
+    doNotDelete () {
       $('#delRestaurantModal').modal('hide')
-      this.openEditModal(item)
-      console.log('取消刪除 (關閉取消卡片、開啟編輯卡片)')
+      if (this.visibility === 'all') {
+        $('#openInfoModal').modal('show')
+        console.log('取消刪除餐廳 (關閉取消卡片、開啟資訊欄)')
+      }
+      if (this.visibility === 'record') {
+        $('#editVisitModal').modal('show')
+        console.log('取消刪除紀錄 (關閉取消卡片、開啟日曆)')
+      }
     },
     changedateFormat (timestamp) {
       const date = new Date(timestamp * 1000)
