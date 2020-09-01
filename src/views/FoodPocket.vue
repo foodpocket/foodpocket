@@ -33,7 +33,7 @@
               <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility === 'recommed'}" @click.prevent="visibility = 'recommed',justifyContent = 'end'">推薦餐廳</a>
+              <a class="nav-link" :class="{'active':visibility === 'recommend'}" @click.prevent="visibility = 'recommend',justifyContent = 'end'">推薦餐廳</a>
             </li>
             <li class="nav-item">
               <a class="nav-link" :class="{'active':visibility === 'record'}" @click.prevent="visibility = 'record',justifyContent = 'end'">歷史紀錄</a>
@@ -55,7 +55,7 @@
         <div class="list-length text-right mr-3">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommed'">推薦 {{recommedRestaurantList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="initList()"></i></span>
+          <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="recommendListShow()"></i></span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
         <!-- 列表顯示區 -->
@@ -106,7 +106,7 @@
         <div class="card-footer d-flex justify-content-between">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommed'">推薦 {{recommedRestaurantList.length}} 家餐廳</span>
+          <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳</span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
       </div>
@@ -399,7 +399,8 @@ export default {
       tempdate: '',
       nextHideDay: 0, // only use this in edit modal
       isNew: false,
-      visibility: 'all', // 'all' 'record' 'recommed'
+      recommendList: [],
+      visibility: 'all', // 'all' 'record' 'recommend'
       justifyContent: 'end' // 'between' 'end'
     }
   },
@@ -419,31 +420,6 @@ export default {
         const result = this.changedateFormat(today + 86400 * this.nextHideDay) // 加幾天的運算
         return result
       }
-    },
-    recommedRestaurantList () {
-      const result = []
-      this.restaurantList.forEach((item) => {
-        const copyobject = Object.assign({}, item) // 用於增加copyobject.show
-        copyobject.show = false
-        if (item.status === 'RANDOM') {
-          const randomNum = Math.floor(Math.random() * Math.floor(10))
-          if (randomNum < 3) {
-            copyobject.show = true
-          }
-          // if (item.visited === 0) {
-          //   copyobject.show = true
-          // }
-        }
-        if (item.status === 'ACTIVE') {
-          copyobject.show = true
-        }
-        if (copyobject.show === true) {
-          result.push(copyobject)
-        }
-      })
-      // console.log(result) // 可以
-      // console.log(result.reverse) // 行不通
-      return result
     },
     trimSearchRestaurant () {
       const name = this.searchRestaurant.trim() // 修掉輸入的空白
@@ -479,8 +455,11 @@ export default {
         } else {
           return this.restaurantList
         }
-      } else if (this.visibility === 'recommed') {
-        return this.recommedRestaurantList
+      } else if (this.visibility === 'recommend') {
+        if (this.recommendList.length === 0) {
+          this.recommendListShow()
+        }
+        return this.recommendList
       } else if (this.visibility === 'record') {
         return this.visitRecords
       }
@@ -933,6 +912,26 @@ export default {
         return currentDateTime
       }
     },
+    recommendListShow () {
+      this.recommendList = []
+      this.restaurantList.forEach((item) => {
+        const copyobject = Object.assign({}, item) // 用於增加copyobject.show
+        copyobject.show = false
+        if (item.status === 'RANDOM') {
+          const randomNum = Math.floor(Math.random() * Math.floor(10))
+          if (randomNum < 3) { // 原本是放5啦，現在改放3
+            copyobject.show = true
+          }
+        }
+        if (item.status === 'ACTIVE') {
+          copyobject.show = true
+        }
+        if (copyobject.show === true) {
+          this.recommendList.push(copyobject)
+        }
+        this.recommendList.reverse()
+      })
+    },
     touchendActive () {
       document.body.addEventListener('touchend', function () {})
     },
@@ -945,9 +944,6 @@ export default {
         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
         return diffDays
       }
-    },
-    findRestaurantByUid (uid) {
-      return this.restaurantList.find(rest => rest.restaurant_uid === uid)
     }
   }
 }
