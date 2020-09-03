@@ -88,9 +88,7 @@ export default {
       margin: 3vw auto;
       padding: 50px 30px;
       width: 90%;
-      // border: #000 1px solid;
       border-radius: 10px;
-      // box-shadow: 0 0 5px #aaa;
       .form {
         width: 100%;
         color: #555;
@@ -119,12 +117,13 @@ export default {
             line-height: 3;
           }
           input {
+            background-color: #e8f0fe;
             font-size: 16px;
             width: 100%;
             border-radius: 25px;
-            border: 1px solid #aaa;
             line-height: 2;
             outline: none;
+            border: none;
             padding: 5px 15px;
           }
           input:focus {
@@ -136,6 +135,7 @@ export default {
           margin-top: 50px;
           .btn {
             width: 100px;
+            outline: none;
           }
           .btn:focus {
             outline: none;
