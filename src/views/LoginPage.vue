@@ -1,6 +1,6 @@
 <template>
   <div class="login">
-    <Alert/>
+    <bus/>
     <div class="wrap">
       <div class="container">
         <form class="form" @submit.prevent="signin">
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import Alert from '@/components/Alertmessages.vue'
+import bus from '@/components/bus.vue'
 import foodPocketLogo from '@/assets/foodpocket_logo.png'
 
 export default {
@@ -66,7 +66,7 @@ export default {
     }
   },
   components: {
-    Alert
+    bus
   }
 }
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="foodpocket">
     <navbar />
-    <Alert />
+    <bus />
     <!-- 主畫面 -->
     <div class="container">  <!-- 主頁 -->
       <!-- 快速新增 -->
@@ -376,12 +376,12 @@
 <script>
 import $ from 'jquery'
 import navbar from '@/components/navbar.vue'
-import Alert from '@/components/Alertmessages.vue'
+import bus from '@/components/bus.vue'
 
 export default {
   components: {
     navbar,
-    Alert
+    bus
   },
   data () {
     return {
