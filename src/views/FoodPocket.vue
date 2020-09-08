@@ -545,10 +545,10 @@ export default {
       }
       // --------------------- 用isNew分辨是否是新的餐廳，再做出相應的動作
       if (this.isNew === true) {
-        console.log('這是新的餐廳，已加入餐廳列表中，並同時增加次數一次')
+        // console.log('這是新的餐廳，已加入餐廳列表中，並同時增加次數一次')
         this.quicklyAddRestaurant(restaurantName, timestamp) // 輸入的字
       } else {
-        console.log('這間餐廳已經存在，已增加次數一次')
+        // console.log('這間餐廳已經存在，已增加次數一次')
         this.tempRestaurant_uid = this.restaurantList[index].restaurant_uid // 取出記錄中的餐廳id
         this.quicklyAddVisit(this.tempRestaurant_uid, timestamp) // 增加歷史紀錄
       }
@@ -602,7 +602,7 @@ export default {
       if (this.visibility !== 'record') {
         $('#openInfoModal').modal('show')
         this.infoModalObj = item
-        console.log('打開資訊欄、將item內容放入infoModalObj')
+        // console.log('打開資訊欄、將item內容放入infoModalObj')
       }
     },
     openEditModal (item) { // 按鉛筆鈕
@@ -619,7 +619,7 @@ export default {
         this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60]
       }
 
-      console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
+      // console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
     },
     openEditVisitModal (item) { // 按日曆
       $('#editVisitModal').modal('show')
@@ -667,7 +667,7 @@ export default {
       }
 
       if (this.isNew === true) {
-        console.log('這是新的餐廳，已加入餐廳列表中')
+        // console.log('這是新的餐廳，已加入餐廳列表中')
         const api = 'https://brycehuang.com/api/rest/newRestaurant/'
         const formdata = new FormData()
         formdata.append('user_token', this.token)
@@ -760,7 +760,7 @@ export default {
           this.$bus.$emit('message:push', '餐廳名稱不能為空', 'danger')
         }
       } else {
-        console.log('所有條件都並未改變')
+        // console.log('所有條件都並未改變')
         this.backtoNote()
       }
     },
@@ -816,7 +816,7 @@ export default {
           .post(api, formdata)
           .then((response) => {
             // console.log('editVisitRecord:', response.data)
-            console.log('成功編輯造訪日期')
+            // console.log('成功編輯造訪日期')
             this.$bus.$emit('message:push', '成功編輯造訪日期', 'success')
             $('#editVisitModal').modal('hide')
             this.initList()
@@ -827,7 +827,7 @@ export default {
             }
           })
       } else {
-        console.log('造訪日期並未改變')
+        // console.log('造訪日期並未改變')
         $('#editVisitModal').modal('hide')
       }
     },
@@ -855,17 +855,17 @@ export default {
     backtoNote () { // 從編輯區回資訊欄
       $('#editInfoModal').modal('hide')
       $('#openInfoModal').modal('show')
-      console.log('回到資訊欄 (關閉編輯卡片、開啟資訊欄卡片)')
+      // console.log('回到資訊欄 (關閉編輯卡片、開啟資訊欄卡片)')
     },
     doNotDelete () {
       $('#delRestaurantModal').modal('hide')
       if (this.visibility === 'all') {
         $('#openInfoModal').modal('show')
-        console.log('取消刪除餐廳 (關閉取消卡片、開啟資訊欄)')
+        // console.log('取消刪除餐廳 (關閉取消卡片、開啟資訊欄)')
       }
       if (this.visibility === 'record') {
         $('#editVisitModal').modal('show')
-        console.log('取消刪除紀錄 (關閉取消卡片、開啟日曆)')
+        // console.log('取消刪除紀錄 (關閉取消卡片、開啟日曆)')
       }
     },
     changedateFormat (timestamp) {

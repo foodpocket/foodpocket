@@ -47,15 +47,15 @@ export default {
       this.$bus.$emit('message:push', '請稍等', 'info')
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
-      console.log(api)
+      // console.log(api)
       const formdata = new FormData()
       formdata.append('username', vm.username)
       formdata.append('password', vm.password)
       this.$http.post(api, formdata).then((response) => {
-        console.log(response.data)
+        // console.log(response.data)
         if (response.data.result === 'successful') {
           const token = response.data.data.token
-          console.log(token)
+          // console.log(token)
           this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
         } else {
