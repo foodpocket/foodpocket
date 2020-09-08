@@ -7,6 +7,14 @@
 <style lang="scss">
 @import "./assets/all.scss";
 
+$background:#FCFBEF;
+$primary:#C19969;
+$second:#C8BCA0;
+$point:#4B2D16;
+
+body{
+  background-color: $background;
+}
 #app {
   font-family: 'Noto Sans TC', sans-serif, 'Balsamiq Sans', cursive;
   -webkit-font-smoothing: antialiased;

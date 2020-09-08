@@ -16,10 +16,8 @@
             <label for="user_password">密碼</label>
             <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
           </div>
-          <div class="login-group">
-            <button type="button" class="btn btn-dark" @click="clear">取消</button>
-            <button type="submit" class="btn btn-primary">登入</button>
-          </div>
+          <button type="submit" class="btn login-btn">登入</button>
+          <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
         </form>
       </div>
     </div>
@@ -42,6 +40,9 @@ export default {
     clear: function () {
       this.username = ''
       this.password = ''
+    },
+    forget () {
+      window.alert('你忘記密碼我也沒辦法')
     },
     signin: function () {
       this.$bus.$emit('message:push', '請稍等', 'info')
@@ -74,11 +75,17 @@ export default {
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
+$background:#FCFBEF;
+$primary:#C19969;
+$second:#C8BCA0;
+$point:#4B2D16;
+
 * {
   margin: 0;
 }
 
 .login {
+  background-color: $background;
   #nav {
     padding: 30px;
     font-size: 1.6rem;
@@ -108,7 +115,7 @@ export default {
         h2 {
           margin-bottom: 20px;
           padding-bottom: 20px;
-          border-bottom: 1px solid #aaa;
+          border-bottom: 1px solid #000;
           font-family: 'Monda', sans-serif;
         }
         .group {
@@ -117,7 +124,7 @@ export default {
             line-height: 3;
           }
           input {
-            background-color: #e8f0fe;
+            background-color: #C19969;
             font-size: 16px;
             width: 100%;
             border-radius: 25px;
@@ -129,20 +136,23 @@ export default {
           input:focus {
             outline: none;
           }
+          input::placeholder{
+            color: $background;
+          }
         }
-        .login-group {
-          font-size: 0;
+        .login-btn{
+          background-color: $point;
+          color: $background;
+          width: 100%;
           margin-top: 50px;
-          .btn {
-            width: 100px;
+          outline: none;
+        }
+        .btn:focus {
             outline: none;
-          }
-          .btn:focus {
-            outline: none;
-          }
-          .btn + .btn {
-            margin-left: 20px;
-          }
+        }
+        .forget-btn{
+          margin-top: 20px;
+          outline: none;
         }
       }
     }

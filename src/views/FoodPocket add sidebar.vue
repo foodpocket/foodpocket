@@ -1,117 +1,126 @@
 <template>
   <div class="foodpocket">
-    <navbar />
-    <bus />
-    <!-- 主畫面 -->
-    <div class="container">  <!-- 主頁 -->
-      <!-- 快速新增 -->
-      <div class="input-group pt-3">
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
+    <bus/>
+    <navbar/>
+
+    <div class="wrapper">
+      <!-- 側邊攔 -->
+      <sidebar/>
+
+      <!-- 黑幕 -->
+      <div class="overlay"></div>
+
+      <!-- 主畫面 -->
+      <div class="container">
+        <!-- 快速新增 -->
+        <div class="input-group pt-3">
+          <div class="col-12 input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
+            </div>
+            <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" @keyup.enter="quicklyAdd"/>
           </div>
-          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" @keyup.enter="quicklyAdd"/>
-        </div>
 
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">到訪日期</span>
+          <div class="col-12 input-group mb-3">
+            <div class="input-group-prepend">
+              <span class="input-group-text" id="basic-addon1">到訪日期</span>
+            </div>
+            <input type="date" class="form-control" id="date" v-model="newDate" />
           </div>
-          <input type="date" class="form-control" id="date" v-model="newDate" />
-        </div>
 
-        <div class="col-12 input-group mb-3">
-          <button class="btn btn-primary w-100" type="button" @click="quicklyAdd">快速新增</button>
+          <div class="col-12 input-group mb-3">
+            <button class="btn btn-primary w-100" type="button" @click="quicklyAdd">快速新增</button>
+          </div>
         </div>
-      </div>
-      <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
-      <div class="main-area card text-center">
-        <div class="card-header">
-          <!-- card-header 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
-          <ul class="nav nav-tabs card-header-tabs">
-            <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility === 'recommend'}" @click.prevent="visibility = 'recommend',justifyContent = 'end'">推薦餐廳</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" :class="{'active':visibility === 'record'}" @click.prevent="visibility = 'record',justifyContent = 'end'">歷史紀錄</a>
-            </li>
-          </ul>
-        </div>
+        <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
+        <div class="main-area card text-center">
+          <div class="card-header">
+            <!-- card-header 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
+            <ul class="nav nav-tabs card-header-tabs">
+              <li class="nav-item">
+                <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" :class="{'active':visibility === 'recommend'}" @click.prevent="visibility = 'recommend',justifyContent = 'end'">推薦餐廳</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" :class="{'active':visibility === 'record'}" @click.prevent="visibility = 'record',justifyContent = 'end'">歷史紀錄</a>
+              </li>
+            </ul>
+          </div>
 
-        <!-- list內容區域(身體) -->
+          <!-- list內容區域(身體) -->
 
-        <!-- 搜尋區 -->
-        <div class="input-group mt-3" v-if="visibility === 'all'">
-          <div class="col-12 input-group">
-            <input type="text" class="form-control" placeholder="搜尋或新增餐廳"  v-model="searchRestaurant"/>
-            <div class="input-group-append">
-              <span class="input-group-text" @click="searchRestaurant = ''">清除</span>
+          <!-- 搜尋區 -->
+          <div class="input-group mt-3" v-if="visibility === 'all'">
+            <div class="col-12 input-group">
+              <input type="text" class="form-control" placeholder="搜尋或新增餐廳"  v-model="searchRestaurant"/>
+              <div class="input-group-append">
+                <span class="input-group-text" @click="searchRestaurant = ''">清除</span>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="list-length text-right mr-3">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
-          <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="recommendListShow()"></i></span>
-          <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
-        </div>
-        <!-- 列表顯示區 -->
-        <ul class="list-group list-group-flush text-left">
-          <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
-            <div class="d-flex align-items-center">
-              <!-- 基本資訊 -->
-              <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
-                <div class="restaurant-name">
-                  {{ item.restaurant_name }}
-                  <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
-                  <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
-                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
+          <div class="list-length text-right mr-3">
+            <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
+            <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
+            <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="recommendListShow()"></i></span>
+            <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
+          </div>
+          <!-- 列表顯示區 -->
+          <ul class="list-group list-group-flush text-left">
+            <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
+              <div class="d-flex align-items-center">
+                <!-- 基本資訊 -->
+                <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
+                  <div class="restaurant-name">
+                    {{ item.restaurant_name }}
+                    <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
+                    <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
+                    <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
+                  </div>
+                  <div>
+                    <div class="restaurant-description">
+                      <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
+                      <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
+                      <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
+                    </div>
+                  </div>
                 </div>
-                <div>
-                  <div class="restaurant-description">
-                    <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
-                    <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
-                    <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
+
+                <!-- icon-btn -->
+                <div class="button-area" :class="justifyContent">
+                  <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
+                  <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
+                </div>
+
+              </div>
+            </li>
+
+            <!-- 新增餐廳的按鈕 -->
+            <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
+              <div class="d-flex align-items-center justify-content-center">
+                <div class="restaurant-list">
+                  <div class="restaurant-name">
+                    <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">
+                      新增<strong>- {{searchRestaurant}} -</strong>餐廳
+                    </button>
                   </div>
                 </div>
               </div>
+            </li>
+          </ul>
 
-              <!-- icon-btn -->
-              <div class="button-area" :class="justifyContent">
-                <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
-                <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
-              </div>
-
-            </div>
-          </li>
-
-          <!-- 新增餐廳的按鈕 -->
-          <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
-            <div class="d-flex align-items-center justify-content-center">
-              <div class="restaurant-list">
-                <div class="restaurant-name">
-                  <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">
-                    新增<strong>- {{searchRestaurant}} -</strong>餐廳
-                  </button>
-                </div>
-              </div>
-            </div>
-          </li>
-        </ul>
-
-        <!-- card-footer註腳區域(腳) -->
-        <div class="card-footer d-flex justify-content-between">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
-          <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳</span>
-          <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
+          <!-- card-footer註腳區域(腳) -->
+          <div class="card-footer d-flex justify-content-between">
+            <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
+            <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
+            <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳</span>
+            <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
+          </div>
         </div>
       </div>
-    </div>
 
+    </div>
     <!-- ---------------------------------------------------------以下是卡片區------------------------------------------------------------------ -->
 
     <!-- 資訊欄 按下後的資訊欄卡片區 -->
@@ -125,7 +134,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header bg-dark text-white">
             <h5 class="modal-title" id="openInfoModalLabel">
               <span>{{infoModalObj.restaurant_name}} 資訊欄</span>
             </h5>
@@ -172,9 +181,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-sm" @click="openDeleteModal"
-              v-if="visibility === 'all'"><i class="fas fa-trash-alt"></i></button> <!-- btn-outline-danger -->
-            <button type="button" class="btn btn-sm" data-dismiss="modal">確定</button> <!-- btn-primary -->
+            <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal"><i class="fas fa-trash-alt"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" data-dismiss="modal">確定</button>
           </div>
         </div>
       </div>
@@ -191,7 +199,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-dark -->
+          <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editInfoModalLabel">
               <!-- 全部餐廳列表顯示編輯餐廳 -->
@@ -242,8 +250,8 @@
 
           <div class="modal-footer">
             <!-- 編輯卡片-footer (按鈕*3)-->
-            <button type="button" class="btn btn-sm" @click="backtoNote()" data-dismiss="modal">取消</button> <!-- btn-outline-secondary -->
-            <button type="button" class="btn btn-sm"  @click="editRestaurant(editModalObj)">確認</button> <!-- btn-primary -->
+            <button type="button" class="btn btn-outline-secondary btn-sm" @click="backtoNote()" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary btn-sm"  @click="editRestaurant(editModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -260,7 +268,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editVisitModalLabel">
               <span v-if="visibility === 'record'">編輯到訪 {{editVisitModalObj.restaurant_name}} 日期</span>
@@ -280,8 +288,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-sm" @click="openDeleteModal"><i class="fas fa-trash-alt"></i></button> <!-- btn-outline-danger -->
-            <button type="button" class="btn btn-sm" @click="editVisitRecord(editVisitModalObj)">確認</button> <!-- btn-primary -->
+            <button type="button" class="btn btn-outline-danger btn-sm" @click="openDeleteModal"><i class="fas fa-trash-alt"></i></button>
+            <button type="button" class="btn btn-primary btn-sm" @click="editVisitRecord(editVisitModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -298,7 +306,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header bg-dark text-white">
             <!-- 編輯卡片區-header -->
             <h5 class="modal-title" id="addModalLabel">
               <span>新增到訪 {{AddrecordModalObj.restaurant_name}} 日期</span>
@@ -317,8 +325,8 @@
           </div>
 
           <div class="modal-footer">
-            <button type="button" class="btn btn-sm" data-dismiss="modal">取消</button> <!-- btn-outline-secondary  -->
-            <button type="button" class="btn btn-sm" @click="addVisitRecord(AddrecordModalObj)">確認</button> <!-- btn-primary -->
+            <button type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal">取消</button>
+            <button type="button" class="btn btn-primary btn-sm" @click="addVisitRecord(AddrecordModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -335,7 +343,7 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-danger  -->
+          <div class="modal-header bg-danger text-white">
             <!-- modal-header -->
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'all'">
               <span>刪除{{infoModalObj.restaurant_name}}餐廳</span>
@@ -351,7 +359,7 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div v-if="visibility === 'all'">
-              警告！<br /><strong class="text-danger">刪除{{infoModalObj.restaurant_name}}</strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
+              警告！<br />刪除<strong class="text-danger">{{infoModalObj.restaurant_name}}</strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
             </div>
             <div v-if="visibility === 'record'">
               是否刪除<br /><strong class="text-danger">{{editVisitModalObj.visit_date}}</strong>到訪<strong>{{editVisitModalObj.restaurant_name}}</strong>的紀錄？
@@ -361,11 +369,11 @@
 
           <div class="modal-footer">
             <!-- 刪除卡片確認區-footer -->
-            <button type="button" class="btn btn-sm" @click="doNotDelete" >取消</button> <!-- btn-outline-secondary  -->
-            <button type="button" class="btn btn-sm"
-            @click="removeRestaurant(infoModalObj)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button> <!-- btn-danger -->
-            <button type="button" class="btn btn-sm"
-            @click="removeVisitRecord(editVisitModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button> <!-- btn-danger  -->
+            <button type="button" class="btn btn-outline-secondary btn-sm" @click="doNotDelete" >取消</button>
+            <button type="button" class="btn btn-danger btn-sm"
+            @click="removeRestaurant(infoModalObj)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button>
+            <button type="button" class="btn btn-danger btn-sm"
+            @click="removeVisitRecord(editVisitModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button>
           </div>
         </div>
       </div>
@@ -377,11 +385,13 @@
 <script>
 import $ from 'jquery'
 import navbar from '@/components/navbar.vue'
+import sidebar from '@/components/sidebar.vue'
 import bus from '@/components/bus.vue'
 
 export default {
   components: {
     navbar,
+    sidebar,
     bus
   },
   data () {
@@ -951,34 +961,24 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$background:#FCFBEF;
-$primary:#C19969;
-$second:#C8BCA0;
-$point:#4B2D16;
-.input-group-text{
-  background-color: $second;
-  border: solid 1px $second;
+
+.wrapper {
+  display: flex;
+  align-items: stretch;
 }
-.btn{
-  background-color: $point;
-  color: $background;
-  border: none;
+.overlay {
+    display: none;
+    position: fixed;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 99;
+    opacity: 0;
+    transition: all 0.5s ease-in-out;
 }
-.card{
-  .card-header, .card-footer{
-    background-color: $second;
-  }
-}
-.modal{
-  .modal-header{
-    background-color: $primary;
-  }
-  .modal-body{
-    background-color: $background;
-  }
-  .modal-footer{
-    background-color: $second;
-  }
+.overlay.active {
+    display: block;
+    opacity: 1;
 }
 
 .main-area {
