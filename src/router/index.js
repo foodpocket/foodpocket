@@ -6,22 +6,27 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '*',
-    redirect: '/foodpocket'
+    redirect: '/landingpage'
   },
   {
     path: '/',
-    name: 'FoodPocket',
-    component: () => import('../views/FoodPocket.vue')
+    name: 'LandingPage',
+    component: () => import('../views/LandingPage.vue')
   },
   {
-    path: '/foodpocket',
-    name: 'FoodPocket',
-    component: () => import('../views/FoodPocket.vue')
+    path: '/landingpage',
+    name: 'LandingPage',
+    component: () => import('../views/LandingPage.vue')
   },
   {
     path: '/loginpage',
     name: 'LoginPage',
     component: () => import('../views/LoginPage.vue')
+  },
+  {
+    path: '/foodpocket',
+    name: 'FoodPocket',
+    component: () => import('../views/FoodPocket.vue')
   }
 ]
 

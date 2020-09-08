@@ -7,7 +7,8 @@
           <div class="logo-wrapper">
             <img class="logo" :src="foodPocketLogo" />
           </div>
-          <h2>FoodPocket</h2>
+          <!-- <h2><router-link to="/Home">FoodPocket</router-link></h2> -->
+          <h2 @click="back">FoodPocket</h2>
           <div class="group">
             <label for="user_id">帳號</label>
             <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
@@ -37,14 +38,17 @@ export default {
     }
   },
   methods: {
-    clear: function () {
+    back () {
+      this.$router.push('/landingpage')
+    },
+    clear () {
       this.username = ''
       this.password = ''
     },
     forget () {
       window.alert('你忘記密碼我也沒辦法')
     },
-    signin: function () {
+    signin () {
       this.$bus.$emit('message:push', '請稍等', 'info')
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
@@ -117,6 +121,9 @@ $point:#4B2D16;
           padding-bottom: 20px;
           border-bottom: 1px solid #000;
           font-family: 'Monda', sans-serif;
+        }
+        h2:hover{
+          cursor: pointer;
         }
         .group {
           margin-bottom: 20px;

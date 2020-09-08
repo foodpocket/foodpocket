@@ -42,7 +42,7 @@ export default {
         this.$cookies.remove('token')
       }
       window.alert('登出成功')
-      this.$router.push('/loginpage')
+      this.$router.push('/landingpage')
     }
   }
 }
