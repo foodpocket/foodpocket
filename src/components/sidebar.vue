@@ -55,19 +55,14 @@ a:focus {
   transition: all 0.2s;
 }
 
-// ul ul a {
-//   font-size: 0.9em !important;
-//   padding-left: 30px !important;
-//   background: #6d7fcc;
-// }
-
 #sidebar {
-  min-width: 250px;
-  max-width: 250px;
-  min-height: 100vh;
+  min-width: 200px;
+  max-width: 200px;
+  min-height: 100%;
   background: #eee;
   color: #000;
   transition: all 0.3s;
+  box-shadow: 0 0 5px #777;
   .sidebar-header {
     padding: 20px;
     background: #ddd;
@@ -104,6 +99,7 @@ a:focus {
 
 #sidebar.active {
   margin-left: -250px;
+  box-shadow: 0 0 0;
 }
 
 // @media (max-width: 768px) {
