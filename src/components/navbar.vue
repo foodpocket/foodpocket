@@ -31,7 +31,6 @@ export default {
   methods: {
     opensidebar () {
       // 配合sidebar使用
-      console.log('open sidebar')
       $('#sidebar').toggleClass('active')
       $('.overlay').toggleClass('active')
     }

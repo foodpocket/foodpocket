@@ -2,14 +2,20 @@
   <div style="z-index: 9999;">
     <nav id="sidebar" class="active">
       <div class="sidebar-header">
-        <h3>FoodPocket</h3>
+        <h1>FoodPocket</h1>
       </div>
 
-      <ul class="list-unstyled components">
-        <li class="active">
-          <a href="#">
-            <i class="fas fa-clipboard-list"></i>口袋名單
-          </a>
+      <ul class="navbar-nav list-unstyled components">
+        <li class="nav-item"> <!-- class="active" -->
+            <router-link class="nav-link after" to="/foodpocket">
+              <i class="fas fa-home"></i>主頁
+            </router-link>
+        </li>
+
+        <li class="nav-item">
+            <router-link class="nav-link after" to="/foodpocket/choosepocket">
+              <i class="fas fa-clipboard-list"></i>口袋名單
+            </router-link>
         </li>
 
         <li>
@@ -33,6 +39,7 @@
 </template>
 
 <script>
+
 export default {
   methods: {
     logout () {
@@ -40,7 +47,7 @@ export default {
         this.$cookies.remove('token')
       }
       window.alert('登出成功')
-      this.$router.push('/loginpage')
+      this.$router.push('/landingpage')
     }
   }
 }
@@ -54,6 +61,10 @@ a:focus {
   text-decoration: none;
   transition: all 0.2s;
 }
+.activee{
+  color: #007bff;
+  background: #fff;
+}
 
 #sidebar {
   min-width: 200px;
@@ -66,6 +77,9 @@ a:focus {
   .sidebar-header {
     padding: 20px;
     background: #ddd;
+    h1{
+      font-size: 1.6rem;
+    }
   }
   ul.components {
     text-align: left;
@@ -84,7 +98,7 @@ a:focus {
       background: #fff;
     }
     li.logout {
-      margin: 50px auto;
+      margin: 50px 0;
       text-align: center;
       background: #fff;
       color: rgb(180, 0, 0);

@@ -4,10 +4,10 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-  {
-    path: '*',
-    redirect: '/landingpage'
-  },
+  // {
+  //   path: '*',
+  //   redirect: '/landingpage'
+  // },
   {
     path: '/',
     name: 'LandingPage',
@@ -26,12 +26,26 @@ const routes = [
   {
     path: '/foodpocket',
     name: 'FoodPocket',
-    component: () => import('../views/FoodPocket.vue')
+    component: () => import('../views/FoodPocket.vue'),
+    children: [
+      {
+        path: '',
+        name: 'MainPocket',
+        component: () => import('../components/pages/MainPocket.vue')
+      },
+      {
+        path: 'choosepocket',
+        name: 'ChoosePocket',
+        component: () => import('../components/pages/ChoosePocket.vue')
+      }
+    ]
   }
 ]
 
 const router = new VueRouter({
-  routes
+  routes,
+  linkActiveClass: 'active',
+  linkExactActiveClass: 'activee'
 })
 
 export default router
