@@ -1,6 +1,8 @@
 <template>
   <div class="foodpocket">
-    <navbar />
+    <navbar>
+      <h1>我的日常餐廳</h1>
+    </navbar>
     <bus />
     <!-- 主畫面 -->
     <div class="container">  <!-- 主頁 -->
@@ -957,7 +959,7 @@ export default {
 <style lang="scss" scoped>
 $background:#FCFBEF;
 $primary:#C19969;
-$second:#C8BCA0;
+$second: #daceb4;
 $point:#4B2D16;
 .input-group-text{
   background-color: $second;

@@ -4,8 +4,8 @@
       <!-- 側邊攔 -->
       <sidebar/>
 
-      <!-- 黑幕 -->
-      <!-- <div class="overlay" @click="closesidebar"></div> -->
+      <!-- 透明幕 -->
+      <div class="overlay" @click="closesidebar"></div>
 
       <!-- 主畫面 -->
       <router-view style="flex-shrink:0; flex-grow:0;"/>
@@ -46,8 +46,9 @@ export default {
 
 $background:#FCFBEF;
 $primary:#C19969;
-$second:#C8BCA0;
+$second: #daceb4;
 $point:#4B2D16;
+
 .foodpocket{
   width: 100%;
   height: 100%;

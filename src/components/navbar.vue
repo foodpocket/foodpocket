@@ -5,7 +5,7 @@
         <i class="fas fa-bars"></i>
       </div>
       <h1>
-        {{myfoodpocket.pocketName}} Pocket
+        <slot></slot>
       </h1>
     </div>
   </div>
@@ -14,18 +14,17 @@
 <script>
 import $ from 'jquery'
 export default {
-  props: {
-    foodpocket: {
-      type: Object,
-      default: () => ({
-        // pocketName: 'pocketName'
-        pocketName: '我的日常餐廳'
-      })
-    }
-  },
+  // props: {
+  //   navbartitle: {
+  //     type: Object,
+  //     default: () => ({
+  //       pocketName: '我的日常餐廳'
+  //     })
+  //   }
+  // },
   data () {
     return {
-      myfoodpocket: this.foodpocket
+      title: this.navbartitle
     }
   },
   methods: {
@@ -41,7 +40,7 @@ export default {
 <style scoped lang="scss">
 $background: #fcfbef;
 $primary: #c19969;
-$second: #c8bca0;
+$second: #daceb4;
 $point: #4b2d16;
 
 .navbar {
