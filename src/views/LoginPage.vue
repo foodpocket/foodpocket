@@ -79,11 +79,6 @@ export default {
 <style lang="scss" scoped>
 @import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
-$background:#FCFBEF;
-$primary:#C19969;
-$second:#C8BCA0;
-$point:#906441;
-
 * {
   margin: 0;
 }

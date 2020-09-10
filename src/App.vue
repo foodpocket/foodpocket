@@ -7,11 +7,6 @@
 <style lang="scss">
 @import "./assets/all.scss";
 
-$background:#FCFBEF;
-$primary:#C19969;
-$second:#C8BCA0;
-$point:#906441;
-
 body{
   background-color: $background;
 }

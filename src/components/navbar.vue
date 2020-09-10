@@ -38,10 +38,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$background: #fcfbef;
-$primary: #c19969;
-$second: #daceb4;
-$point:#906441;
 
 .navbar {
   background-color: $point;

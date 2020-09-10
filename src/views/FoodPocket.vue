@@ -37,11 +37,6 @@ export default {
 
 <style lang="scss" scoped>
 
-$background:#FCFBEF;
-$primary:#C19969;
-$second: #daceb4;
-$point:#906441;
-
 .foodpocket{
   width: 100%;
   height: 100%;

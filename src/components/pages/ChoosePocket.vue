@@ -68,12 +68,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$background: #fcfbef;
-$primary: #c19969;
-$second: #daceb4;
-$point: #906441;
-
-$word: #6b4324;
 
 * {
   margin: 0;

@@ -21,9 +21,5 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$background:#FCFBEF;
-$primary:#C19969;
-$second: #daceb4;
-$point:#906441;
 
 </style>

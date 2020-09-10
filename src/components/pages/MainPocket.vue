@@ -99,7 +99,7 @@
               <div class="restaurant-list">
                 <div class="restaurant-name">
                   <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">
-                    新增<strong>- {{searchRestaurant}} -</strong>餐廳
+                    新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
                   </button>
                 </div>
               </div>
@@ -956,10 +956,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$background:#FCFBEF;
-$primary:#C19969;
-$second: #daceb4;
-$point:#906441;
+
+.deep-color {
+  color: $deep;
+}
+
 .input-group-text{
   background-color: $second;
   border: solid 1px $second;

@@ -31,10 +31,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-$background: #fcfbef;
-$primary: #c19969;
-$second: #c8bca0;
-$point:#906441;
 
 .landingpage {
   .container {

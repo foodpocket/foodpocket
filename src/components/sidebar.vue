@@ -60,12 +60,6 @@ export default {
 </script>
 
 <style scoped lang="scss">
-$background:#FCFBEF;
-$primary:#C19969;
-$second: #daceb4;
-$point:#906441;
-
-$word:#6b4324;
 
 a,
 a:hover,
