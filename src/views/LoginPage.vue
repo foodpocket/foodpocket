@@ -49,7 +49,8 @@ export default {
       window.alert('你忘記密碼我也沒辦法')
     },
     signin () {
-      this.$bus.$emit('message:push', '請稍等', 'info')
+      const loadingMsgId = Math.floor(new Date() / 1000)
+      this.$bus.$emit('message:show', '請稍等', 'info', loadingMsgId)
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
       // console.log(api)
@@ -61,12 +62,17 @@ export default {
         if (response.data.result === 'successful') {
           const token = response.data.data.token
           // console.log(token)
+          this.$bus.$emit('message:remove', loadingMsgId)
           this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
         } else {
-          window.alert('帳號或密碼輸入錯誤，請再試一次')
+          this.$bus.$emit('message:remove', loadingMsgId)
+          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')
           this.password = ''
         }
+      }).catch(() => {
+        this.$bus.$emit('message:remove', loadingMsgId)
+        this.$bus.$emit('message:push', '網路異常，請稍候再試', 'danger')
       })
     }
   },

@@ -25,27 +25,44 @@ export default {
     }
   },
   methods: {
+    // push message and auto remove it after 3 seconds
     updateMessage (message, status) {
       const timestamp = Math.floor(new Date() / 1000)
       this.messages.push({
         message,
         status,
-        timestamp
+        id: timestamp // use push timestamp as id
       })
-      this.removeMessageWithTiming(timestamp)
+
+      // auto remove message
+      this.removeMessageById(timestamp, 3000)
     },
-    removeMessage (num) {
-      this.messages.splice(num, 1)
+
+    // push message with self-defined trackId
+    // message will not be removed until user remove it by trackId
+    showMessage (message, status, trackId) {
+      this.messages.push({
+        message,
+        status,
+        id: trackId
+      })
     },
-    removeMessageWithTiming (timestamp) {
+
+    // remove message by index
+    removeMessage (index) {
+      this.messages.splice(index, 1)
+    },
+
+    // remove message by id with delay (ms)
+    removeMessageById (id, delay = 0) {
       const vm = this
       setTimeout(() => {
         vm.messages.forEach((item, i) => {
-          if (item.timestamp === timestamp) {
+          if (item.id === id) {
             vm.messages.splice(i, 1)
           }
         })
-      }, 3000)
+      }, delay)
     }
   },
   created () {
@@ -58,16 +75,34 @@ export default {
       vm.updateMessage(message, status)
     })
     // vm.$bus.$emit('message:push');
+
+    // 自定義名稱 'messsage:show'
+    // message: 傳入參數
+    // status: 樣式，預設值為 warning
+    // trackId: 自定義id, 用於刪除此message
+    vm.$bus.$on('message:show', (message, status = 'warning', trackId) => {
+      vm.showMessage(message, status, trackId)
+    })
+
+    // 自定義名稱 'messsage:remove'
+    // trackId: 指定欲刪除的message id
+    vm.$bus.$on('message:remove', (trackId) => {
+      vm.removeMessageById(trackId)
+    })
   }
 }
 </script>
 
-<style scope>
+<style lang="scss" scope>
 .message-alert {
   position: fixed;
   width: 100%;
   bottom: 0px;
   z-index: 1100;
+
+  .alert-dismissible {
+    padding-right: 0;
+  }
 }
 .alert {
   border-radius: 0;
