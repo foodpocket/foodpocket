@@ -4,13 +4,9 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter)
 
 const routes = [
-  // {
-  //   path: '*',
-  //   redirect: '/landingpage'
-  // },
   {
     path: '/',
-    name: 'LandingPage',
+    name: 'Home',
     component: () => import('../views/LandingPage.vue')
   },
   {
@@ -49,6 +45,10 @@ const routes = [
         component: () => import('../components/pages/Setting.vue')
       }
     ]
+  },
+  {
+    path: '*',
+    redirect: '/'
   }
 ]
 
