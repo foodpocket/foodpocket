@@ -91,13 +91,16 @@ export default {
 
 .login {
   background-color: $background;
+  min-height: 100vh;
+  height: 100%;
+
   #nav {
     padding: 30px;
     font-size: 1.6rem;
   }
   .wrap {
     .container {
-      margin: 3vw auto;
+      margin: auto;
       padding: 50px 30px;
       width: 90%;
       border-radius: 10px;
