@@ -4,12 +4,21 @@
       <h1>選擇口袋名單</h1>
     </navbar>
     <div class="container">
-      <div class="test" @click="selectPocket">
-        <h1>我的日常餐廳</h1>
-        <p>共有30筆資料</p>
+
+      <div v-for="(item, index) in pockets" :key="index">
+        <input type="radio" :id="item.pocketName" name="pockets" :value="item.pocketName" v-model="seleted"/>
+        <label class="pockets" :for="item.pocketName">
+          <h1>{{item.pocketName}}</h1>
+          <p>共有{{item.dataNum}}筆資料</p>
+        </label>
       </div>
-      <div class="test2" @click="addPocket">
-        <h1>+</h1>
+
+      <div class="addpocket-btn">
+        <h1 @click="addPocket">+</h1>
+      </div>
+
+      <div class="mt-5">
+        已選擇將<span style="font-size:1.2rem;"> {{seleted}} </span>口袋設為主要口袋
       </div>
     </div>
   </div>
@@ -24,45 +33,80 @@ export default {
   },
   data () {
     return {
+      seleted: '我的日常餐廳',
+      pockets: [
+        {
+          pocketName: '我的日常餐廳',
+          dataNum: 30
+        },
+        {
+          pocketName: '台南美食',
+          dataNum: 20
+        },
+        {
+          pocketName: '台北美食',
+          dataNum: 12
+        }
+      ]
     }
   },
   methods: {
     selectPocket () {
-      this.$router.push('/foodpocket')
+      // this.$router.push('/foodpocket')
+      console.log('您已選擇這個口袋')
     },
     addPocket () {
-      window.alert('還沒有這個功能哦')
+      // window.confirm('啊！您還不是會員呢！開通會員可享口袋無上限！')
+      if (window.confirm('啊！您還不是會員呢！開通會員可享口袋無上限！')) {
+        window.alert('好消息！免費取得口袋無上限！')
+      } else {
+        window.alert('沒關係，您可以再考慮！')
+      }
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-$background:#FCFBEF;
-$primary:#C19969;
+$background: #fcfbef;
+$primary: #c19969;
 $second: #daceb4;
-$point:#906441;
+$point: #906441;
+
+$word: #6b4324;
 
 * {
   margin: 0;
 }
 
-.test{
+input[type="radio"]{
+  display: none;
+}
+
+input:checked + .pockets{
+  border: solid 2px $point;
+  transition: border 0.2s;
+}
+
+.pockets {
   background-color: $second;
-  color: $point;
+  color: $word;
   margin: 20px auto;
-  padding: 10px;
+  padding: 10px 20px;
   border-radius: 50px;
-  h1{
-    font-size: 2rem;
+  display: flex;
+  justify-content: space-between;
+  border: solid 2px transparent;
+  h1 {
+    font-size: 1.5rem;
   }
 }
-.test2{
+.addpocket-btn {
   margin-top: 50px;
-  h1{
+  h1 {
     display: inline;
     background-color: $second;
-    color: $point;
+    color: $word;
     padding: 0 20px;
     border-radius: 50%;
   }

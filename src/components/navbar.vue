@@ -44,7 +44,7 @@ $second: #daceb4;
 $point:#906441;
 
 .navbar {
-  background-color: $primary;
+  background-color: $point;
   color: $background;
   .container{
     padding: 0;

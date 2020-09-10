@@ -26,7 +26,7 @@
         </div>
 
         <div class="col-12 input-group mb-3">
-          <button class="btn btn-primary w-100" type="button" @click="quicklyAdd">快速新增</button>
+          <button class="btn w-100" type="button" @click="quicklyAdd">快速新增</button>
         </div>
       </div>
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
@@ -965,9 +965,10 @@ $point:#906441;
   border: solid 1px $second;
 }
 .btn{
-  background-color: $point;
+  background-color: $primary;
   color: $background;
   border: none;
+  outline: none;
 }
 .card{
   .card-header, .card-footer{
@@ -976,7 +977,7 @@ $point:#906441;
 }
 .modal{
   .modal-header{
-    background-color: $primary;
+    background-color: $point;
   }
   .modal-body{
     background-color: $background;
