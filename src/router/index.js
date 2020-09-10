@@ -37,6 +37,16 @@ const routes = [
         path: 'choosepocket',
         name: 'ChoosePocket',
         component: () => import('../components/pages/ChoosePocket.vue')
+      },
+      {
+        path: 'userinfo',
+        name: 'UserInfo',
+        component: () => import('../components/pages/UserInfo.vue')
+      },
+      {
+        path: 'setting',
+        name: 'Setting',
+        component: () => import('../components/pages/Setting.vue')
       }
     ]
   }

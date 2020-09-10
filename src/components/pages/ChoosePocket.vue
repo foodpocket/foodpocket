@@ -4,11 +4,11 @@
       <h1>選擇口袋名單</h1>
     </navbar>
     <div class="container">
-      <div class="test" @click="goo">
+      <div class="test" @click="selectPocket">
         <h1>我的日常餐廳</h1>
         <p>共有30筆資料</p>
       </div>
-      <div class="test2" @click="addpocket">
+      <div class="test2" @click="addPocket">
         <h1>+</h1>
       </div>
     </div>
@@ -27,10 +27,10 @@ export default {
     }
   },
   methods: {
-    goo () {
+    selectPocket () {
       this.$router.push('/foodpocket')
     },
-    addpocket () {
+    addPocket () {
       window.alert('還沒有這個功能哦')
     }
   }
@@ -41,7 +41,7 @@ export default {
 $background:#FCFBEF;
 $primary:#C19969;
 $second: #daceb4;
-$point:#4B2D16;
+$point:#906441;
 
 * {
   margin: 0;

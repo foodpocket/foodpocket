@@ -10,7 +10,7 @@
 $background:#FCFBEF;
 $primary:#C19969;
 $second:#C8BCA0;
-$point:#4B2D16;
+$point:#6b4324;
 
 body{
   background-color: $background;

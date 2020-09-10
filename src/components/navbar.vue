@@ -1,7 +1,7 @@
 <template>
   <div class="navbar">
     <div class="container">
-      <div class="sidebar-btn" @click="opensidebar">
+      <div class="sidebar-btn" @click="controlsidebar">
         <i class="fas fa-bars"></i>
       </div>
       <h1>
@@ -28,10 +28,10 @@ export default {
     }
   },
   methods: {
-    opensidebar () {
+    controlsidebar () {
       // 配合sidebar使用
       $('#sidebar').toggleClass('active')
-      $('.overlay').toggleClass('active')
+      $('#overlay').toggleClass('active')
     }
   }
 }
@@ -41,14 +41,16 @@ export default {
 $background: #fcfbef;
 $primary: #c19969;
 $second: #daceb4;
-$point: #4b2d16;
+$point:#906441;
 
 .navbar {
   background-color: $primary;
   color: $background;
   .container{
+    padding: 0;
     display: block;
     .sidebar-btn {
+      cursor: pointer;
       float: left;
       margin: 0;
       padding: 0;

@@ -1,11 +1,14 @@
 <template>
   <div class="foodpocket">
+
     <navbar>
       <h1>我的日常餐廳</h1>
     </navbar>
+
     <bus />
+
     <!-- 主畫面 -->
-    <div class="container">  <!-- 主頁 -->
+    <div class="container">
       <!-- 快速新增 -->
       <div class="quicklyAdd input-group pt-3">
         <div class="col-12 input-group mb-3">
@@ -470,10 +473,6 @@ export default {
     }
   },
   methods: {
-    opensidebar () { // 配合sidebar使用
-      $('#sidebar').toggleClass('active')
-      $('.overlay').toggleClass('active')
-    },
     // 必備----------------------------
     getToken () {
       if (this.$cookies.isKey('token')) {
@@ -960,7 +959,7 @@ export default {
 $background:#FCFBEF;
 $primary:#C19969;
 $second: #daceb4;
-$point:#4B2D16;
+$point:#906441;
 .input-group-text{
   background-color: $second;
   border: solid 1px $second;
@@ -987,109 +986,112 @@ $point:#4B2D16;
   }
 }
 // 以上是試色區----------------------------
+.foodpocket{
 
-.quicklyAdd{
-  .col-12{
-    padding: 0;
+  .quicklyAdd{
+    .col-12{
+      padding: 0;
+    }
   }
-}
 
-.main-area {
-  margin: 20px auto;
-  .list-length {
-    margin: 10px 0;
-  }
-  .restaurant-list {
-    width: 75%;
-    .restaurant-name {
-      font-size: 1.2rem;
-      i{
-        margin-left: 10px;
-      }
-      .note-icon {
+  .main-area {
+    margin: 20px auto;
+    .list-length {
+      margin: 10px 0;
+    }
+    .restaurant-list {
+      width: 75%;
+      .restaurant-name {
         font-size: 1.2rem;
-        color: #ffa600;
+        i{
+          margin-left: 10px;
+        }
+        .note-icon {
+          font-size: 1.2rem;
+          color: #ffa600;
+        }
+        .status-icon{
+          font-size: 0.8rem;
+        }
       }
-      .status-icon{
+      .restaurant-description {
         font-size: 0.8rem;
       }
     }
-    .restaurant-description {
-      font-size: 0.8rem;
-    }
-  }
-  .button-area {
-    width: 40%;
-    display: flex;
-    a {
+    .button-area {
+      width: 40%;
       display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 100%;
-      font-size: 1.1rem;
-      transition: transform 0.3s;
-    }
-    a:active,
-    a:hover {
-      transform: scale(1.2, 1.2);
-    }
-    .plus-icon {
-      border: solid 1px #54cc24;
-      color: #54cc24;
-    }
-    .calendar-icon {
-      border: solid 1px #ffc107;
-      color: #ffc107;
-    }
-  }
-}
-
-#openInfoModal {
-  .modal-body {
-    position: relative;
-    a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 100%;
-      font-size: 1.1rem;
-      transition: transform 0.3s;
-    }
-    a:active, a:hover {
-      transform: scale(1.2, 1.2);
-    }
-    .pencil-icon {
-      position: absolute;
-      top: 10px;
-      right: 10px;
-      border: solid 1px #555;
-      // border: solid 1px #ffc107;
-      // color: #ffc107;
-    }
-    .modal-note{
-      background-color:#ffa600;
-      color:#fff;
-      border-radius:10px;
-      padding: 0 10px;
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 100%;
+        font-size: 1.1rem;
+        transition: transform 0.3s;
+      }
+      a:active,
+      a:hover {
+        transform: scale(1.2, 1.2);
+      }
+      .plus-icon {
+        border: solid 1px #54cc24;
+        color: #54cc24;
+      }
+      .calendar-icon {
+        border: solid 1px #ffc107;
+        color: #ffc107;
+      }
     }
   }
-}
 
-.modal{
-  max-height: 100%;
-  overflow-x: hidden;
-  overflow-y: auto;
-}
+  #openInfoModal {
+    .modal-body {
+      position: relative;
+      a {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 3rem;
+        height: 3rem;
+        border-radius: 100%;
+        font-size: 1.1rem;
+        transition: transform 0.3s;
+      }
+      a:active, a:hover {
+        transform: scale(1.2, 1.2);
+      }
+      .pencil-icon {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        border: solid 1px #555;
+        // border: solid 1px #ffc107;
+        // color: #ffc107;
+      }
+      .modal-note{
+        background-color:#ffa600;
+        color:#fff;
+        border-radius:10px;
+        padding: 0 10px;
+      }
+    }
+  }
 
-// :class
-.between {
-  justify-content: space-between;
-}
-.end {
-  justify-content: flex-end;
+  .modal{
+    max-height: 100%;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+
+  // :class
+  .between {
+    justify-content: space-between;
+  }
+  .end {
+    justify-content: flex-end;
+  }
+
 }
 </style>

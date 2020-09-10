@@ -34,7 +34,7 @@ export default {
 $background: #fcfbef;
 $primary: #c19969;
 $second: #c8bca0;
-$point: #4b2d16;
+$point:#906441;
 
 .landingpage {
   .container {

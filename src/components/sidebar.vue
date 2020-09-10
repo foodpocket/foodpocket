@@ -6,28 +6,28 @@
       </div>
 
       <ul class="navbar-nav list-unstyled components">
-        <li class="nav-item"> <!-- class="active" -->
+        <li class="nav-item" @click="controlsidebar">
             <router-link class="nav-link after" to="/foodpocket">
               <i class="fas fa-home"></i>主頁
             </router-link>
         </li>
 
-        <li class="nav-item">
+        <li class="nav-item" @click="controlsidebar">
             <router-link class="nav-link after" to="/foodpocket/choosepocket">
               <i class="fas fa-clipboard-list"></i>口袋名單
             </router-link>
         </li>
 
-        <li>
-          <a href="#">
-            <i class="fas fa-user"></i>個人資訊
-          </a>
+        <li class="nav-item" @click="controlsidebar">
+            <router-link class="nav-link after" to="/foodpocket/userinfo">
+              <i class="fas fa-user"></i>個人資訊
+            </router-link>
         </li>
 
-        <li>
-          <a href="#">
-            <i class="fas fa-cog"></i>設定
-          </a>
+        <li class="nav-item" @click="controlsidebar">
+            <router-link class="nav-link after" to="/foodpocket/setting">
+              <i class="fas fa-cog"></i>設定
+            </router-link>
         </li>
 
         <li class="logout" @click.prevent="logout">
@@ -39,6 +39,7 @@
 </template>
 
 <script>
+import $ from 'jquery'
 
 export default {
   methods: {
@@ -48,12 +49,24 @@ export default {
       }
       window.alert('登出成功')
       this.$router.push('/landingpage')
+    },
+    controlsidebar () {
+      // 配合sidebar使用 用id就會只有一個，就不會呼叫錯了
+      $('#sidebar').toggleClass('active')
+      $('#overlay').toggleClass('active')
     }
   }
 }
 </script>
 
 <style scoped lang="scss">
+$background:#FCFBEF;
+$primary:#C19969;
+$second: #daceb4;
+$point:#906441;
+
+$word:#6b4324;
+
 a,
 a:hover,
 a:focus {
@@ -61,22 +74,23 @@ a:focus {
   text-decoration: none;
   transition: all 0.2s;
 }
+
 .activee{
-  color: #007bff;
-  background: #fff;
+  color: $word;
+  background: $background;
 }
 
 #sidebar {
-  min-width: 200px;
-  max-width: 200px;
+  min-width: 250px;
+  max-width: 250px;
   min-height: 100%;
-  background: #eee;
-  color: #000;
+  background: $second;
+  color: $word;
   transition: all 0.3s;
   box-shadow: 0 0 5px #777;
   .sidebar-header {
     padding: 20px;
-    background: #ddd;
+    background: $background;
     h1{
       font-size: 1.6rem;
     }
@@ -84,7 +98,7 @@ a:focus {
   ul.components {
     text-align: left;
     padding: 20px 0;
-    border-bottom: 1px solid #ccc;
+    border-bottom: 1px solid $background;
     li a {
       padding: 10px;
       font-size: 1.1em;
@@ -94,21 +108,21 @@ a:focus {
       }
     }
     li a:hover {
-      color: #007bff;
-      background: #fff;
+      color: $word;
+      background: $background;
     }
     li.logout {
       margin: 50px 0;
       text-align: center;
-      background: #fff;
       color: rgb(180, 0, 0);
+      background: $background;
     }
   }
-  ul li.active > a,
-  a[aria-expanded="true"] {
-    color: #007bff;
-    background: #fff;
-  }
+  // ul li.active > a,
+  // a[aria-expanded="true"] {
+  //   color: $word;
+  //   background: $background;
+  // }
 }
 
 #sidebar.active {

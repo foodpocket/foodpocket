@@ -5,13 +5,10 @@
       <sidebar/>
 
       <!-- 透明幕 -->
-      <div class="overlay" @click="closesidebar"></div>
+      <div id="overlay" @click="controlsidebar"></div>
 
       <!-- 主畫面 -->
       <router-view style="flex-shrink:0; flex-grow:0;"/>
-      <!-- <mainpocket style="flex-shrink:0; flex-grow:0;"/> -->
-      <!-- <choosepocket style="flex-shrink:0; flex-grow:0;"/> -->
-      <!-- 禁止收縮 -->
 
     </div>
   </div>
@@ -20,23 +17,19 @@
 <script>
 import $ from 'jquery'
 import sidebar from '@/components/sidebar.vue'
-// import mainpocket from '@/components/pages/MainPocket.vue'
-// import choosepocket from '@/components/pages/ChoosePocket.vue'
 
 export default {
   components: {
     sidebar
-    // mainpocket,
-    // choosepocket
   },
   data () {
     return {
     }
   },
   methods: {
-    closesidebar () { // 配合sidebar使用
+    controlsidebar () { // 配合sidebar使用
       $('#sidebar').toggleClass('active')
-      $('.overlay').toggleClass('active')
+      $('#overlay').toggleClass('active')
     }
   }
 }
@@ -47,7 +40,7 @@ export default {
 $background:#FCFBEF;
 $primary:#C19969;
 $second: #daceb4;
-$point:#4B2D16;
+$point:#906441;
 
 .foodpocket{
   width: 100%;
@@ -59,15 +52,17 @@ $point:#4B2D16;
     min-height: 100vh;
     overflow: hidden;
   }
-  .overlay {
+  #overlay {
       display: none;
       position: fixed;
       width: 100vw;
       height: 100%;
       background: transparent;
+      // background: #333;
       z-index: 20;
+      cursor: pointer;
   }
-  .overlay.active {
+  #overlay.active {
       display: block;
   }
 }
