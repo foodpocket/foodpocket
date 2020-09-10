@@ -27,7 +27,7 @@
 
 <script>
 import bus from '@/components/bus.vue'
-import foodPocketLogo from '@/assets/foodpocket_logo.png'
+import foodPocketLogo from '@/assets/foodpocket_logo.svg'
 
 export default {
   data () {
@@ -105,8 +105,8 @@ $point:#906441;
         color: #555;
         .logo-wrapper {
           width: 100%;
-          height: 30vw;
-          margin-bottom: 5vw;
+          height: 7rem;
+          margin-bottom: 0vw;
           object-fit: contain;
           display: flex;
           align-items: center;
