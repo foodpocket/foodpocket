@@ -70,7 +70,7 @@ a:focus {
 }
 
 .activee{
-  color: $word;
+  color: $deep;
   background: $background;
 }
 
@@ -79,7 +79,7 @@ a:focus {
   max-width: 250px;
   min-height: 100%;
   background: $second;
-  color: $word;
+  color: $deep;
   transition: all 0.3s;
   box-shadow: 0 0 5px #777;
   .sidebar-header {
@@ -102,7 +102,7 @@ a:focus {
       }
     }
     li a:hover {
-      color: $word;
+      color: $deep;
       background: $background;
     }
     li.logout {

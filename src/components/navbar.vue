@@ -1,12 +1,10 @@
 <template>
   <div class="navbar">
     <div class="container">
+      <slot></slot>
       <div class="sidebar-btn" @click="controlsidebar">
         <i class="fas fa-bars"></i>
       </div>
-      <h1>
-        <slot></slot>
-      </h1>
     </div>
   </div>
 </template>
@@ -14,17 +12,8 @@
 <script>
 import $ from 'jquery'
 export default {
-  // props: {
-  //   navbartitle: {
-  //     type: Object,
-  //     default: () => ({
-  //       pocketName: '我的日常餐廳'
-  //     })
-  //   }
-  // },
   data () {
     return {
-      title: this.navbartitle
     }
   },
   methods: {
@@ -41,20 +30,26 @@ export default {
 
 .navbar {
   background-color: $point;
-  color: $background;
+  color: $light-background;
   .container{
-    padding: 0;
-    display: block;
-    .sidebar-btn {
-      cursor: pointer;
-      float: left;
-      margin: 0;
-      padding: 0;
-      font-size: 1.3rem;
-    }
-    h1 {
-      margin: 0;
+    display: flex;
+    justify-content: center;
+    position: relative;
+    h1{
       font-size: 1.6rem;
+      margin: 0;
+    }
+    .sidebar-btn{
+      position: absolute;
+      top: 0;
+      left: 0;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      i{
+        align-self: center;
+        font-size: 2rem;
+      }
     }
   }
 }

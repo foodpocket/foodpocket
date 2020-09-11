@@ -33,9 +33,13 @@ export default {
 <style lang="scss" scoped>
 
 .landingpage {
+  min-height: 100vh;
+  height: 100%;
+  background-color: $background;
   .container {
     color: #555;
-    margin: 50px auto;
+    padding-top: 50px;
+    width: 90%;
     display: flex;
     flex-direction: column;
 

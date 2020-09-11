@@ -7,13 +7,12 @@
 <style lang="scss">
 @import "./assets/all.scss";
 
-body{
-  background-color: $background;
-}
 #app {
   font-family: 'Noto Sans TC', sans-serif, 'Balsamiq Sans', cursive;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  height: 100%;
   text-align: center;
   color: #2c3e50;
 }

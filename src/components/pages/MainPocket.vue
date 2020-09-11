@@ -1,5 +1,5 @@
 <template>
-  <div class="foodpocket">
+  <div class="mainpocket">
 
     <navbar>
       <h1>我的日常餐廳</h1>
@@ -60,7 +60,7 @@
         <div class="list-length text-right mr-3">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo ml-3" @click="recommendListShow()"></i></span>
+          <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="recommendListShow()"></i></span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
         <!-- 列表顯示區 -->
@@ -158,8 +158,8 @@
               <div>
                 <label>推薦模式：</label>
                 <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
-                <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:0.7rem;"></i>永遠</span>
-                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:0.7rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
+                <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
+                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
               </div>
 
               <div v-if="infoModalObj.visit_dates">
@@ -178,7 +178,7 @@
 
           <div class="modal-footer">
             <button type="button" class="btn btn-sm" @click="openDeleteModal"
-              v-if="visibility === 'all'"><i class="fas fa-trash-alt"></i></button> <!-- btn-outline-danger -->
+              v-if="visibility === 'all'"><i class="fas fa-trash-alt" style="font-size:1.1rem;"></i></button> <!-- btn-outline-danger -->
             <button type="button" class="btn btn-sm" data-dismiss="modal">確定</button> <!-- btn-primary -->
           </div>
         </div>
@@ -967,7 +967,7 @@ export default {
 }
 .btn{
   background-color: $primary;
-  color: $background;
+  color: $light-background;
   border: none;
   outline: none;
 }
@@ -981,14 +981,19 @@ export default {
     background-color: $point;
   }
   .modal-body{
-    background-color: $background;
+    background-color: $light-background;
   }
   .modal-footer{
     background-color: $second;
   }
 }
 // 以上是試色區----------------------------
-.foodpocket{
+
+.mainpocket{
+  min-height: 100vh;
+  height: 100%;
+  width: 100%;
+  background-color: $light-background;
 
   .quicklyAdd{
     .col-12{
@@ -1000,6 +1005,14 @@ export default {
     margin: 20px auto;
     .list-length {
       margin: 10px 0;
+      .redo{
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        i {
+          font-size: 1.5rem;
+        }
+      }
     }
     .restaurant-list {
       width: 75%;
@@ -1009,11 +1022,11 @@ export default {
           margin-left: 10px;
         }
         .note-icon {
-          font-size: 1.2rem;
+          font-size: 1.4rem;
           color: #ffa600;
         }
         .status-icon{
-          font-size: 0.8rem;
+          font-size: 1.2rem;
         }
       }
       .restaurant-description {
@@ -1040,10 +1053,16 @@ export default {
       .plus-icon {
         border: solid 1px #54cc24;
         color: #54cc24;
+        i{
+          font-size: 1.4rem;
+        }
       }
       .calendar-icon {
         border: solid 1px #ffc107;
         color: #ffc107;
+        i{
+          font-size: 1.6rem;
+        }
       }
     }
   }
@@ -1069,8 +1088,7 @@ export default {
         top: 10px;
         right: 10px;
         border: solid 1px #555;
-        // border: solid 1px #ffc107;
-        // color: #ffc107;
+        font-size: 1.4rem;
       }
       .modal-note{
         background-color:#ffa600;
@@ -1086,7 +1104,9 @@ export default {
     overflow-x: hidden;
     overflow-y: auto;
   }
-
+  .fa-thumbtack{
+    transform: rotate(-35deg);
+  }
   // :class
   .between {
     justify-content: space-between;

@@ -1,26 +1,24 @@
 <template>
   <div class="login">
     <bus/>
-    <div class="wrap">
-      <div class="container">
-        <form class="form" @submit.prevent="signin">
-          <div class="logo-wrapper">
-            <img class="logo" :src="foodPocketLogo" />
-          </div>
-          <!-- <h2><router-link to="/Home">FoodPocket</router-link></h2> -->
-          <h2 @click="back">FoodPocket</h2>
-          <div class="group">
-            <label for="user_id">帳號</label>
-            <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
-          </div>
-          <div class="group">
-            <label for="user_password">密碼</label>
-            <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
-          </div>
-          <button type="submit" class="btn login-btn">登入</button>
-          <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
-        </form>
-      </div>
+    <div class="container">
+      <form class="form" @submit.prevent="signin">
+        <div class="logo-wrapper">
+          <img class="logo" :src="foodPocketLogo" />
+        </div>
+        <!-- <h2><router-link to="/Home">FoodPocket</router-link></h2> -->
+        <h2 @click="back">FoodPocket</h2>
+        <div class="group">
+          <label for="user_id">帳號</label>
+          <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
+        </div>
+        <div class="group">
+          <label for="user_password">密碼</label>
+          <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
+        </div>
+        <button type="submit" class="btn login-btn">登入</button>
+        <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
+      </form>
     </div>
   </div>
 </template>
@@ -90,81 +88,73 @@ export default {
 }
 
 .login {
-  background-color: $background;
   min-height: 100vh;
   height: 100%;
-
-  #nav {
-    padding: 30px;
-    font-size: 1.6rem;
-  }
-  .wrap {
-    .container {
-      margin: auto;
-      padding: 50px 30px;
-      width: 90%;
-      border-radius: 10px;
-      .form {
+  background-color: $background;
+  .container {
+    margin: auto;
+    padding-top: 50px;
+    width: 90%;
+    .form {
+      width: 100%;
+      color: #555;
+      .logo-wrapper {
         width: 100%;
-        color: #555;
-        .logo-wrapper {
-          width: 100%;
-          height: 7rem;
-          margin-bottom: 0vw;
-          object-fit: contain;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        height: 7rem;
+        margin-bottom: 0vw;
+        object-fit: contain;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
-          .logo {
-            height: 100%;
-          }
+        .logo {
+          height: 100%;
         }
-        h2 {
-          margin-bottom: 20px;
-          padding-bottom: 20px;
-          border-bottom: 1px solid #000;
-          font-family: 'Monda', sans-serif;
+      }
+      h2 {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+        border-bottom: 1px solid #000;
+        font-family: 'Monda', sans-serif;
+      }
+      h2:hover{
+        cursor: pointer;
+      }
+      .group {
+        margin-bottom: 20px;
+        label {
+          line-height: 3;
         }
-        h2:hover{
-          cursor: pointer;
-        }
-        .group {
-          margin-bottom: 20px;
-          label {
-            line-height: 3;
-          }
-          input {
-            background-color: #C19969;
-            font-size: 16px;
-            width: 100%;
-            border-radius: 25px;
-            line-height: 2;
-            outline: none;
-            border: none;
-            padding: 5px 15px;
-          }
-          input:focus {
-            outline: none;
-          }
-          input::placeholder{
-            color: $background;
-          }
-        }
-        .login-btn{
-          background-color: $point;
-          color: $background;
+        input {
+          background-color: $primary;
+          font-size: 16px;
           width: 100%;
-          margin-top: 50px;
+          border-radius: 25px;
+          line-height: 2;
+          outline: none;
+          border: none;
+          padding: 5px 15px;
+        }
+        input:focus {
           outline: none;
         }
-        .btn:focus {
-            outline: none;
+        input::placeholder{
+          color: $background;
         }
-        .forget-btn{
-          margin-top: 20px;
+      }
+      .login-btn{
+        background-color: $point;
+        color: $background;
+        width: 100%;
+        margin-top: 50px;
+        outline: none;
+      }
+      .btn:focus {
           outline: none;
-        }
+      }
+      .forget-btn{
+        margin-top: 20px;
+        outline: none;
       }
     }
   }
