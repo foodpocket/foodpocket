@@ -48,7 +48,7 @@ export default {
     },
     signin () {
       const loadingMsgId = Math.floor(new Date() / 1000)
-      this.$bus.$emit('message:show', '請稍等', 'info', loadingMsgId)
+      this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
       const api = 'https://brycehuang.com/api/rest/loginAccount/'
       const vm = this
       // console.log(api)

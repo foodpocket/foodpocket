@@ -1,6 +1,6 @@
 <template>
   <div class="message-alert">
-    <div class="alert alert-dismissible py-2 m-0"
+    <div class="alert alert-dismissible px-2 py-2 m-0"
       :class="'alert-' + item.status"
       v-for="(item, i) in messages" :key="i">
       {{ item.message }}
@@ -40,7 +40,7 @@ export default {
 
     // push message with self-defined trackId
     // message will not be removed until user remove it by trackId
-    showMessage (message, status, trackId) {
+    showMessage (message, trackId, status) {
       this.messages.push({
         message,
         status,
@@ -80,8 +80,8 @@ export default {
     // message: 傳入參數
     // status: 樣式，預設值為 warning
     // trackId: 自定義id, 用於刪除此message
-    vm.$bus.$on('message:show', (message, status = 'warning', trackId) => {
-      vm.showMessage(message, status, trackId)
+    vm.$bus.$on('message:show', (message, trackId, status = 'warning') => {
+      vm.showMessage(message, trackId, status)
     })
 
     // 自定義名稱 'messsage:remove'
