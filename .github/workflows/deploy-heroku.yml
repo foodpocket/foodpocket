@@ -32,4 +32,4 @@ jobs:
         run: npm install
 
       - name: Build source code with development mode
-        run: npm run build --mode development
+        run: npm run build
