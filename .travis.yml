@@ -5,11 +5,6 @@ install:
 - npm install
 script:
 - npm run build
-after-success:
-  - cd ./dist
-  - mv index.html home.html
-  - echo "<?php include_once('home.html'); ?>" > index.php
-  - echo "{}" > composer.json
 deploy:
   provider: heroku
   app: foodpocket
