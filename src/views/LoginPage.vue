@@ -10,11 +10,11 @@
         <h2 @click="back">FoodPocket</h2>
         <div class="group">
           <label for="user_id">帳號</label>
-          <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
+          <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username" required/>
         </div>
         <div class="group">
           <label for="user_password">密碼</label>
-          <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
+          <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password" required/>
         </div>
         <button type="submit" class="btn login-btn">登入</button>
         <a class="btn register-btn" @click.prevent="RegisterPage">還沒有帳號？去註冊</a>
