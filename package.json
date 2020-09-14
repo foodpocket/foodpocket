@@ -5,7 +5,8 @@
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "deploy": "vue-cli-service build && .\\deploy.bat",
+    "deploy-prod": "vue-cli-service build && bash deploy.sh",
+    "deploy-dev": "vue-cli-service build --mode development && bash deploy_heroku.sh",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
