@@ -1,19 +1,15 @@
 <template>
-  <div class="confirmationpage">
+  <div class="successpage">
     <div class="container">
       <div class="logo-wrapper">
         <img class="logo mr-3" :src="foodPocketLogo" />
         <h2 @click="back">FoodPocket</h2>
       </div>
       <div class="txt">
-        <h1>信箱認證</h1>
-        <ol>
-          <li class="text-left">系統將會自動發送認證信至您所填寫的信箱中，請於24小時內收信餅點選完成認證。</li>
-          <li class="text-left">未於24小時內完成認證者，請重新操作，謝謝。</li>
-        </ol>
+        <h1>認證成功</h1>
+        <p>您可以開始使用您的食物口袋了！</p>
       </div>
-      <button type="button" class="btn" @click.prevent="back">回首頁</button>
-      <a href class="tips" @click.prevent="tips">跳至成功頁面</a>
+      <button type="button" class="btn" @click.prevent="back">去登入！</button>
     </div>
   </div>
 </template>
@@ -27,10 +23,7 @@ export default {
   },
   methods: {
     back () {
-      this.$router.push('/landingpage')
-    },
-    tips () {
-      this.$router.push('/successpage')
+      this.$router.push('/loginpage')
     }
   },
   components: {}
@@ -38,7 +31,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.confirmationpage {
+.successpage {
   min-height: 100vh;
   height: 100%;
   background-color: $background;
@@ -70,11 +63,11 @@ export default {
     }
     .txt {
       margin-top: 30px;
-      h1 {
+      h1{
         font-size: 1.7rem;
         margin-bottom: 20px;
       }
-      ol {
+      ol{
         padding-left: 20px;
       }
     }
@@ -88,11 +81,6 @@ export default {
     }
     .btn:focus {
       outline: none;
-    }
-    .tips {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
     }
   }
 }

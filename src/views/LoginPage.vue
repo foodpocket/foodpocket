@@ -161,8 +161,8 @@ export default {
       }
       .forget-btn{
         position: fixed;
-        bottom: 0;
-        left: 0;
+        bottom: 10px;
+        left: 10px;
       }
     }
   }

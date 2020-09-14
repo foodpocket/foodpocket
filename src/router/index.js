@@ -25,6 +25,11 @@ const routes = [
     component: () => import('../views/ConfirmationPage.vue')
   },
   {
+    path: '/successpage',
+    name: 'SuccessPage',
+    component: () => import('../views/SuccessPage.vue')
+  },
+  {
     path: '/loginpage',
     name: 'LoginPage',
     component: () => import('../views/LoginPage.vue')
