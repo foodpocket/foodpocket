@@ -921,20 +921,20 @@ export default {
     recommendListShow () {
       this.recommendList = []
       this.restaurantList.forEach((item) => {
-        const copyobject = Object.assign({}, item) // 用於增加copyobject.show
-        copyobject.show = false
+        item.show = false
         if (item.status === 'RANDOM') {
           const randomNum = Math.floor(Math.random() * Math.floor(10))
           if (randomNum < 3) { // 原本是放5啦，現在改放3
-            copyobject.show = true
+            item.show = true
           }
         }
         if (item.status === 'ACTIVE') {
-          copyobject.show = true
+          item.show = true
         }
-        if (copyobject.show === true) {
-          this.recommendList.push(copyobject)
+        if (item.show === true) {
+          this.recommendList.push(item)
         }
+        console.log(item)
         this.recommendList.reverse()
       })
     },

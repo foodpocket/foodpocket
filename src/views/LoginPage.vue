@@ -17,6 +17,7 @@
           <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
         </div>
         <button type="submit" class="btn login-btn">登入</button>
+        <a class="btn register-btn" @click.prevent="RegisterPage">還沒有帳號？去註冊</a>
         <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
       </form>
     </div>
@@ -38,6 +39,9 @@ export default {
   methods: {
     back () {
       this.$router.push('/landingpage')
+    },
+    RegisterPage () {
+      this.$router.push('/registerpage')
     },
     clear () {
       this.username = ''
@@ -81,7 +85,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
 * {
   margin: 0;
@@ -152,9 +155,14 @@ export default {
       .btn:focus {
           outline: none;
       }
-      .forget-btn{
+      .register-btn{
         margin-top: 20px;
         outline: none;
+      }
+      .forget-btn{
+        position: fixed;
+        bottom: 0;
+        left: 0;
       }
     }
   }

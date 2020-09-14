@@ -8,7 +8,7 @@
       <h3>建立自己的口袋名單！</h3>
       <div class="buttons">
         <button class="btn loginpage-btn mb-3" @click="loginpage">登入</button>
-        <button class="btn loginpage-btn" @click="loginpage">註冊</button>
+        <button class="btn loginpage-btn" @click="RegisterPage">註冊</button>
       </div>
     </div>
   </div>
@@ -24,6 +24,9 @@ export default {
   methods: {
     loginpage () {
       this.$router.push('/loginpage')
+    },
+    RegisterPage () {
+      this.$router.push('/registerpage')
     }
   },
   components: {}
