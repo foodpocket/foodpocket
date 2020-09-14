@@ -1,4 +1,12 @@
-# foodfood
+# FoodPocket
+
+## Project links
+
+[Production](https://foodpocket.github.io/)
+
+[Development](https://foodpocket.herokuapp.com/)
+
+[Travis CI](https://travis-ci.com/github/foodpocket/foodpocket)
 
 ## Project setup
 ```
