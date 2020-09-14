@@ -1,5 +1,5 @@
 # FoodPocket
-
+[![Build Status](https://travis-ci.com/foodpocket/foodpocket.svg?token=DVyDwwuGfsi88UhxQfUU&branch=develop)](https://travis-ci.com/foodpocket/foodpocket)
 ## Project links
 
 [Production](https://foodpocket.github.io/)
