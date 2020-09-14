@@ -1,8 +1,16 @@
-
 language: node_js
 node_js:
-  - "12"
+- '12'
 install:
-    - npm install
+- npm install
 script:
-    - npm run build
+- npm run build
+after-success:
+  - cd ./dist
+deploy:
+  provider: heroku
+  app: foodpocket
+  api_key:
+    secure: G6/dl+EZioGB02cCupPvwWK+QbFkFWMTL72DoWUWRGEHMIssGgzp5lLOATSyD9WnZCpV+e63a7Yvg2tkGbG3rkjLRmQJrfWpZ8vly9hZ7PNHWXezfG+ODxSsw7C5FbMfrn1AmZlA3hRG+IDYymP9zo4xQLqrHCX/BTHclLlL0cFbta6D2q3KA8c48qCLSZgklPK+BexqxX905LvZe6535247B+koIorC+XgpXX1Yxt20YFqAGr/QPxMNfzJPpKwLqn+nnTPyZNFroxU+wJBiZJdmBzdmWVHxSb7am4dmFZ8DUb6WGr8Qh7qi3zuK2qKOf2PF1gteZg/+gbo82qrIccKGhBAbwKieRJUE2zdNR0rEhRIAN8eDNFiYlEJOmmrEStyxcvCRPlMSV7xiz7gYsjXYOdY09Ry0+bJF4zt2sJtjKUl2AjScf+K9wPDeWjEasnjnuk1e5AkrpYS6gB2VFzfEc7MyPtsj0ZuMfU0QVfpzGdiwjOcmQwjOKv220eKeSQ+54skLvXfWXo9zAq0u3CDrH7gdv+kfIaKnomxbjSShu/neV4hubNmYFVgHFmkt+2bBfyaGXbZgn/5J8uxlRpVadt4OeBvMq+TJiuPGe7fHi09M0yQmOcms9jGK00eC+l02PKk1RiHQn0ttj/luD2iw2dDNd32mbZs+l14jarc=
+  on:
+    branch: master
