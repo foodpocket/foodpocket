@@ -1,6 +1,6 @@
 <template>
-  <div class="landingpage">
-    <div class="container">
+  <div class="landingpage" style="background: yellow;">
+    <div class="container" style="background: green;">
       <div class="logo-wrapper">
         <img class="logo" :src="foodPocketLogo" />
       </div>
@@ -37,7 +37,7 @@ export default {
 
 .landingpage {
   min-height: 100vh;
-  height: 100%;
+  // height: 100%;
   background-color: $background;
   .container {
     color: #555;

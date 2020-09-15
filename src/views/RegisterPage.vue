@@ -106,7 +106,7 @@ export default {
           outline: none;
           border: 1px solid $primary;
           padding: 5px 15px;
-          webkit-appearance: none;
+          -webkit-appearance: none;
         }
         input:focus {
           outline: none;
