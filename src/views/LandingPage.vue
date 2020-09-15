@@ -37,7 +37,7 @@ export default {
 
 .landingpage {
   min-height: 100vh;
-  // height: 100%;
+  height: 100%;
   background-color: $background;
   .container {
     color: #555;
