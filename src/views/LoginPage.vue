@@ -131,6 +131,7 @@ export default {
         }
         input {
           background-color: $primary;
+          -webkit-appearance: none;
           font-size: 16px;
           width: 100%;
           border-radius: 25px;

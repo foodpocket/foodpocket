@@ -8,10 +8,6 @@
 @import "./assets/all.scss";
 @import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
-input{
-  -webkit-appearance: none;
-}
-
 #app {
   font-family: 'Noto Sans TC', sans-serif, 'Balsamiq Sans', cursive;
   -webkit-font-smoothing: antialiased;

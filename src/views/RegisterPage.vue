@@ -101,6 +101,7 @@ export default {
           display: flex;
         }
         input {
+          -webkit-appearance: none;
           width: 100%;
           border-radius: 5px;
           outline: none;
