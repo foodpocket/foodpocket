@@ -1,6 +1,6 @@
 <template>
-  <div class="landingpage" style="background: yellow;">
-    <div class="container" style="background: green;">
+  <div class="landingpage">
+    <div class="container">
       <div class="logo-wrapper">
         <img class="logo" :src="foodPocketLogo" />
       </div>

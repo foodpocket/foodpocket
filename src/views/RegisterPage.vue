@@ -64,7 +64,7 @@ export default {
 
 .registerpage {
   min-height: 100vh;
-  height: 100%;
+  // height: 100%;
   background-color: $background;
   .container {
     margin: auto;
@@ -106,7 +106,6 @@ export default {
           outline: none;
           border: 1px solid $primary;
           padding: 5px 15px;
-          -webkit-appearance: none;
         }
         input:focus {
           outline: none;
