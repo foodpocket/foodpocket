@@ -35,6 +35,11 @@ const routes = [
     component: () => import('../views/LoginPage.vue')
   },
   {
+    path: '/forgetpasswordpage',
+    name: 'ForgetpasswordPage',
+    component: () => import('../views/ForgetpasswordPage.vue')
+  },
+  {
     path: '/foodpocket',
     name: 'FoodPocket',
     component: () => import('../views/FoodPocket.vue'),

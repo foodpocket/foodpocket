@@ -17,8 +17,10 @@
           <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password" required/>
         </div>
         <button type="submit" class="btn login-btn">登入</button>
-        <a class="btn register-btn" @click.prevent="RegisterPage">還沒有帳號？去註冊</a>
-        <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
+        <div class="button-group">
+          <a class="btn register-btn" @click.prevent="RegisterPage">還沒有帳號？去註冊</a>
+          <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
+        </div>
       </form>
     </div>
   </div>
@@ -48,7 +50,7 @@ export default {
       this.password = ''
     },
     forget () {
-      window.alert('你忘記密碼我也沒辦法')
+      this.$router.push('/forgetpasswordpage')
     },
     signin () {
       const loadingMsgId = Math.floor(new Date() / 1000)
@@ -154,15 +156,18 @@ export default {
       }
       .btn:focus {
           outline: none;
-      }
-      .register-btn{
+      }.button-group {
         margin-top: 20px;
-        outline: none;
-      }
-      .forget-btn{
-        position: fixed;
-        bottom: 10px;
-        left: 10px;
+        display: flex;
+        flex-direction: column;
+        .register-btn {
+          margin-top: 20px;
+          outline: none;
+        }
+        .forget-btn {
+          margin-top: 20px;
+          outline: none;
+        }
       }
     }
   }

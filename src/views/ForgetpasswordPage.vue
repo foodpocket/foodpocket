@@ -1,15 +1,18 @@
 <template>
-  <div class="successpage">
+  <div class="forgetpassword">
     <div class="container">
       <div class="logo-wrapper">
         <img class="logo mr-3" :src="foodPocketLogo" />
         <h2 @click="back">FoodPocket</h2>
       </div>
-      <div class="txt">
-        <h1>認證成功</h1>
-        <p>您可以開始使用您的食物口袋了！</p>
-      </div>
-      <button type="button" class="btn" @click.prevent="back">去登入！</button>
+      <h1>忘記密碼</h1>
+      <form class="form" @submit.prevent="forgetpassword">
+        <div class="group">
+          <label for="user_email" class="text-left">請填寫您的email，我們將寄一組新的密碼給您</label>
+          <input type="email" id="user_email" placeholder="請輸入電子信箱" v-model="email" required/>
+        </div>
+        <button type="submit" class="btn">發送</button>
+      </form>
     </div>
   </div>
 </template>
@@ -19,10 +22,17 @@ import foodPocketLogo from '@/assets/foodpocket_logo.svg'
 
 export default {
   data () {
-    return { foodPocketLogo }
+    return {
+      foodPocketLogo,
+      email: ''
+    }
   },
   methods: {
     back () {
+      this.$router.push('/loginpage')
+    },
+    forgetpassword () {
+      window.alert('已成功寄信')
       this.$router.push('/loginpage')
     }
   },
@@ -31,7 +41,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.successpage {
+.forgetpassword {
   min-height: 100vh;
   height: 100%;
   background-color: $background;
@@ -61,14 +71,29 @@ export default {
         font-family: "Monda", sans-serif;
       }
     }
-    .txt {
+    h1{
       margin-top: 30px;
-      h1{
-        font-size: 1.7rem;
+      font-size: 1.7rem;
+      margin-bottom: 20px;
+    }
+    .form {
+      width: 100%;
+      color: #555;
+      .group {
         margin-bottom: 20px;
-      }
-      p{
-        text-align: left;
+        label {
+          display: flex;
+        }
+        input {
+          width: 100%;
+          border-radius: 5px;
+          outline: none;
+          border: 1px solid $primary;
+          padding: 5px 15px;
+        }
+        input:focus {
+          outline: none;
+        }
       }
     }
     button {
