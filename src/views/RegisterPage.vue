@@ -14,7 +14,7 @@
           <label for="user_password">設定密碼</label>
           <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password" required/>
         </div>
-        <!-- <div class="group">
+        <div class="group">
           <label for="user_checkpassword">確認密碼</label>
           <input type="password" id="user_checkpassword" placeholder="請再次輸入密碼" v-model="checkpassword" required/>
         </div>
@@ -23,7 +23,7 @@
           <input type="email" id="user_email" placeholder="請輸入電子信箱" v-model="email" required/>
         </div>
         <button type="submit" class="btn login-btn">建立您的帳號</button>
-        <a class="btn back-btn" @click.prevent="back">取消</a> -->
+        <a class="btn back-btn" @click.prevent="back">取消</a>
       </form>
     </div>
   </div>
@@ -110,9 +110,6 @@ export default {
         input:focus {
           outline: none;
         }
-        // input::placeholder{
-        //   color: $background;
-        // }
       }
       .login-btn{
         background-color: $point;

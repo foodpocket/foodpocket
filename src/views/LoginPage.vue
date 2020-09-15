@@ -6,7 +6,6 @@
         <div class="logo-wrapper">
           <img class="logo" :src="foodPocketLogo" />
         </div>
-        <!-- <h2><router-link to="/Home">FoodPocket</router-link></h2> -->
         <h2 @click="back">FoodPocket</h2>
         <div class="group">
           <label for="user_id">帳號</label>
@@ -93,7 +92,7 @@ export default {
 }
 
 .login {
-  min-height: 100vh;
+  // min-height: 100vh;
   height: 100%;
   background-color: $background;
   .container {
