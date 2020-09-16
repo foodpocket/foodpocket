@@ -484,7 +484,7 @@ export default {
       }
     },
     getRestaurantList () {
-      const api = 'https://brycehuang.com/api/rest/getRestaurantList/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this
       this.$http
         .get(api, { params: { user_token: vm.token } })
@@ -499,7 +499,7 @@ export default {
         })
     },
     getVisitRecords () {
-      const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
       const vm = this
       this.$http
         .get(api, { params: { user_token: vm.token } })
@@ -566,7 +566,7 @@ export default {
     },
     quicklyAddRestaurant (restaurantName, timestamp) {
       // 類似addRestaurant() + addVisitRecord()
-      const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
       const formdata = new FormData()
       formdata.append('name', restaurantName)
       formdata.append('user_token', this.token)
@@ -585,7 +585,7 @@ export default {
     },
     quicklyAddVisit (id, timestamp) {
       // 類似addVisitRecord()
-      const api = 'https://brycehuang.com/api/rest/newVisit/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', id)
@@ -674,7 +674,7 @@ export default {
 
       if (this.isNew === true) {
         // console.log('這是新的餐廳，已加入餐廳列表中')
-        const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('name', restaurantName)
@@ -704,7 +704,7 @@ export default {
         )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
-          const api = 'https://brycehuang.com/api/rest/editRestaurant/'
+          const api = `${process.env.VUE_APP_APIPATH}api/rest/editRestaurant/`
           const formdata = new FormData()
           formdata.append('user_token', this.token)
           formdata.append('restaurant_uid', item.restaurant_uid)
@@ -771,7 +771,7 @@ export default {
       }
     },
     removeRestaurant (item) { // item是infoModalObj
-      const api = 'https://brycehuang.com/api/rest/removeRestaurant/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeRestaurant/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', item.restaurant_uid)
@@ -792,7 +792,7 @@ export default {
 
     // VisitRecord-------------------------
     addVisitRecord (item) {
-      const api = 'https://brycehuang.com/api/rest/newVisit/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', item.restaurant_uid)
@@ -813,7 +813,7 @@ export default {
     },
     editVisitRecord (item) {
       if (this.tempdate !== item.visit_date) {
-        const api = 'https://brycehuang.com/api/rest/editVisitRecord/'
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/editVisitRecord/`
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('visitrecord_uid', item.visitrecord_uid)
@@ -838,7 +838,7 @@ export default {
       }
     },
     removeVisitRecord (item) {
-      const api = 'https://brycehuang.com/api/rest/removeVisitRecord/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeVisitRecord/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('visitrecord_uid', item.visitrecord_uid)

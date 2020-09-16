@@ -54,7 +54,7 @@ export default {
     signin () {
       const loadingMsgId = Math.floor(new Date() / 1000)
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
-      const api = 'https://brycehuang.com/api/rest/loginAccount/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
       const vm = this
       // console.log(api)
       const formdata = new FormData()
