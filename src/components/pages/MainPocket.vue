@@ -348,7 +348,7 @@
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'">
               <span>刪除到訪紀錄</span>
             </h5>
-            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close text-white" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
