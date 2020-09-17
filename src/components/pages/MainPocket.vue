@@ -2,7 +2,7 @@
   <div class="mainpocket">
 
     <navbar>
-      <h1>我的日常餐廳</h1>
+      <h1>{{seletedName}}</h1>
     </navbar>
 
     <bus />
@@ -391,7 +391,7 @@ export default {
   },
   data () {
     return {
-      token: '',
+      // token: '',
       searchRestaurant: '', // 搜尋的字串
       tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
@@ -411,10 +411,20 @@ export default {
     }
   },
   created () {
-    this.getToken()
+    // this.getToken()
+    this.initList()
     this.touchendActive()
   },
   computed: {
+    token () {
+      return this.$store.state.token
+    },
+    pocketID () {
+      return this.$store.state.pocketid
+    },
+    seletedName () {
+      return this.$store.state.pocketname
+    },
     nextHideUntil () {
       const today = Math.floor(
         new Date(Math.floor(Date.now())).getTime() / 1000
@@ -474,20 +484,20 @@ export default {
   },
   methods: {
     // 必備----------------------------
-    getToken () {
-      if (this.$cookies.isKey('token')) {
-        this.token = this.$cookies.get('token')
-        // console.log('getToken:', this.token)
-        this.initList()
-      } else {
-        this.$router.push('/loginpage')
-      }
-    },
+    // getToken () {
+    //   if (this.$cookies.isKey('token')) {
+    //     this.token = this.$cookies.get('token')
+    //     // console.log('getToken:', this.token)
+    //     this.initList()
+    //   } else {
+    //     this.$router.push('/loginpage')
+    //   }
+    // },
     getRestaurantList () {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token } })
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.pocketID } })
         .then((response) => {
           // console.log('restaurantList:', response.data)
           vm.restaurantList = response.data.data
@@ -570,6 +580,7 @@ export default {
       const formdata = new FormData()
       formdata.append('name', restaurantName)
       formdata.append('user_token', this.token)
+      formdata.append('pocket_uid', this.pocketID)
       this.axios
         .post(api, formdata)
         .then((response) => {
@@ -678,6 +689,7 @@ export default {
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('name', restaurantName)
+        formdata.append('pocket_uid', this.pocketID)
         this.axios
           .post(api, formdata)
           .then((response) => {

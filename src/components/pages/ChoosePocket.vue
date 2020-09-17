@@ -8,7 +8,7 @@
 
     <div class="container">
 
-      <div v-for="(item, index) in pocketlist" :key="index">
+      <div v-for="(item, index) in pocketlist" :key="index" @click="seletedPocket(item)">
         <input type="radio" :id="item.name" name="pockets" :value="item.name" v-model="seleted"/>
         <label class="pockets" :for="item.name">
           <h1 @click="openEditPocketModal(item)">{{item.name}}</h1>
@@ -22,6 +22,13 @@
 
       <div class="mt-5">
         已選擇將<span style="font-size:1.2rem;"> {{seleted}} </span>口袋設為主要口袋
+      </div>
+      <div class="test text-left">
+        token: {{gettoken}}
+        <br>
+        seletedID: {{seletedID}}
+        <br>
+        seletedName: {{seletedName}}
       </div>
     </div>
 
@@ -157,7 +164,7 @@ export default {
   data () {
     return {
       token: '',
-      seleted: '我的日常餐廳',
+      seleted: '預設口袋',
       newPocketName: '',
       pocketlist: [], // 從API來的
       copyModalObj: {}, // pocketlist的其中一個object，淺複製，代表不動的資料，供刪除區使用
@@ -168,7 +175,20 @@ export default {
     this.getToken()
     this.getPocketList()
   },
-  conputed: {
+  computed: {
+    // seleted () {
+    //   const name = this.pocketlist[this.seletedID].name
+    //   return name
+    // },
+    gettoken () {
+      return this.$store.state.token
+    },
+    seletedID () {
+      return this.$store.state.pocketid
+    },
+    seletedName () {
+      return this.$store.state.pocketname
+    }
   },
   methods: {
     // 必要的 --------
@@ -274,6 +294,14 @@ export default {
           }
         })
       $('#removePocket').modal('hide')
+    },
+
+    // 選擇的動作 --------
+    seletedPocket (item) {
+      const ID = item.pocket_uid
+      const pocketname = item.name
+      this.$store.dispatch('getpocketid', ID)
+      this.$store.dispatch('getpocketname', pocketname)
     }
   }
 }

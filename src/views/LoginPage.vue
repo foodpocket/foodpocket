@@ -52,21 +52,23 @@ export default {
       this.$router.push('/forgetpasswordpage')
     },
     signin () {
+      // const username = this.username
+      // const password = this.password
+      // this.$store.dispatch('login', { username, password })
+
       const loadingMsgId = Math.floor(new Date() / 1000)
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
       const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
-      const vm = this
-      // console.log(api)
       const formdata = new FormData()
-      formdata.append('username', vm.username)
-      formdata.append('password', vm.password)
+      formdata.append('username', this.username)
+      formdata.append('password', this.password)
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
         if (response.data.result === 'successful') {
           const token = response.data.data.token
-          // console.log(token)
+          this.$store.dispatch('gettoken', token) // 放到vuex
+          this.$cookies.set('token', token) // 放到cookies
           this.$bus.$emit('message:remove', loadingMsgId)
-          this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
         } else {
           this.$bus.$emit('message:remove', loadingMsgId)

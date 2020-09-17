@@ -7,14 +7,18 @@ import App from './App'
 import router from './router'
 import VueCookies from 'vue-cookies'
 import './bus'
+import Vuex from 'vuex'
+import store from './store'
 
 Vue.config.productionTip = false
 Vue.use(VueAxios, axios)
 Vue.component('Loading', Loading)
 Vue.use(VueCookies)
 Vue.$cookies.config('1d')
+Vue.use(Vuex)
 
 new Vue({
   router,
+  store,
   render: (h) => h(App)
 }).$mount('#app')
