@@ -8,7 +8,8 @@ export default new Vuex.Store({
   state: {
     token: '',
     pocketid: '',
-    pocketname: ''
+    pocketname: '',
+    pocketlist: []
   },
   actions: {
     gettoken (context, token) {
@@ -30,6 +31,9 @@ export default new Vuex.Store({
     },
     POCKETNAME (state, pocketname) {
       state.pocketname = pocketname
+    },
+    POCKETLIST (state, pocketlist) {
+      state.pocketlist = pocketlist
     }
   }
 })

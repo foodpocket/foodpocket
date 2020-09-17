@@ -24,7 +24,7 @@
         已選擇將<span style="font-size:1.2rem;"> {{seleted}} </span>口袋設為主要口袋
       </div>
       <div class="test text-left">
-        token: {{gettoken}}
+        token: {{token}}
         <br>
         seletedID: {{seletedID}}
         <br>
@@ -163,8 +163,8 @@ export default {
   },
   data () {
     return {
-      token: '',
-      seleted: '預設口袋',
+      // token: '',
+      seleted: '',
       newPocketName: '',
       pocketlist: [], // 從API來的
       copyModalObj: {}, // pocketlist的其中一個object，淺複製，代表不動的資料，供刪除區使用
@@ -172,7 +172,7 @@ export default {
     }
   },
   created () {
-    this.getToken()
+    // this.getToken()
     this.getPocketList()
   },
   computed: {
@@ -180,7 +180,7 @@ export default {
     //   const name = this.pocketlist[this.seletedID].name
     //   return name
     // },
-    gettoken () {
+    token () {
       return this.$store.state.token
     },
     seletedID () {
@@ -192,14 +192,14 @@ export default {
   },
   methods: {
     // 必要的 --------
-    getToken () {
-      if (this.$cookies.isKey('token')) {
-        this.token = this.$cookies.get('token')
-        // console.log(this.token)
-      } else {
-        this.$router.push('/loginpage')
-      }
-    },
+    // getToken () {
+    //   if (this.$cookies.isKey('token')) {
+    //     this.token = this.$cookies.get('token')
+    //     // console.log(this.token)
+    //   } else {
+    //     this.$router.push('/loginpage')
+    //   }
+    // },
     getPocketList () {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
       const vm = this
