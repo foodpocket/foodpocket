@@ -6,15 +6,11 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: '',
     pocketid: '',
     pocketname: '',
     pocketlist: []
   },
   actions: {
-    gettoken (context, token) {
-      context.commit('TOKEN', token)
-    },
     getpocketid (context, pocketid) {
       context.commit('POCKETID', pocketid)
     },
@@ -23,9 +19,6 @@ export default new Vuex.Store({
     }
   },
   mutations: {
-    TOKEN (state, token) {
-      state.token = token
-    },
     POCKETID (state, pocketid) {
       state.pocketid = pocketid
     },

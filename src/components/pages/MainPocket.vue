@@ -391,7 +391,7 @@ export default {
   },
   data () {
     return {
-      // token: '',
+      token: '',
       searchRestaurant: '', // 搜尋的字串
       tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
@@ -411,14 +411,10 @@ export default {
     }
   },
   created () {
-    // this.getToken()
-    this.initList()
+    this.getToken()
     this.touchendActive()
   },
   computed: {
-    token () {
-      return this.$store.state.token
-    },
     pocketID () {
       return this.$store.state.pocketid
     },
@@ -484,15 +480,15 @@ export default {
   },
   methods: {
     // 必備----------------------------
-    // getToken () {
-    //   if (this.$cookies.isKey('token')) {
-    //     this.token = this.$cookies.get('token')
-    //     // console.log('getToken:', this.token)
-    //     this.initList()
-    //   } else {
-    //     this.$router.push('/loginpage')
-    //   }
-    // },
+    getToken () {
+      if (this.$cookies.isKey('token')) {
+        this.token = this.$cookies.get('token')
+        // console.log('getToken:', this.token)
+        this.initList()
+      } else {
+        this.$router.push('/loginpage')
+      }
+    },
     getRestaurantList () {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this

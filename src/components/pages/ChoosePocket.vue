@@ -163,7 +163,7 @@ export default {
   },
   data () {
     return {
-      // token: '',
+      token: '',
       seleted: '',
       newPocketName: '',
       pocketlist: [], // 從API來的
@@ -172,17 +172,10 @@ export default {
     }
   },
   created () {
-    // this.getToken()
+    this.getToken()
     this.getPocketList()
   },
   computed: {
-    // seleted () {
-    //   const name = this.pocketlist[this.seletedID].name
-    //   return name
-    // },
-    token () {
-      return this.$store.state.token
-    },
     seletedID () {
       return this.$store.state.pocketid
     },
@@ -192,22 +185,21 @@ export default {
   },
   methods: {
     // 必要的 --------
-    // getToken () {
-    //   if (this.$cookies.isKey('token')) {
-    //     this.token = this.$cookies.get('token')
-    //     // console.log(this.token)
-    //   } else {
-    //     this.$router.push('/loginpage')
-    //   }
-    // },
+    getToken () {
+      if (this.$cookies.isKey('token')) {
+        this.token = this.$cookies.get('token')
+        // console.log(this.token)
+      } else {
+        this.$router.push('/loginpage')
+      }
+    },
     getPocketList () {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
-      const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token } })
+        .get(api, { params: { user_token: this.token } })
         .then((response) => {
-          console.log('getPocketList:', response.data)
-          vm.pocketlist = response.data.data
+          // console.log('getPocketList:', response.data)
+          this.pocketlist = response.data.data
         })
         .catch((err) => {
           if (err.response.status === 401) {
