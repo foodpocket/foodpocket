@@ -33,6 +33,7 @@ export default {
   data () {
     return {
       foodPocketLogo,
+      token: '',
       username: '',
       password: ''
     }
@@ -61,9 +62,8 @@ export default {
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
         if (response.data.result === 'successful') {
-          const token = response.data.data.token
-          // this.$store.dispatch('gettoken', token) // 放到vuex
-          this.$cookies.set('token', token) // 放到cookies
+          this.token = response.data.data.token
+          this.$cookies.set('token', this.token) // 放到cookies
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$router.push('/foodpocket')
         } else {
@@ -75,6 +75,11 @@ export default {
         this.$bus.$emit('message:remove', loadingMsgId)
         this.$bus.$emit('message:push', '網路異常，請稍候再試', 'danger')
       })
+    }
+  },
+  computed: {
+    pocketlist () {
+      return this.$store.state.pocketlist
     }
   },
   components: {

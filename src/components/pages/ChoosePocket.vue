@@ -8,27 +8,37 @@
 
     <div class="container">
 
-      <div v-for="(item, index) in pocketlist" :key="index" @click="seletedPocket(item)">
-        <input type="radio" :id="item.name" name="pockets" :value="item.name" v-model="seleted"/>
-        <label class="pockets" :for="item.name">
-          <h1 @click="openEditPocketModal(item)">{{item.name}}</h1>
-          <p>共有{{item.size}}筆資料</p>
-        </label>
+      <ul class="list-group list-group-flush text-left">
+        <li class="main-list list-group-item" v-for="(item, key) in pocketlist" :key="key">
+          <div class="d-flex align-items-center">
+            <div class="pockets-list" @click="seletedPocket(item)">
+              <div class="pocket-name">{{ item.name }}
+                <span v-if="seletedID === item.pocket_uid"><i class="fas fa-check-double"></i></span>
+              </div>
+              <div class="pocket-size">共有{{item.size}}間餐廳</div>
+            </div>
+
+            <div class="icon-button edit-btn">
+              <a class="pen-icon" @click.prevent="openEditPocketModal(item)">
+                <i class="fas fa-pen"></i>
+              </a>
+            </div>
+          </div>
+        </li>
+      </ul>
+
+      <div class="icon-button addpocket-btn">
+        <a class="plus-icon" @click.prevent="openAddPocketModal">
+          <i class="fas fa-plus"></i>
+        </a>
       </div>
 
-       <div class="addpocket-btn">
-        <a @click.prevent="openAddPocketModal" class="plus-icon"><i class="fas fa-plus"></i></a>
-       </div>
-
-      <div class="mt-5">
-        已選擇將<span style="font-size:1.2rem;"> {{seleted}} </span>口袋設為主要口袋
-      </div>
-      <div class="test text-left">
-        token: {{token}}
-        <br>
-        seletedID: {{seletedID}}
-        <br>
-        seletedName: {{seletedName}}
+      <div class="test text-left mt-5">
+        已選擇將<span style="font-size:1.2rem;color:red;"> {{seletedName}} </span>口袋設為主要口袋
+        <br />
+        seletedID: <span style="color:blue;">{{seletedID}}</span>
+        <br />
+        token: <span style="color:blue;">{{token}}</span>
       </div>
     </div>
 
@@ -43,7 +53,6 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-
           <!-- header(標題) -->
           <div class="modal-header text-white">
             <h5 class="modal-title" id="addPocketLabel">
@@ -58,7 +67,13 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="name">新增口袋名稱</label>
-              <input type="text" class="form-control mb-2" id="name" placeholder="請輸入餐廳名稱" v-model="newPocketName"/>
+              <input
+                type="text"
+                class="form-control mb-2"
+                id="name"
+                placeholder="請輸入餐廳名稱"
+                v-model="newPocketName"
+              />
             </div>
           </div>
 
@@ -82,7 +97,6 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-
           <!-- header(標題) -->
           <div class="modal-header text-white">
             <h5 class="modal-title" id="editPocketLabel">
@@ -97,15 +111,23 @@
           <div class="modal-body">
             <div class="form-group">
               <label for="editname">編輯口袋名稱</label>
-              <input type="text" class="form-control mb-2" id="editname" placeholder="請輸入餐廳名稱" v-model="editModalObj.name"/>
+              <input
+                type="text"
+                class="form-control mb-2"
+                id="editname"
+                placeholder="請輸入餐廳名稱"
+                v-model="editModalObj.name"
+              />
             </div>
           </div>
 
           <div class="modal-footer">
             <!-- footer (按鈕)-->
-            <button type="button" class="btn btn-sm" @click="openRemovePocketModal(copyModalObj)"><i class="fas fa-trash-alt" style="font-size:1.1rem;"></i></button>
+            <button type="button" class="btn btn-sm" @click="openRemovePocketModal(copyModalObj)">
+              <i class="fas fa-trash-alt" style="font-size:1.1rem;"></i>
+            </button>
             <button type="button" class="btn btn-sm" data-dismiss="modal">取消</button>
-            <button type="button" class="btn btn-sm" @click="editPocket">確認</button>
+            <button type="button" class="btn btn-sm" @click="editPocket(copyModalObj)">確認</button>
           </div>
         </div>
       </div>
@@ -135,15 +157,23 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div>
-              警告！<br /><strong class="text-danger">刪除</strong> {{copyModalObj.name}} 口袋後<br />所有此口袋內的餐廳不會被刪除（暫定）
+              警告！
+              <br />
+              <strong class="text-danger">刪除</strong>
+              {{copyModalObj.name}} 口袋後
+              <br />所有此口袋內的餐廳不會被刪除（暫定）
             </div>
           </div>
 
           <div class="modal-footer">
             <!-- 刪除卡片確認區-footer -->
-            <button type="button" class="btn btn-sm" @click="doNotDelete" >取消</button>
-            <button type="button" class="btn btn-sm"
-            @click="removePocket(copyModalObj)" data-dismiss="modal">確認刪除</button>
+            <button type="button" class="btn btn-sm" @click="doNotDelete">取消</button>
+            <button
+              type="button"
+              class="btn btn-sm"
+              @click="removePocket(copyModalObj)"
+              data-dismiss="modal"
+            >確認刪除</button>
           </div>
         </div>
       </div>
@@ -166,8 +196,8 @@ export default {
       token: '',
       seleted: '',
       newPocketName: '',
-      pocketlist: [], // 從API來的
-      copyModalObj: {}, // pocketlist的其中一個object，淺複製，代表不動的資料，供刪除區使用
+      // pocketlist: [], // 從API來的
+      copyModalObj: {}, // pocketlist的其中一個object，淺複製，代表不動的資料，仿原始資料
       editModalObj: {} // pocketlist的其中一個object，淺複製，用來編輯
     }
   },
@@ -176,11 +206,14 @@ export default {
     this.getPocketList()
   },
   computed: {
-    seletedID () {
-      return this.$store.state.pocketid
+    pocketlist () {
+      return this.$store.state.pocketlist
     },
     seletedName () {
-      return this.$store.state.pocketname
+      return this.$store.state.seletedName
+    },
+    seletedID () {
+      return this.$store.state.seletedID
     }
   },
   methods: {
@@ -197,11 +230,13 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
       this.$http
         .get(api, { params: { user_token: this.token } })
-        .then((response) => {
+        .then(response => {
           // console.log('getPocketList:', response.data)
-          this.pocketlist = response.data.data
+          const pocketlist = response.data.data
+          this.$store.dispatch('getpocketlist', pocketlist)
+          console.log('這個呼叫來自ChoosePocket。vuex確實有得到pocketlist喔')
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response.status === 401) {
             this.$router.push('/loginpage')
           }
@@ -234,11 +269,12 @@ export default {
       formdata.append('name', this.newPocketName)
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(response => {
           // console.log('newPocket:', response.data)
           this.getPocketList()
+          $('#addPocket').modal('hide')
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response.status === 401) {
             this.$router.push('/loginpage')
           }
@@ -246,41 +282,56 @@ export default {
       $('#addPocket').modal('hide')
       this.newPocketName = '' // 清空
     },
-    editPocket (item) {
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/editPocket/`
-      const formdata = new FormData()
-      formdata.append('user_token', this.token)
-      formdata.append('pocket_uid', this.editModalObj.pocket_uid)
-      formdata.append('name', this.editModalObj.name)
-      console.log('user_token', this.token)
-      console.log('pocket_uid', this.editModalObj.pocket_uid)
-      console.log('name', this.editModalObj.name)
-      this.axios
-        .post(api, formdata)
-        .then((response) => {
-          // console.log('editPocket:', response.data)
-          this.getPocketList()
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage')
-          }
-        })
-      $('#editPocket').modal('hide')
+    editPocket (item) { // item是copyModalObj
+      if (this.editModalObj.name !== item.name) { // 確認名字有改過
+        console.log('this.editModalObj.name:', this.editModalObj.name)
+        console.log('item.name:', item.name)
+        if (this.editModalObj.name !== '') { // 且注意名字不等於空
+          const api = `${process.env.VUE_APP_APIPATH}api/rest/editPocket/`
+          const formdata = new FormData()
+          formdata.append('user_token', this.token)
+          formdata.append('pocket_uid', this.editModalObj.pocket_uid)
+          formdata.append('name', this.editModalObj.name)
+          this.axios
+            .post(api, formdata)
+            .then(response => {
+              // console.log('editPocket:', response.data)
+              console.log('成功')
+              this.getPocketList()
+              $('#editPocket').modal('hide')
+              this.$bus.$emit('message:push', '成功編輯口袋名稱', 'success')
+            })
+            .catch(err => {
+              if (err.response.status === 401) {
+                this.$router.push('/loginpage')
+              }
+            })
+        } else {
+          this.$bus.$emit('message:push', '口袋名稱不能為空', 'danger')
+        }
+      } else {
+        console.log('並未改變')
+        $('#editPocket').modal('hide')
+      }
     },
-    removePocket (item) {
+    removePocket (item) { // item是copyModalObj
       const api = `${process.env.VUE_APP_APIPATH}api/rest/removePocket/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('pocket_uid', item.pocket_uid)
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(response => {
           // console.log('removePocket:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.name + ' 口袋', 'success')
+          this.$bus.$emit(
+            'message:push',
+            '成功刪除 ' + item.name + ' 口袋',
+            'success'
+          )
           this.getPocketList()
+          $('#removePocket').modal('hide')
         })
-        .catch((err) => {
+        .catch(err => {
           if (err.response.status === 401) {
             this.$router.push('/loginpage')
           }
@@ -290,44 +341,30 @@ export default {
 
     // 選擇的動作 --------
     seletedPocket (item) {
-      const ID = item.pocket_uid
+      // console.log('item:', item)
+      // console.log('item.name:', item.name)
+      // console.log('item.pocket_uid:', item.pocket_uid)
+      // console.log('item.size:', item.size)
+      // ------------------------------------------------
+      const pocketid = item.pocket_uid
       const pocketname = item.name
-      this.$store.dispatch('getpocketid', ID)
+      this.$store.dispatch('getpocketid', pocketid)
       this.$store.dispatch('getpocketname', pocketname)
+      // ------------------------------------------------
+      this.$router.push('/foodpocket')
     }
   }
 }
 </script>
 
 <style lang="scss" scoped>
-
-.choosepocket{
+.choosepocket {
   min-height: 100vh;
   height: 100%;
   width: 100%;
   background-color: $light-background;
-  .pockets {
-    background-color: $second;
-    color: $deep;
-    margin: 20px auto;
-    padding: 10px 20px;
-    border-radius: 50px;
+  .icon-button {
     display: flex;
-    justify-content: space-between;
-    h1 {
-      margin: 0;
-      font-size: 1.5rem;
-    }
-    p{
-      margin: 0;
-    }
-  }
-
-  .addpocket-btn {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 40px;
     a {
       display: flex;
       justify-content: center;
@@ -342,38 +379,64 @@ export default {
     a:hover {
       transform: scale(1.2, 1.2);
     }
-    .plus-icon {
-      border: solid 1px $point;
-      color: $point;
-      i{
-        font-size: 1.4rem;
+    i {
+      font-size: 1.4rem;
+    }
+  }
+  .list-group {
+    margin-top: 20px;
+    .pockets-list {
+      width: 75%;
+      // background-color: aquamarine;
+      .pocket-name {
+        font-size: 1.2rem;
+      }
+      .pocket-size {
+        font-size: 0.8rem;
+      }
+    }
+    .edit-btn {
+      width: 40%;
+      // background-color: rgb(113, 138, 130);
+      justify-content: flex-end;
+      a:active,
+      a:hover {
+        color: #ffa600;
+      }
+      .pen-icon {
+        border: solid 1px #ffa600;
+        color: #ffa600;
       }
     }
   }
-
-  input[type="radio"]{
-    display: none;
+  .addpocket-btn {
+    justify-content: center;
+    align-items: center;
+    margin: 40px;
+    a:active,
+    a:hover {
+      color: #54cc24;
+    }
+    .plus-icon {
+      border: solid 1px #54cc24;
+      color: #54cc24;
+    }
   }
-  input:checked + .pockets{
-    background: $primary;
-    color: $light-background;
-    transition: 0.2s;
-  }
 
-  .modal{
+  .modal {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
-    .modal-header{
+    .modal-header {
       background-color: $point;
     }
-    .modal-body{
+    .modal-body {
       background-color: $light-background;
     }
-    .modal-footer{
+    .modal-footer {
       background-color: $second;
     }
-    .btn{
+    .btn {
       background-color: $primary;
       color: $light-background;
       border: none;

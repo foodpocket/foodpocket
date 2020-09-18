@@ -32,7 +32,7 @@
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
       <div class="main-area card text-center">
         <div class="card-header">
-          <!-- card-header 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
+          <!-- 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
               <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
@@ -383,6 +383,7 @@
 import $ from 'jquery'
 import navbar from '@/components/navbar.vue'
 import bus from '@/components/bus.vue'
+import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -412,14 +413,16 @@ export default {
   },
   created () {
     this.getToken()
+    this.getPocketList()
     this.touchendActive()
   },
   computed: {
-    pocketID () {
-      return this.$store.state.pocketid
+    ...mapGetters(['getter_pocketname', 'getter_pocketid']),
+    seletedID () {
+      return this.$store.state.seletedID
     },
     seletedName () {
-      return this.$store.state.pocketname
+      return this.$store.state.seletedName
     },
     nextHideUntil () {
       const today = Math.floor(
@@ -479,6 +482,22 @@ export default {
     }
   },
   methods: {
+    getPocketList () {
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
+      this.$http
+        .get(api, { params: { user_token: this.token } })
+        .then(response => {
+          // console.log('getPocketList:', response.data)
+          const pocketlist = response.data.data
+          this.$store.dispatch('getpocketlist', pocketlist)
+          console.log('這個呼叫來自MainPocket。vuex確實有得到pocketlist喔')
+        })
+        .catch(err => {
+          if (err.response.status === 401) {
+            this.$router.push('/loginpage')
+          }
+        })
+    },
     // 必備----------------------------
     getToken () {
       if (this.$cookies.isKey('token')) {
@@ -493,7 +512,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token, pocket_uid: vm.pocketID } })
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
           // console.log('restaurantList:', response.data)
           vm.restaurantList = response.data.data
@@ -576,7 +595,7 @@ export default {
       const formdata = new FormData()
       formdata.append('name', restaurantName)
       formdata.append('user_token', this.token)
-      formdata.append('pocket_uid', this.pocketID)
+      formdata.append('pocket_uid', this.seletedID)
       this.axios
         .post(api, formdata)
         .then((response) => {
@@ -685,7 +704,7 @@ export default {
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('name', restaurantName)
-        formdata.append('pocket_uid', this.pocketID)
+        formdata.append('pocket_uid', this.seletedID)
         this.axios
           .post(api, formdata)
           .then((response) => {
@@ -1122,6 +1141,5 @@ export default {
   .end {
     justify-content: flex-end;
   }
-
 }
 </style>

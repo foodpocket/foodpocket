@@ -46,6 +46,9 @@ export default {
     logout () {
       if (this.$cookies.isKey('token')) {
         this.$cookies.remove('token')
+        // this.$store.dispatch('getpocketid', '')
+        // this.$store.dispatch('getpocketname', '未選擇口袋')
+        this.$store.dispatch('getpocketlist', [])
       }
       window.alert('登出成功')
       this.$router.push('/landingpage')
