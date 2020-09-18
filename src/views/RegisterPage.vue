@@ -5,7 +5,7 @@
         <img class="logo" :src="foodPocketLogo" />
       </div>
       <h2 @click="back">FoodPocket</h2>
-      <form class="form" @submit.prevent="register">
+      <form class="form" @submit.prevent="registerAccount">
         <div class="group">
           <label for="user_username">帳號</label>
           <input type="text" id="user_username" placeholder="請輸入帳號" v-model="username" required/>
@@ -46,11 +46,28 @@ export default {
     back () {
       this.$router.push('/landingpage')
     },
-    register () {
+    registerAccount () {
       if (this.password === this.checkpassword) {
-        this.$router.push('/confirmationpage')
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/registerAccount/`
+        const formdata = new FormData()
+        formdata.append('username', this.username)
+        formdata.append('password', this.checkpassword)
+        formdata.append('email', this.email)
+        this.axios
+          .post(api, formdata)
+          .then((response) => {
+            console.log('registerAccount:', response.data)
+            this.$router.push('/confirmationpage') // 跳轉到成功頁
+          })
+          .catch((err) => {
+            if (err.response.status === 401) {
+              this.$router.push('/loginpage') // 應跳轉到失敗頁
+            }
+          })
       } else {
         window.alert('確認密碼必須與設定密碼一致')
+        this.password = ''
+        this.checkpassword = ''
       }
     }
   },

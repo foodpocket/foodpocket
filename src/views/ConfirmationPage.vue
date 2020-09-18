@@ -13,7 +13,7 @@
         </ol>
       </div>
       <button type="button" class="btn" @click.prevent="back">回首頁</button>
-      <a href class="tips" @click.prevent="tips">跳至成功頁面</a>
+      <a href class="tips" @click.prevent="tips">跳過收信流程直達成功頁面</a>
     </div>
   </div>
 </template>

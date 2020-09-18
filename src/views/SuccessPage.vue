@@ -67,9 +67,6 @@ export default {
         font-size: 1.7rem;
         margin-bottom: 20px;
       }
-      p{
-        text-align: left;
-      }
     }
     button {
       background-color: $point;
