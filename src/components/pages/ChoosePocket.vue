@@ -197,8 +197,10 @@ export default {
       seleted: '',
       newPocketName: '',
       // pocketlist: [], // 從API來的
-      copyModalObj: {}, // pocketlist的其中一個object，淺複製，代表不動的資料，仿原始資料
-      editModalObj: {} // pocketlist的其中一個object，淺複製，用來編輯
+      copyModalObj: {},
+      // pocketlist的其中一個object，淺複製，代表不動的資料，仿原始資料
+      editModalObj: {}
+      // pocketlist的其中一個object，淺複製，用來編輯
     }
   },
   created () {
@@ -387,7 +389,6 @@ export default {
     margin-top: 20px;
     .pockets-list {
       width: 75%;
-      // background-color: aquamarine;
       .pocket-name {
         font-size: 1.2rem;
       }
@@ -397,7 +398,6 @@ export default {
     }
     .edit-btn {
       width: 40%;
-      // background-color: rgb(113, 138, 130);
       justify-content: flex-end;
       a:active,
       a:hover {
