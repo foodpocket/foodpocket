@@ -337,6 +337,13 @@ export default {
           if (err.response.status === 401) {
             this.$router.push('/loginpage')
           }
+          if (err.response.status === 403) {
+            this.$bus.$emit(
+              'message:push',
+              '不可刪除，帳號內至少需要一個口袋',
+              'danger'
+            )
+          }
         })
       $('#removePocket').modal('hide')
     },

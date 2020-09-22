@@ -1,5 +1,6 @@
 <template>
   <div class="registerpage">
+    <bus />
     <div class="container">
       <div class="logo-wrapper">
         <img class="logo" :src="foodPocketLogo" />
@@ -31,8 +32,12 @@
 
 <script>
 import foodPocketLogo from '@/assets/foodpocket_logo.svg'
+import bus from '@/components/bus.vue'
 
 export default {
+  components: {
+    bus
+  },
   data () {
     return {
       foodPocketLogo,
@@ -63,6 +68,11 @@ export default {
             if (err.response.status === 401) {
               this.$router.push('/loginpage') // 應跳轉到失敗頁
             }
+            if (err.response.status === 409) {
+              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', 'danger')
+              this.password = ''
+              this.checkpassword = ''
+            }
           })
       } else {
         window.alert('確認密碼必須與設定密碼一致')
@@ -70,8 +80,6 @@ export default {
         this.checkpassword = ''
       }
     }
-  },
-  components: {
   }
 }
 </script>

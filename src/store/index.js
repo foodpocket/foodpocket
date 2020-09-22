@@ -13,7 +13,7 @@ export default new Vuex.Store({
       }
     ],
     seletedName: '未選擇口袋',
-    seletedID: ''
+    seletedID: '此為vuex原始資料'
   },
   actions: {
     getpocketlist (context, pocketlist) {
@@ -37,7 +37,7 @@ export default new Vuex.Store({
       state.seletedName = pocketname
     }
   },
-  getters: {
+  getters: { // 尚未真的使用且未顯示
     getter_pocketname (state) {
       if (state.pocketlist.lengh > 10) {
         return state.pocketlist[0].name

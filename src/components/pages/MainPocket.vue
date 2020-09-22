@@ -527,7 +527,7 @@ export default {
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
       const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token } })
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
           // console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
@@ -961,7 +961,7 @@ export default {
         if (item.show === true) {
           this.recommendList.push(item)
         }
-        console.log(item)
+        // console.log(item)
         this.recommendList.reverse()
       })
     },

@@ -60,10 +60,15 @@ export default {
       formdata.append('username', this.username)
       formdata.append('password', this.password)
       this.$http.post(api, formdata).then((response) => {
-        // console.log(response.data)
+        console.log(response.data)
         if (response.data.result === 'successful') {
           this.token = response.data.data.token
           this.$cookies.set('token', this.token) // 放到cookies
+          const pocket = response.data.data.last_pocket
+          const pocketid = pocket.pocket_uid
+          const pocketname = pocket.name
+          this.$store.dispatch('getpocketid', pocketid) // 放到vuex
+          this.$store.dispatch('getpocketname', pocketname) // 放到vuex
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$router.push('/foodpocket')
         } else {
