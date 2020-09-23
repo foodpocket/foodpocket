@@ -35,10 +35,10 @@
 
       <div class="test text-left mt-5">
         已選擇將<span style="font-size:1.2rem;color:red;"> {{seletedName}} </span>口袋設為主要口袋
-        <br />
+        <!-- <br />
         seletedID: <span style="color:blue;">{{seletedID}}</span>
         <br />
-        token: <span style="color:blue;">{{token}}</span>
+        token: <span style="color:blue;">{{token}}</span> -->
       </div>
     </div>
 
@@ -196,7 +196,7 @@ export default {
       token: '',
       seleted: '',
       newPocketName: '',
-      // pocketlist: [], // 從API來的
+      pocketlist: [], // 從API來的
       copyModalObj: {},
       // pocketlist的其中一個object，淺複製，代表不動的資料，仿原始資料
       editModalObj: {}
@@ -208,14 +208,16 @@ export default {
     this.getPocketList()
   },
   computed: {
-    pocketlist () {
-      return this.$store.state.pocketlist
-    },
+    // pocketlist () {
+    //   return this.$store.state.pocketlist
+    // },
     seletedName () {
-      return this.$store.state.seletedName
+      const getpocketname = this.$cookies.get('getpocketname')
+      return getpocketname
     },
     seletedID () {
-      return this.$store.state.seletedID
+      const getpocketid = this.$cookies.get('getpocketid')
+      return getpocketid
     }
   },
   methods: {
@@ -234,9 +236,7 @@ export default {
         .get(api, { params: { user_token: this.token } })
         .then(response => {
           // console.log('getPocketList:', response.data)
-          const pocketlist = response.data.data
-          this.$store.dispatch('getpocketlist', pocketlist)
-          console.log('這個呼叫來自ChoosePocket。vuex確實有得到pocketlist喔')
+          this.pocketlist = response.data.data
         })
         .catch(err => {
           if (err.response.status === 401) {
@@ -286,8 +286,6 @@ export default {
     },
     editPocket (item) { // item是copyModalObj
       if (this.editModalObj.name !== item.name) { // 確認名字有改過
-        console.log('this.editModalObj.name:', this.editModalObj.name)
-        console.log('item.name:', item.name)
         if (this.editModalObj.name !== '') { // 且注意名字不等於空
           const api = `${process.env.VUE_APP_APIPATH}api/rest/editPocket/`
           const formdata = new FormData()
@@ -298,7 +296,6 @@ export default {
             .post(api, formdata)
             .then(response => {
               // console.log('editPocket:', response.data)
-              console.log('成功')
               this.getPocketList()
               $('#editPocket').modal('hide')
               this.$bus.$emit('message:push', '成功編輯口袋名稱', 'success')
@@ -357,8 +354,10 @@ export default {
       // ------------------------------------------------
       const pocketid = item.pocket_uid
       const pocketname = item.name
-      this.$store.dispatch('getpocketid', pocketid)
-      this.$store.dispatch('getpocketname', pocketname)
+      this.$cookies.set('getpocketid', pocketid) // 放到cookies
+      this.$cookies.set('getpocketname', pocketname) // 放到cookies
+      // this.$store.dispatch('getpocketid', pocketid)
+      // this.$store.dispatch('getpocketname', pocketname)
       // ------------------------------------------------
       this.$router.push('/foodpocket')
     }

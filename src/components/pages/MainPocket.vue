@@ -383,7 +383,6 @@
 import $ from 'jquery'
 import navbar from '@/components/navbar.vue'
 import bus from '@/components/bus.vue'
-import { mapGetters } from 'vuex'
 
 export default {
   components: {
@@ -413,16 +412,16 @@ export default {
   },
   created () {
     this.getToken()
-    this.getPocketList()
     this.touchendActive()
   },
   computed: {
-    ...mapGetters(['getter_pocketname', 'getter_pocketid']),
     seletedID () {
-      return this.$store.state.seletedID
+      const getpocketid = this.$cookies.get('getpocketid')
+      return getpocketid
     },
     seletedName () {
-      return this.$store.state.seletedName
+      const getpocketname = this.$cookies.get('getpocketname')
+      return getpocketname
     },
     nextHideUntil () {
       const today = Math.floor(
@@ -482,22 +481,6 @@ export default {
     }
   },
   methods: {
-    getPocketList () {
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
-      this.$http
-        .get(api, { params: { user_token: this.token } })
-        .then(response => {
-          // console.log('getPocketList:', response.data)
-          const pocketlist = response.data.data
-          this.$store.dispatch('getpocketlist', pocketlist)
-          console.log('這個呼叫來自MainPocket。vuex確實有得到pocketlist喔')
-        })
-        .catch(err => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage')
-          }
-        })
-    },
     // 必備----------------------------
     getToken () {
       if (this.$cookies.isKey('token')) {
