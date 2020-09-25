@@ -48,8 +48,8 @@ export default {
         this.$cookies.remove('token')
         this.$cookies.remove('getpocketid')
         this.$cookies.remove('getpocketname')
-        // this.$store.dispatch('getpocketid', '')
-        // this.$store.dispatch('getpocketname', '未選擇口袋')
+        this.$cookies.remove('username')
+        this.$cookies.remove('pocketnum')
       }
       window.alert('登出成功')
       this.$router.push('/landingpage')

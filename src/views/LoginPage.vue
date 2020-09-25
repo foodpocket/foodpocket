@@ -68,6 +68,7 @@ export default {
           const pocketname = pocket.name
           this.$cookies.set('getpocketid', pocketid) // 放到cookies
           this.$cookies.set('getpocketname', pocketname) // 放到cookies
+          this.$cookies.set('username', this.username)
           // this.$store.dispatch('getpocketid', pocketid) // 放到vuex
           // this.$store.dispatch('getpocketname', pocketname) // 放到vuex
           this.$bus.$emit('message:remove', loadingMsgId)
@@ -77,7 +78,8 @@ export default {
           this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')
           this.password = ''
         }
-      }).catch(() => {
+      }).catch((err) => {
+        console.log(err)
         this.$bus.$emit('message:remove', loadingMsgId)
         this.$bus.$emit('message:push', '網路異常，請稍候再試', 'danger')
       })

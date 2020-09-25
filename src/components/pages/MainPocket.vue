@@ -10,7 +10,7 @@
     <!-- 主畫面 -->
     <div class="container">
       <!-- 快速新增 -->
-      <div class="quicklyAdd input-group pt-3">
+      <div class="quicklyAdd input-group mt-3">
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
@@ -416,12 +416,10 @@ export default {
   },
   computed: {
     seletedID () {
-      const getpocketid = this.$cookies.get('getpocketid')
-      return getpocketid
+      return this.$cookies.get('getpocketid')
     },
     seletedName () {
-      const getpocketname = this.$cookies.get('getpocketname')
-      return getpocketname
+      return this.$cookies.get('getpocketname')
     },
     nextHideUntil () {
       const today = Math.floor(

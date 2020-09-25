@@ -7,13 +7,20 @@
     <bus />
 
     <div class="container">
+      <div class="txt mt-3">
+        您已將
+        <span>{{seletedName}}</span>設為主要口袋
+      </div>
 
       <ul class="list-group list-group-flush text-left">
         <li class="main-list list-group-item" v-for="(item, key) in pocketlist" :key="key">
-          <div class="d-flex align-items-center">
+          <div class="item d-flex align-items-center">
             <div class="pockets-list" @click="seletedPocket(item)">
-              <div class="pocket-name">{{ item.name }}
-                <span v-if="seletedID === item.pocket_uid"><i class="fas fa-check-double"></i></span>
+              <div class="pocket-name">
+                {{ item.name }}
+                <span v-if="seletedID === item.pocket_uid">
+                  <i class="fas fa-check-double ml-2" style="color: rgb(211, 0, 0);"></i>
+                </span>
               </div>
               <div class="pocket-size">共有{{item.size}}間餐廳</div>
             </div>
@@ -31,14 +38,6 @@
         <a class="plus-icon" @click.prevent="openAddPocketModal">
           <i class="fas fa-plus"></i>
         </a>
-      </div>
-
-      <div class="test text-left mt-5">
-        已選擇將<span style="font-size:1.2rem;color:red;"> {{seletedName}} </span>口袋設為主要口袋
-        <!-- <br />
-        seletedID: <span style="color:blue;">{{seletedID}}</span>
-        <br />
-        token: <span style="color:blue;">{{token}}</span> -->
       </div>
     </div>
 
@@ -161,7 +160,8 @@
               <br />
               <strong class="text-danger">刪除</strong>
               {{copyModalObj.name}} 口袋後
-              <br />所有此口袋內的餐廳不會被刪除（暫定）
+              <br />此口袋內的餐廳及到訪記錄
+              <strong class="text-danger">都會被刪除</strong>
             </div>
           </div>
 
@@ -194,7 +194,8 @@ export default {
   data () {
     return {
       token: '',
-      seleted: '',
+      seletedName: '',
+      seletedID: '',
       newPocketName: '',
       pocketlist: [], // 從API來的
       copyModalObj: {},
@@ -208,17 +209,6 @@ export default {
     this.getPocketList()
   },
   computed: {
-    // pocketlist () {
-    //   return this.$store.state.pocketlist
-    // },
-    seletedName () {
-      const getpocketname = this.$cookies.get('getpocketname')
-      return getpocketname
-    },
-    seletedID () {
-      const getpocketid = this.$cookies.get('getpocketid')
-      return getpocketid
-    }
   },
   methods: {
     // 必要的 --------
@@ -237,6 +227,9 @@ export default {
         .then(response => {
           // console.log('getPocketList:', response.data)
           this.pocketlist = response.data.data
+          this.seletedName = this.$cookies.get('getpocketname')
+          this.seletedID = this.$cookies.get('getpocketid')
+          this.$cookies.set('pocketnum', this.pocketlist.length)
         })
         .catch(err => {
           if (err.response.status === 401) {
@@ -265,6 +258,13 @@ export default {
 
     // (真)針對Pocket的動作 --------
     addNewPocket () {
+      if (this.newPocketName === '') {
+        this.$bus.$emit('message:push', '口袋名稱不可為空', 'danger')
+      }
+      const newPocketName = this.newPocketName.trim() // 修掉輸入的空白
+      if (!newPocketName) {
+        return
+      }
       const api = `${process.env.VUE_APP_APIPATH}api/rest/newPocket/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
@@ -284,9 +284,12 @@ export default {
       $('#addPocket').modal('hide')
       this.newPocketName = '' // 清空
     },
-    editPocket (item) { // item是copyModalObj
-      if (this.editModalObj.name !== item.name) { // 確認名字有改過
-        if (this.editModalObj.name !== '') { // 且注意名字不等於空
+    editPocket (item) {
+      // item是copyModalObj
+      if (this.editModalObj.name !== item.name) {
+        // 確認名字有改過
+        if (this.editModalObj.name !== '') {
+          // 且注意名字不等於空
           const api = `${process.env.VUE_APP_APIPATH}api/rest/editPocket/`
           const formdata = new FormData()
           formdata.append('user_token', this.token)
@@ -313,7 +316,8 @@ export default {
         $('#editPocket').modal('hide')
       }
     },
-    removePocket (item) { // item是copyModalObj
+    removePocket (item) {
+      // item是copyModalObj
       const api = `${process.env.VUE_APP_APIPATH}api/rest/removePocket/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
@@ -322,24 +326,17 @@ export default {
         .post(api, formdata)
         .then(response => {
           // console.log('removePocket:', response.data)
-          this.$bus.$emit(
-            'message:push',
-            '成功刪除 ' + item.name + ' 口袋',
-            'success'
-          )
+          this.$bus.$emit('message:push', '成功刪除 ' + item.name + ' 口袋', 'success')
+          this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid) // 放到cookies
+          this.$cookies.set('getpocketname', this.pocketlist[0].name) // 放到cookies
           this.getPocketList()
-          $('#removePocket').modal('hide')
         })
         .catch(err => {
           if (err.response.status === 401) {
             this.$router.push('/loginpage')
           }
           if (err.response.status === 403) {
-            this.$bus.$emit(
-              'message:push',
-              '不可刪除，帳號內至少需要一個口袋',
-              'danger'
-            )
+            this.$bus.$emit('message:push', '不可刪除，帳號內至少需要一個口袋', 'danger')
           }
         })
       $('#removePocket').modal('hide')
@@ -347,18 +344,8 @@ export default {
 
     // 選擇的動作 --------
     seletedPocket (item) {
-      // console.log('item:', item)
-      // console.log('item.name:', item.name)
-      // console.log('item.pocket_uid:', item.pocket_uid)
-      // console.log('item.size:', item.size)
-      // ------------------------------------------------
-      const pocketid = item.pocket_uid
-      const pocketname = item.name
-      this.$cookies.set('getpocketid', pocketid) // 放到cookies
-      this.$cookies.set('getpocketname', pocketname) // 放到cookies
-      // this.$store.dispatch('getpocketid', pocketid)
-      // this.$store.dispatch('getpocketname', pocketname)
-      // ------------------------------------------------
+      this.$cookies.set('getpocketid', item.pocket_uid) // 放到cookies
+      this.$cookies.set('getpocketname', item.name) // 放到cookies
       this.$router.push('/foodpocket')
     }
   }
@@ -371,6 +358,17 @@ export default {
   height: 100%;
   width: 100%;
   background-color: $light-background;
+  .txt {
+    background: rgba(255, 166, 0, 0.3);
+    border-radius: 10px;
+    text-align: center;
+    padding: 3px 0;
+    span {
+      color: rgb(211, 0, 0);
+      padding: 0 10px;
+      margin: 0 10px;
+    }
+  }
   .icon-button {
     display: flex;
     a {
@@ -393,25 +391,33 @@ export default {
   }
   .list-group {
     margin-top: 20px;
-    .pockets-list {
-      width: 75%;
-      .pocket-name {
-        font-size: 1.2rem;
-      }
-      .pocket-size {
-        font-size: 0.8rem;
-      }
-    }
-    .edit-btn {
-      width: 40%;
-      justify-content: flex-end;
-      a:active,
-      a:hover {
-        color: #ffa600;
-      }
-      .pen-icon {
-        border: solid 1px #ffa600;
-        color: #ffa600;
+    li {
+      padding: 10px 0;
+      .item {
+        padding: 10px 20px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 2px $point;
+        .pockets-list {
+          width: 75%;
+          .pocket-name {
+            font-size: 1.2rem;
+          }
+          .pocket-size {
+            font-size: 0.8rem;
+          }
+        }
+        .edit-btn {
+          width: 40%;
+          justify-content: flex-end;
+          a:active,
+          a:hover {
+            color: #ffa600;
+          }
+          .pen-icon {
+            border: solid 1px #ffa600;
+            color: #ffa600;
+          }
+        }
       }
     }
   }
@@ -428,7 +434,6 @@ export default {
       color: #54cc24;
     }
   }
-
   .modal {
     max-height: 100%;
     overflow-x: hidden;
