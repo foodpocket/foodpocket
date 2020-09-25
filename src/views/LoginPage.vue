@@ -79,6 +79,7 @@ export default {
           this.$router.push('/foodpocket')
           this.isLoading = false
         } else {
+          this.isLoading = false
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')
           this.password = ''

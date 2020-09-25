@@ -1,5 +1,6 @@
 <template>
   <div class="setting">
+    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>設定</h1>
     </navbar>
@@ -33,6 +34,7 @@ export default {
   },
   data () {
     return {
+      isLoading: false,
       color: [
         { name: '$background', info: 'outsidepage-bg / sidebar-hightlight', color: '#FCFBEF' },
         { name: '$lightbackground', info: 'pockets-bacground', color: '#ffffff' },
