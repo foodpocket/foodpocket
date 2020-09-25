@@ -1,5 +1,6 @@
 <template>
   <div class="mainpocket">
+    <loading :active.sync="isLoading"></loading>
 
     <navbar>
       <h1>{{seletedName}}</h1>
@@ -98,7 +99,7 @@
             <div class="d-flex align-items-center justify-content-center">
               <div class="restaurant-list">
                 <div class="restaurant-name">
-                  <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">
+                  <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
                     新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
                   </button>
                 </div>
@@ -392,6 +393,7 @@ export default {
   data () {
     return {
       token: '',
+      isLoading: false,
       searchRestaurant: '', // 搜尋的字串
       tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
@@ -490,11 +492,13 @@ export default {
       }
     },
     getRestaurantList () {
+      this.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this
       this.$http
         .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
+          this.isLoading = false
           // console.log('restaurantList:', response.data)
           vm.restaurantList = response.data.data
         })
@@ -505,11 +509,13 @@ export default {
         })
     },
     getVisitRecords () {
+      this.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
       const vm = this
       this.$http
         .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
+          this.isLoading = false
           // console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
         })
@@ -996,7 +1002,12 @@ export default {
   }
 }
 // 以上是試色區----------------------------
-
+.nav-tabs  .nav-link,
+.nav-tabs  .nav-link:hover,
+.nav-tabs  .nav-link:active{
+  border: none;
+  cursor: pointer;
+}
 .mainpocket{
   min-height: 100vh;
   height: 100%;

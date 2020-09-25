@@ -4,30 +4,22 @@
       <h1>設定</h1>
     </navbar>
     <div class="container">
-      <div class="colorcard text-left mt-3" v-for="(item, index) in color" :key="index">
-        <p :style="{backgroundColor: item.color}">
-          {{item.name}}
-        </p>
+      <div class="mt-3">
+        <p>沒什麼好設定的，不過可以玩玩顏色</p>
+      </div>
+      <div class="colorcard text-left" v-for="(item, index) in color" :key="index">
+        <div :style="{backgroundColor: item.color}">
+          <p>
+            {{item.name}}
+          </p>
+          <p style="font-size:0.8rem; color:gray;">
+            {{item.info}}
+          </p>
+        </div>
         <p>
-          <!-- {{item.color}} -->
           <input type="text" v-model="item.color">
         </p>
       </div>
-      <!-- <div>
-        更換背景主題
-        <input id="theme" type="checkbox" value="theme"/>
-        <label class="pockets" for="theme">更換背景主題</label>
-      </div>
-      <div>
-        <span>吃飯時間提醒您紀錄</span>
-        <input id="remind" type="checkbox" value="remind"/>
-        <label for="remind">吃飯時間提醒您紀錄</label>
-      </div>
-      <div>
-        <span>連結FB、IG、LINE</span>
-        <input id="connect" type="checkbox" value="connect"/>
-        <label for="connect">連結FB、IG、LINE</label>
-      </div> -->
     </div>
   </div>
 </template>
@@ -42,12 +34,12 @@ export default {
   data () {
     return {
       color: [
-        { name: '$background', color: '#FCFBEF' },
-        { name: '$lightbackground', color: '#ffffff' },
-        { name: '$primary', color: '#bb925f' },
-        { name: '$second', color: '#daceb4' },
-        { name: '$point', color: '#906441' },
-        { name: '$deep', color: '#26190D' }
+        { name: '$background', info: 'outsidepage-bg / sidebar-hightlight', color: '#FCFBEF' },
+        { name: '$lightbackground', info: 'pockets-bacground', color: '#ffffff' },
+        { name: '$primary', info: 'outsidepage-input / quicklyAdd-btn', color: '#bb925f' },
+        { name: '$second', info: 'sidebar-bg', color: '#daceb4' },
+        { name: '$point', info: 'outsidepage-btn / navbar', color: '#906441' },
+        { name: '$deep', info: 'sidebar-words', color: '#26190D' }
       ]
     }
   }
@@ -63,23 +55,6 @@ export default {
   .colorcard{
     box-shadow: 0 0 3px #ddd;
     padding: 10px;
-  }
-  label{
-    background-color: $second;
-    color: $deep;
-    margin: 20px auto;
-    padding: 10px 20px;
-    border-radius: 50px;
-    display: flex;
-    justify-content: space-between;
-    // input[type="checkbox"]{
-    //   display: none;
-    // }
-    input:checked + .pockets{
-      background: $primary;
-      color: $light-background;
-      transition: 0.2s;
-    }
   }
 }
 </style>

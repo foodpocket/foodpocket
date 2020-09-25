@@ -1,5 +1,6 @@
 <template>
   <div class="login">
+    <loading :active.sync="isLoading"></loading>
     <bus/>
     <div class="container">
       <form class="form" @submit.prevent="signin">
@@ -33,6 +34,7 @@ export default {
   data () {
     return {
       foodPocketLogo,
+      isLoading: false,
       username: '',
       password: ''
     }
@@ -52,6 +54,7 @@ export default {
       this.$router.push('/forgetpasswordpage')
     },
     signin () {
+      this.isLoading = true
       const loadingMsgId = Math.floor(new Date() / 1000)
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
       const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
@@ -60,6 +63,7 @@ export default {
       formdata.append('password', this.password)
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
+        // this.isLoading = false
         if (response.data.result === 'successful') {
           const token = response.data.data.token
           this.$cookies.set('token', token) // 放到cookies
@@ -73,6 +77,7 @@ export default {
           // this.$store.dispatch('getpocketname', pocketname) // 放到vuex
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$router.push('/foodpocket')
+          this.isLoading = false
         } else {
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')

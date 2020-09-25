@@ -1,5 +1,6 @@
 <template>
   <div class="choosepocket">
+    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>選擇口袋名單</h1>
     </navbar>
@@ -194,6 +195,7 @@ export default {
   data () {
     return {
       token: '',
+      isLoading: false,
       seletedName: '',
       seletedID: '',
       newPocketName: '',
@@ -221,10 +223,12 @@ export default {
       }
     },
     getPocketList () {
+      this.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`
       this.$http
         .get(api, { params: { user_token: this.token } })
         .then(response => {
+          this.isLoading = false
           // console.log('getPocketList:', response.data)
           this.pocketlist = response.data.data
           this.seletedName = this.$cookies.get('getpocketname')
