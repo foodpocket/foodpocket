@@ -105,6 +105,7 @@ export default {
   // height: 100%;
   background-color: $background;
   .easy-area {
+    height: 100vh;
     .container {
       // background-color: aquamarine; // dev
       padding-bottom: 50px; // dev
