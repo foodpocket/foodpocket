@@ -220,15 +220,15 @@
               <label for="status" class="mt-3">推薦模式</label>
               <div class="status text-left d-flex">
                 <div class="random-input m-0 mr-4">
-                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="random" name="status" value="RANDOM" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="random">隨機(預設)</label>
                 </div>
                 <div class="active-input m-0 mr-4">
-                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="active" name="status" value="ACTIVE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="active">永遠</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
-                  <input type="radio" id="hide" name="status" value="HIDE" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="hide" name="status" value="HIDE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="hide">不推薦</label>
                   <div v-if="editModalObj.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
@@ -1114,6 +1114,28 @@ export default {
         color:#fff;
         border-radius:10px;
         padding: 0 10px;
+      }
+    }
+  }
+
+  #editInfoModal {
+    .modal-body{
+      .status{
+        display: flex;
+        justify-content: flex-start;
+        input[type="radio"] {
+          opacity: 0; //設置透明度，隱藏原有input樣式
+          display: none;
+        }
+        .status-input+label {
+          border: 1px solid transparent;
+          border-bottom: 1px solid #999;
+          padding: 5px;
+        }
+        input:checked+label {
+          background-color: $second;
+          border: 1px solid $second;
+        }
       }
     }
   }
