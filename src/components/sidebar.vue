@@ -24,11 +24,11 @@
             </router-link>
         </li>
 
-        <li class="nav-item" @click="controlsidebar">
+        <!-- <li class="nav-item" @click="controlsidebar">
             <router-link class="nav-link after" to="/foodpocket/setting">
               <i class="fas fa-cog"></i>設定
             </router-link>
-        </li>
+        </li> -->
 
         <li class="logout" @click.prevent="logout">
           <a href="#">登出</a>

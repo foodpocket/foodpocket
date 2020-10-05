@@ -9,7 +9,7 @@
       <div class="txt text-left mt-3">
         <h4>帳號：<span> {{username}}</span></h4>
         <h4>口袋數：<span> {{pocketnum}}個</span></h4>
-        <h4>token：<span class="token">{{token}}</span></h4>
+        <!-- <h4>token：<span class="token">{{token}}</span></h4> -->
       </div>
     </div>
   </div>

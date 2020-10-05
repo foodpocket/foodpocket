@@ -58,12 +58,12 @@ const routes = [
         path: 'userinfo',
         name: 'UserInfo',
         component: () => import('../components/pages/UserInfo.vue')
-      },
-      {
-        path: 'setting',
-        name: 'Setting',
-        component: () => import('../components/pages/Setting.vue')
       }
+      // {
+      //   path: 'setting',
+      //   name: 'Setting',
+      //   component: () => import('../components/pages/Setting.vue')
+      // }
     ]
   },
   {

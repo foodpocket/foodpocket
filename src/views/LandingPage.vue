@@ -14,7 +14,7 @@
       </div>
     </div>
 
-    <div class="introduction">
+    <!-- <div class="introduction">
 
       <div class="title">
         <h2>電視 / FB / IG網紅 / Youtuber</h2>
@@ -60,7 +60,7 @@
         <h2 @click="RegisterPage">去創口袋囉！</h2>
       </div>
 
-    </div>
+    </div> -->
   </div>
 </template>
 
