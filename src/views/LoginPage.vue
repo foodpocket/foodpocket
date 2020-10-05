@@ -1,23 +1,26 @@
 <template>
   <div class="login">
+    <loading :active.sync="isLoading"></loading>
     <bus/>
     <div class="container">
       <form class="form" @submit.prevent="signin">
         <div class="logo-wrapper">
           <img class="logo" :src="foodPocketLogo" />
         </div>
-        <!-- <h2><router-link to="/Home">FoodPocket</router-link></h2> -->
         <h2 @click="back">FoodPocket</h2>
         <div class="group">
           <label for="user_id">帳號</label>
-          <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username"/>
+          <input type="text" id="user_id" placeholder="請輸入帳號" v-model="username" required/>
         </div>
         <div class="group">
           <label for="user_password">密碼</label>
-          <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password"/>
+          <input type="password" id="user_password" placeholder="請輸入密碼" v-model="password" required/>
         </div>
         <button type="submit" class="btn login-btn">登入</button>
-        <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
+        <div class="button-group">
+          <a class="btn register-btn" @click.prevent="RegisterPage">還沒有帳號？去註冊</a>
+          <a class="btn forget-btn" @click.prevent="forget">忘記密碼</a>
+        </div>
       </form>
     </div>
   </div>
@@ -31,6 +34,7 @@ export default {
   data () {
     return {
       foodPocketLogo,
+      isLoading: false,
       username: '',
       password: ''
     }
@@ -39,39 +43,57 @@ export default {
     back () {
       this.$router.push('/landingpage')
     },
+    RegisterPage () {
+      this.$router.push('/registerpage')
+    },
     clear () {
       this.username = ''
       this.password = ''
     },
     forget () {
-      window.alert('你忘記密碼我也沒辦法')
+      this.$router.push('/forgetpasswordpage')
     },
     signin () {
+      this.isLoading = true
       const loadingMsgId = Math.floor(new Date() / 1000)
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
-      const api = 'https://brycehuang.com/api/rest/loginAccount/'
-      const vm = this
-      // console.log(api)
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
       const formdata = new FormData()
-      formdata.append('username', vm.username)
-      formdata.append('password', vm.password)
+      formdata.append('username', this.username)
+      formdata.append('password', this.password)
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
+        // this.isLoading = false
         if (response.data.result === 'successful') {
           const token = response.data.data.token
-          // console.log(token)
+          this.$cookies.set('token', token) // 放到cookies
+          const pocket = response.data.data.last_pocket
+          const pocketid = pocket.pocket_uid
+          const pocketname = pocket.name
+          this.$cookies.set('getpocketid', pocketid) // 放到cookies
+          this.$cookies.set('getpocketname', pocketname) // 放到cookies
+          this.$cookies.set('username', this.username)
+          // this.$store.dispatch('getpocketid', pocketid) // 放到vuex
+          // this.$store.dispatch('getpocketname', pocketname) // 放到vuex
           this.$bus.$emit('message:remove', loadingMsgId)
-          this.$cookies.set('token', token)
           this.$router.push('/foodpocket')
+          this.isLoading = false
         } else {
+          this.isLoading = false
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')
           this.password = ''
         }
-      }).catch(() => {
+      }).catch((err) => {
+        console.log(err)
         this.$bus.$emit('message:remove', loadingMsgId)
         this.$bus.$emit('message:push', '網路異常，請稍候再試', 'danger')
       })
+    }
+  },
+  computed: {
+    pocketlist () {
+      return this.$store.state.pocketlist
     }
   },
   components: {
@@ -81,7 +103,6 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
 
 * {
   margin: 0;
@@ -127,6 +148,7 @@ export default {
         }
         input {
           background-color: $primary;
+          -webkit-appearance: none;
           font-size: 16px;
           width: 100%;
           border-radius: 25px;
@@ -151,10 +173,18 @@ export default {
       }
       .btn:focus {
           outline: none;
-      }
-      .forget-btn{
+      }.button-group {
         margin-top: 20px;
-        outline: none;
+        display: flex;
+        flex-direction: column;
+        .register-btn {
+          margin-top: 20px;
+          outline: none;
+        }
+        .forget-btn {
+          margin-top: 20px;
+          outline: none;
+        }
       }
     }
   }

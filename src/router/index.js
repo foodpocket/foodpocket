@@ -15,9 +15,29 @@ const routes = [
     component: () => import('../views/LandingPage.vue')
   },
   {
+    path: '/registerpage',
+    name: 'RegisterPage',
+    component: () => import('../views/RegisterPage.vue')
+  },
+  {
+    path: '/confirmationpage',
+    name: 'ConfirmationPage',
+    component: () => import('../views/ConfirmationPage.vue')
+  },
+  {
+    path: '/successpage',
+    name: 'SuccessPage',
+    component: () => import('../views/SuccessPage.vue')
+  },
+  {
     path: '/loginpage',
     name: 'LoginPage',
     component: () => import('../views/LoginPage.vue')
+  },
+  {
+    path: '/forgetpasswordpage',
+    name: 'ForgetpasswordPage',
+    component: () => import('../views/ForgetpasswordPage.vue')
   },
   {
     path: '/foodpocket',
@@ -38,12 +58,12 @@ const routes = [
         path: 'userinfo',
         name: 'UserInfo',
         component: () => import('../components/pages/UserInfo.vue')
-      },
-      {
-        path: 'setting',
-        name: 'Setting',
-        component: () => import('../components/pages/Setting.vue')
       }
+      // {
+      //   path: 'setting',
+      //   name: 'Setting',
+      //   component: () => import('../components/pages/Setting.vue')
+      // }
     ]
   },
   {

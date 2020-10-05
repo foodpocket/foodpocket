@@ -1,8 +1,9 @@
 <template>
   <div class="mainpocket">
+    <loading :active.sync="isLoading"></loading>
 
     <navbar>
-      <h1>我的日常餐廳</h1>
+      <h1>{{seletedName}}</h1>
     </navbar>
 
     <bus />
@@ -10,7 +11,7 @@
     <!-- 主畫面 -->
     <div class="container">
       <!-- 快速新增 -->
-      <div class="quicklyAdd input-group pt-3">
+      <div class="quicklyAdd input-group mt-3">
         <div class="col-12 input-group mb-3">
           <div class="input-group-prepend">
             <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
@@ -32,7 +33,7 @@
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
       <div class="main-area card text-center">
         <div class="card-header">
-          <!-- card-header 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
+          <!-- 過濾資訊標籤(頭) -->  <!-- 切換列表的按鈕click在這裡 -->
           <ul class="nav nav-tabs card-header-tabs">
             <li class="nav-item">
               <a class="nav-link" :class="{'active':visibility === 'all'}" @click.prevent="visibility = 'all',justifyContent = 'end'">全部餐廳</a>
@@ -98,7 +99,7 @@
             <div class="d-flex align-items-center justify-content-center">
               <div class="restaurant-list">
                 <div class="restaurant-name">
-                  <button class="btn btn-info w-100" type="button" @click="addRestaurant(searchRestaurant)" style="font-weight: 100;">
+                  <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
                     新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
                   </button>
                 </div>
@@ -219,15 +220,15 @@
               <label for="status" class="mt-3">推薦模式</label>
               <div class="status text-left d-flex">
                 <div class="random-input m-0 mr-4">
-                  <input type="radio" id="random" name="status" value="RANDOM" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="random" name="status" value="RANDOM" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="random">隨機(預設)</label>
                 </div>
                 <div class="active-input m-0 mr-4">
-                  <input type="radio" id="active" name="status" value="ACTIVE" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="active" name="status" value="ACTIVE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="active">永遠</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
-                  <input type="radio" id="hide" name="status" value="HIDE" class="mr-2" v-model="editModalObj.status"/>
+                  <input type="radio" id="hide" name="status" value="HIDE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="hide">不推薦</label>
                   <div v-if="editModalObj.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
@@ -348,7 +349,7 @@
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'">
               <span>刪除到訪紀錄</span>
             </h5>
-            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close text-white" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -392,6 +393,7 @@ export default {
   data () {
     return {
       token: '',
+      isLoading: false,
       searchRestaurant: '', // 搜尋的字串
       tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
@@ -415,6 +417,12 @@ export default {
     this.touchendActive()
   },
   computed: {
+    seletedID () {
+      return this.$cookies.get('getpocketid')
+    },
+    seletedName () {
+      return this.$cookies.get('getpocketname')
+    },
     nextHideUntil () {
       const today = Math.floor(
         new Date(Math.floor(Date.now())).getTime() / 1000
@@ -484,11 +492,13 @@ export default {
       }
     },
     getRestaurantList () {
-      const api = 'https://brycehuang.com/api/rest/getRestaurantList/'
+      this.isLoading = true
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
       const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token } })
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
+          this.isLoading = false
           // console.log('restaurantList:', response.data)
           vm.restaurantList = response.data.data
         })
@@ -499,11 +509,13 @@ export default {
         })
     },
     getVisitRecords () {
-      const api = 'https://brycehuang.com/api/rest/getVisitRecords/'
+      this.isLoading = true
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
       const vm = this
       this.$http
-        .get(api, { params: { user_token: vm.token } })
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
+          this.isLoading = false
           // console.log('getVisitRecords:', response.data)
           vm.visitRecords = response.data.data
         })
@@ -566,10 +578,11 @@ export default {
     },
     quicklyAddRestaurant (restaurantName, timestamp) {
       // 類似addRestaurant() + addVisitRecord()
-      const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
       const formdata = new FormData()
       formdata.append('name', restaurantName)
       formdata.append('user_token', this.token)
+      formdata.append('pocket_uid', this.seletedID)
       this.axios
         .post(api, formdata)
         .then((response) => {
@@ -585,7 +598,7 @@ export default {
     },
     quicklyAddVisit (id, timestamp) {
       // 類似addVisitRecord()
-      const api = 'https://brycehuang.com/api/rest/newVisit/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', id)
@@ -674,10 +687,11 @@ export default {
 
       if (this.isNew === true) {
         // console.log('這是新的餐廳，已加入餐廳列表中')
-        const api = 'https://brycehuang.com/api/rest/newRestaurant/'
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('name', restaurantName)
+        formdata.append('pocket_uid', this.seletedID)
         this.axios
           .post(api, formdata)
           .then((response) => {
@@ -704,7 +718,7 @@ export default {
         )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
-          const api = 'https://brycehuang.com/api/rest/editRestaurant/'
+          const api = `${process.env.VUE_APP_APIPATH}api/rest/editRestaurant/`
           const formdata = new FormData()
           formdata.append('user_token', this.token)
           formdata.append('restaurant_uid', item.restaurant_uid)
@@ -771,7 +785,7 @@ export default {
       }
     },
     removeRestaurant (item) { // item是infoModalObj
-      const api = 'https://brycehuang.com/api/rest/removeRestaurant/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeRestaurant/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', item.restaurant_uid)
@@ -792,7 +806,7 @@ export default {
 
     // VisitRecord-------------------------
     addVisitRecord (item) {
-      const api = 'https://brycehuang.com/api/rest/newVisit/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('restaurant_uid', item.restaurant_uid)
@@ -813,7 +827,7 @@ export default {
     },
     editVisitRecord (item) {
       if (this.tempdate !== item.visit_date) {
-        const api = 'https://brycehuang.com/api/rest/editVisitRecord/'
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/editVisitRecord/`
         const formdata = new FormData()
         formdata.append('user_token', this.token)
         formdata.append('visitrecord_uid', item.visitrecord_uid)
@@ -838,7 +852,7 @@ export default {
       }
     },
     removeVisitRecord (item) {
-      const api = 'https://brycehuang.com/api/rest/removeVisitRecord/'
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeVisitRecord/`
       const formdata = new FormData()
       formdata.append('user_token', this.token)
       formdata.append('visitrecord_uid', item.visitrecord_uid)
@@ -921,20 +935,20 @@ export default {
     recommendListShow () {
       this.recommendList = []
       this.restaurantList.forEach((item) => {
-        const copyobject = Object.assign({}, item) // 用於增加copyobject.show
-        copyobject.show = false
+        item.show = false
         if (item.status === 'RANDOM') {
           const randomNum = Math.floor(Math.random() * Math.floor(10))
           if (randomNum < 3) { // 原本是放5啦，現在改放3
-            copyobject.show = true
+            item.show = true
           }
         }
         if (item.status === 'ACTIVE') {
-          copyobject.show = true
+          item.show = true
         }
-        if (copyobject.show === true) {
-          this.recommendList.push(copyobject)
+        if (item.show === true) {
+          this.recommendList.push(item)
         }
+        // console.log(item)
         this.recommendList.reverse()
       })
     },
@@ -988,7 +1002,12 @@ export default {
   }
 }
 // 以上是試色區----------------------------
-
+.nav-tabs  .nav-link,
+.nav-tabs  .nav-link:hover,
+.nav-tabs  .nav-link:active{
+  border: none;
+  cursor: pointer;
+}
 .mainpocket{
   min-height: 100vh;
   height: 100%;
@@ -1099,6 +1118,28 @@ export default {
     }
   }
 
+  #editInfoModal {
+    .modal-body{
+      .status{
+        display: flex;
+        justify-content: flex-start;
+        input[type="radio"] {
+          opacity: 0; //設置透明度，隱藏原有input樣式
+          display: none;
+        }
+        .status-input+label {
+          border: 1px solid transparent;
+          border-bottom: 1px solid #999;
+          padding: 5px;
+        }
+        input:checked+label {
+          background-color: $second;
+          border: 1px solid $second;
+        }
+      }
+    }
+  }
+
   .modal{
     max-height: 100%;
     overflow-x: hidden;
@@ -1114,6 +1155,5 @@ export default {
   .end {
     justify-content: flex-end;
   }
-
 }
 </style>

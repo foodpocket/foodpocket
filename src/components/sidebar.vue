@@ -24,11 +24,11 @@
             </router-link>
         </li>
 
-        <li class="nav-item" @click="controlsidebar">
+        <!-- <li class="nav-item" @click="controlsidebar">
             <router-link class="nav-link after" to="/foodpocket/setting">
               <i class="fas fa-cog"></i>設定
             </router-link>
-        </li>
+        </li> -->
 
         <li class="logout" @click.prevent="logout">
           <a href="#">登出</a>
@@ -46,6 +46,10 @@ export default {
     logout () {
       if (this.$cookies.isKey('token')) {
         this.$cookies.remove('token')
+        this.$cookies.remove('getpocketid')
+        this.$cookies.remove('getpocketname')
+        this.$cookies.remove('username')
+        this.$cookies.remove('pocketnum')
       }
       window.alert('登出成功')
       this.$router.push('/landingpage')
