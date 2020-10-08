@@ -4,7 +4,7 @@ node_js:
 install:
 - npm install
 script:
-- npm run build --mode development
+- npm run dev-build
 before_deploy:
   - > 
     if [ "$TRAVIS_BRANCH" = "develop" ]; then
