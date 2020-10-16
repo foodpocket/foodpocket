@@ -61,7 +61,7 @@
         <div class="list-length text-right mr-3">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="recommendListShow()"></i></span>
+          <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="getRecommendList()"></i></span>
           <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
         </div>
         <!-- 列表顯示區 -->
@@ -79,7 +79,7 @@
                 <div>
                   <div class="restaurant-description">
                     <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
-                    <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visited}} 次</div>
+                    <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visit_count}} 次</div>
                     <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                   </div>
                 </div>
@@ -470,9 +470,6 @@ export default {
           return this.restaurantList
         }
       } else if (this.visibility === 'recommend') {
-        if (this.recommendList.length === 0) {
-          this.recommendListShow()
-        }
         return this.recommendList
       } else if (this.visibility === 'record') {
         return this.visitRecords
@@ -508,6 +505,23 @@ export default {
           }
         })
     },
+    getRecommendList () {
+      this.isLoading = true
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRecommendList/`
+      const vm = this
+      this.$http
+        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
+        .then((response) => {
+          this.isLoading = false
+          console.log('recommendList:', response.data)
+          vm.recommendList = response.data.data
+        })
+        .catch((err) => {
+          if (err.response.status === 401) {
+            this.$router.push('/loginpage')
+          }
+        })
+    },
     getVisitRecords () {
       this.isLoading = true
       const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
@@ -527,6 +541,7 @@ export default {
     },
     initList () {
       this.getRestaurantList()
+      this.getRecommendList()
       this.getVisitRecords()
     },
 
@@ -932,6 +947,7 @@ export default {
         return currentDateTime
       }
     },
+    // Replaced by getRecommendList
     recommendListShow () {
       this.recommendList = []
       this.restaurantList.forEach((item) => {
@@ -949,8 +965,8 @@ export default {
           this.recommendList.push(item)
         }
         // console.log(item)
-        this.recommendList.reverse()
       })
+      this.recommendList.reverse()
     },
     touchendActive () {
       document.body.addEventListener('touchend', function () {})
