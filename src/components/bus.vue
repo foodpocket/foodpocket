@@ -35,7 +35,7 @@ export default {
       })
 
       // auto remove message
-      this.removeMessageById(timestamp, 3000)
+      this.removeMessageById(timestamp, 5000)
     },
 
     // push message with self-defined trackId

@@ -8,22 +8,31 @@
     <bus />
 
     <div class="container">
-      <div class="txt mt-3">
+      <!-- <div class="txt mt-3">
         您已將
         <span>{{seletedName}}</span>設為主要口袋
-      </div>
+      </div>-->
 
       <ul class="list-group list-group-flush text-left">
         <li class="main-list list-group-item" v-for="(item, key) in pocketlist" :key="key">
           <div class="item d-flex align-items-center">
             <div class="pockets-list" @click="seletedPocket(item)">
-              <div class="pocket-name">
-                {{ item.name }}
-                <span v-if="seletedID === item.pocket_uid">
-                  <i class="fas fa-check-double ml-2" style="color: rgb(211, 0, 0);"></i>
-                </span>
+
+              <div v-if="seletedID === item.pocket_uid" style="color: rgb(211, 0, 0);">
+                <div class="pocket-name">
+                  {{ item.name }}
+                  <span>
+                    <i class="fas fa-check-double ml-2" style="color: rgb(211, 0, 0);"></i>
+                  </span>
+                </div>
+                <div class="pocket-size">共有{{item.size}}間餐廳</div>
               </div>
-              <div class="pocket-size">共有{{item.size}}間餐廳</div>
+
+              <div v-if="seletedID !== item.pocket_uid">
+                <div class="pocket-name">{{ item.name }}</div>
+                <div class="pocket-size">共有{{item.size}}間餐廳</div>
+              </div>
+
             </div>
 
             <div class="icon-button edit-btn">
@@ -210,8 +219,7 @@ export default {
     this.getToken()
     this.getPocketList()
   },
-  computed: {
-  },
+  computed: {},
   methods: {
     // 必要的 --------
     getToken () {
@@ -247,12 +255,14 @@ export default {
       this.newPocketName = '' // 清空
       $('#addPocket').modal('show')
     },
-    openEditPocketModal (item) { // item是pocketlist的其中一個object
+    openEditPocketModal (item) {
+      // item是pocketlist的其中一個object
       $('#editPocket').modal('show')
       this.editModalObj = Object.assign({}, item)
       this.copyModalObj = Object.assign({}, item)
     },
-    openRemovePocketModal (item) { // item是copyModalObj
+    openRemovePocketModal (item) {
+      // item是copyModalObj
       $('#editPocket').modal('hide')
       $('#removePocket').modal('show')
     },
@@ -330,7 +340,11 @@ export default {
         .post(api, formdata)
         .then(response => {
           // console.log('removePocket:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.name + ' 口袋', 'success')
+          this.$bus.$emit(
+            'message:push',
+            '成功刪除 ' + item.name + ' 口袋',
+            'success'
+          )
           this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid) // 放到cookies
           this.$cookies.set('getpocketname', this.pocketlist[0].name) // 放到cookies
           this.getPocketList()
@@ -340,7 +354,11 @@ export default {
             this.$router.push('/loginpage')
           }
           if (err.response.status === 403) {
-            this.$bus.$emit('message:push', '不可刪除，帳號內至少需要一個口袋', 'danger')
+            this.$bus.$emit(
+              'message:push',
+              '不可刪除，帳號內至少需要一個口袋',
+              'danger'
+            )
           }
         })
       $('#removePocket').modal('hide')

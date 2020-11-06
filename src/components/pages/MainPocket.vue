@@ -10,26 +10,6 @@
 
     <!-- 主畫面 -->
     <div class="container">
-      <!-- 快速新增 -->
-      <div class="quicklyAdd input-group mt-3">
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
-          </div>
-          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" @keyup.enter="quicklyAdd"/>
-        </div>
-
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">到訪日期</span>
-          </div>
-          <input type="date" class="form-control" id="date" v-model="newDate" />
-        </div>
-
-        <div class="col-12 input-group mb-3">
-          <button class="btn w-100" type="button" @click="quicklyAdd">快速新增</button>
-        </div>
-      </div>
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
       <div class="main-area card text-center">
         <div class="card-header">
@@ -47,69 +27,76 @@
           </ul>
         </div>
 
-        <!-- list內容區域(身體) -->
+        <div class="card-body p-0">
+          <!-- list-length -->
+          <div class="list-length col-12">
+            <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
+            <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
+            <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="getRecommendList()"></i></span>
+            <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
+          </div>
 
-        <!-- 搜尋區 -->
-        <div class="input-group mt-3" v-if="visibility === 'all'">
-          <div class="col-12 input-group">
-            <input type="text" class="form-control" placeholder="搜尋或新增餐廳"  v-model="searchRestaurant"/>
-            <div class="input-group-append">
-              <span class="input-group-text" @click="searchRestaurant = ''">清除</span>
+          <div class="quickly-search" v-if="visibility === 'all'">
+            <div class="input-group">
+              <div class="col-12 input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">搜尋餐廳</span>
+                </div>
+                <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="searchRestaurant" @keyup.enter="quicklyAdd"/>
+              </div>
+
+              <div class="col-12 input-group mb-3">
+                <div class="input-group-prepend">
+                  <span class="input-group-text" id="basic-addon1">到訪日期</span>
+                </div>
+                <input type="date" class="form-control" id="date" v-model="newDate" />
+              </div>
+
+              <div class="col-12 input-group mb-3">
+                <button class="btn w-100" type="button" @click="quicklyAdd">快速新增</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="list-length text-right mr-3">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
-          <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="getRecommendList()"></i></span>
-          <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
-        </div>
-        <!-- 列表顯示區 -->
-        <ul class="list-group list-group-flush text-left">
-          <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
-            <div class="d-flex align-items-center">
-              <!-- 基本資訊 -->
-              <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
-                <div class="restaurant-name">
-                  {{ item.restaurant_name }}
-                  <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
-                  <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
-                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
-                </div>
-                <div>
+
+          <!-- 列表顯示區 -->
+          <ul class="list-group list-group-flush text-left">
+            <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
+              <div class="d-flex align-items-center">
+                <!-- 基本資訊 -->
+                <div class="restaurant-area" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
+                  <div class="restaurant-name">
+                    {{ item.restaurant_name }}
+                    <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
+                    <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
+                    <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
+                  </div>
                   <div class="restaurant-description">
                     <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
                     <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visit_count}} 次</div>
                     <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                   </div>
                 </div>
-              </div>
-
-              <!-- icon-btn -->
-              <div class="button-area" :class="justifyContent">
-                <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
-                <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
-              </div>
-
-            </div>
-          </li>
-
-          <!-- 新增餐廳的按鈕 -->
-          <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
-            <div class="d-flex align-items-center justify-content-center">
-              <div class="restaurant-list">
-                <div class="restaurant-name">
-                  <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
-                    新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
-                  </button>
+                <!-- icon-btn -->
+                <div class="button-area" :class="justifyContent">
+                  <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
+                  <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+
+            <!-- 新增餐廳的按鈕 -->
+            <li class="addnew list-group-item" v-if="visibility === 'all' && searchRestaurant!==''">
+              <div class="input-group">
+                <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
+                  新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
 
         <!-- card-footer註腳區域(腳) -->
-        <div class="card-footer d-flex justify-content-between">
+        <div class="card-footer">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳</span>
@@ -154,6 +141,7 @@
               <div>
                 <label>備註：</label>
                 <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
+                <span v-if="!infoModalObj.note">尚無備註</span>
               </div>
 
               <div>
@@ -368,9 +356,9 @@
           <div class="modal-footer">
             <!-- 刪除卡片確認區-footer -->
             <button type="button" class="btn btn-sm" @click="doNotDelete" >取消</button> <!-- btn-outline-secondary  -->
-            <button type="button" class="btn btn-sm"
+            <button type="button" class="btn btn-sm btn-danger"
             @click="removeRestaurant(infoModalObj)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button> <!-- btn-danger -->
-            <button type="button" class="btn btn-sm"
+            <button type="button" class="btn btn-sm btn-danger"
             @click="removeVisitRecord(editVisitModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button> <!-- btn-danger  -->
           </div>
         </div>
@@ -395,7 +383,7 @@ export default {
       token: '',
       isLoading: false,
       searchRestaurant: '', // 搜尋的字串
-      tempRestaurant_name: '', // 快速新增-內容暫放處
+      // tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
       newDate: this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)), // 快速新增-內容暫放處(預設是'今天')
       restaurantList: [], // 由API匯入
@@ -556,7 +544,7 @@ export default {
       // console.log('timestampFormat:', timestamp)
 
       // 這裡處理餐廳名稱欄位------------------------
-      const restaurantName = this.tempRestaurant_name.trim() // 修掉輸入的空白
+      const restaurantName = this.searchRestaurant.trim() // 修掉輸入的空白
       if (!restaurantName) {
         return
       }
@@ -586,7 +574,7 @@ export default {
         this.quicklyAddVisit(this.tempRestaurant_uid, timestamp) // 增加歷史紀錄
       }
       // 完成後將input復原原樣的------------------------
-      this.tempRestaurant_name = ''
+      this.searchRestaurant = ''
       this.newDate = this.changedateFormat(
         Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)
       ) // 恢復
@@ -711,6 +699,8 @@ export default {
           .post(api, formdata)
           .then((response) => {
             // console.log('addRestaurant:', response.data)
+            this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', 'success')
+            this.searchRestaurant = ''
             this.initList()
           })
           .catch((err) => {
@@ -990,7 +980,6 @@ export default {
 .deep-color {
   color: $deep;
 }
-
 .input-group-text{
   background-color: $second;
   border: solid 1px $second;
@@ -1018,90 +1007,101 @@ export default {
   }
 }
 // 以上是試色區----------------------------
-.nav-tabs  .nav-link,
-.nav-tabs  .nav-link:hover,
-.nav-tabs  .nav-link:active{
-  border: none;
-  cursor: pointer;
-}
+
 .mainpocket{
   min-height: 100vh;
   height: 100%;
   width: 100%;
   background-color: $light-background;
 
-  .quicklyAdd{
-    .col-12{
-      padding: 0;
-    }
-  }
-
+  // 以下在card裡面
   .main-area {
     margin: 20px auto;
-    .list-length {
-      margin: 10px 0;
-      .redo{
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        i {
-          font-size: 1.5rem;
+    .card-header{
+      // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
+      .nav-tabs  .nav-link,
+      .nav-tabs  .nav-link:hover,
+      .nav-tabs  .nav-link:active{
+        border: none;
+        cursor: pointer;
+      }
+    }
+    .card-body{
+      .list-length {
+        text-align: right;
+        margin: 10px 0;
+        .redo{
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          i {
+            font-size: 1.5rem;
+          }
+        }
+      }
+      .list-group{
+        .main-list{
+          .restaurant-area {
+            width: 75%;
+            .restaurant-name {
+              font-size: 1.2rem;
+              i{
+                margin-left: 10px;
+              }
+              .note-icon {
+                font-size: 1.4rem;
+                color: #ffa600;
+              }
+              .status-icon{
+                font-size: 1.2rem;
+              }
+            }
+            .restaurant-description {
+              font-size: 0.8rem;
+            }
+          }
+          .button-area {
+            width: 40%;
+            display: flex;
+            a {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 3rem;
+              height: 3rem;
+              border-radius: 100%;
+              font-size: 1.1rem;
+              transition: transform 0.3s;
+            }
+            a:active,
+            a:hover {
+              transform: scale(1.2, 1.2);
+            }
+            .plus-icon {
+              border: solid 1px #54cc24;
+              color: #54cc24;
+              i{
+                font-size: 1.4rem;
+              }
+            }
+            .calendar-icon {
+              border: solid 1px #ffc107;
+              color: #ffc107;
+              i{
+                font-size: 1.6rem;
+              }
+            }
+          }
         }
       }
     }
-    .restaurant-list {
-      width: 75%;
-      .restaurant-name {
-        font-size: 1.2rem;
-        i{
-          margin-left: 10px;
-        }
-        .note-icon {
-          font-size: 1.4rem;
-          color: #ffa600;
-        }
-        .status-icon{
-          font-size: 1.2rem;
-        }
-      }
-      .restaurant-description {
-        font-size: 0.8rem;
-      }
-    }
-    .button-area {
-      width: 40%;
+    .card-footer{
       display: flex;
-      a {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        width: 3rem;
-        height: 3rem;
-        border-radius: 100%;
-        font-size: 1.1rem;
-        transition: transform 0.3s;
-      }
-      a:active,
-      a:hover {
-        transform: scale(1.2, 1.2);
-      }
-      .plus-icon {
-        border: solid 1px #54cc24;
-        color: #54cc24;
-        i{
-          font-size: 1.4rem;
-        }
-      }
-      .calendar-icon {
-        border: solid 1px #ffc107;
-        color: #ffc107;
-        i{
-          font-size: 1.6rem;
-        }
-      }
+      justify-content: flex-start;
     }
   }
 
+  // modal單獨使用
   #openInfoModal {
     .modal-body {
       position: relative;
@@ -1120,8 +1120,8 @@ export default {
       }
       .pencil-icon {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 1rem;
+        right: 1rem;
         border: solid 1px #555;
         font-size: 1.4rem;
       }
@@ -1133,7 +1133,6 @@ export default {
       }
     }
   }
-
   #editInfoModal {
     .modal-body{
       .status{
@@ -1156,14 +1155,32 @@ export default {
     }
   }
 
+   // modal共用
   .modal{
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    .modal-header{
+      h5{
+        font-size: 1.2rem;
+      }
+    }
+    .modal-body{
+      padding-bottom: 0;
+    }
+    .modal-footer{
+      border-top: none;
+      background-color: #fff;
+      padding-top: 0;
+    }
   }
+
+  // 整篇共用
   .fa-thumbtack{
+    // modal有 主畫面也有
     transform: rotate(-35deg);
   }
+
   // :class
   .between {
     justify-content: space-between;
