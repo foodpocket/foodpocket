@@ -43,6 +43,9 @@
                   <span class="input-group-text" id="basic-addon1">搜尋餐廳</span>
                 </div>
                 <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="searchRestaurant" @keyup.enter="quicklyAdd"/>
+                <div class="input-group-prepend" v-if="searchRestaurant">
+                  <span class="input-group-text" @click="searchRestaurant = ''">&times;</span>
+                </div>
               </div>
 
               <div class="col-12 input-group mb-3">
@@ -85,8 +88,8 @@
             </li>
 
             <!-- 新增餐廳的按鈕 -->
-            <li class="addnew list-group-item" v-if="visibility === 'all' && searchRestaurant!==''">
-              <div class="input-group">
+            <li class="addnew list-group-item px-0" v-if="visibility === 'all' && searchRestaurant!==''">
+              <div class="col-12 input-group">
                 <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
                   新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
                 </button>
@@ -118,11 +121,11 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header "> <!-- bg-dark -->
             <h5 class="modal-title" id="openInfoModalLabel">
               <span>{{infoModalObj.restaurant_name}} 資訊欄</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -185,13 +188,13 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-dark -->
+          <div class="modal-header"><!-- bg-dark -->
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editInfoModalLabel">
               <!-- 全部餐廳列表顯示編輯餐廳 -->
               <span>編輯 {{infoModalObj.restaurant_name}}</span>
             </h5>
-            <button type="button" class="close text-white" @click="backtoNote()" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" @click="backtoNote()" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -254,12 +257,12 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header"> <!-- bg-dark -->
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editVisitModalLabel">
               <span v-if="visibility === 'record'">編輯到訪 {{editVisitModalObj.restaurant_name}} 日期</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -292,7 +295,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header"> <!-- bg-dark -->
             <!-- 編輯卡片區-header -->
             <h5 class="modal-title" id="addModalLabel">
               <span>新增到訪 {{AddrecordModalObj.restaurant_name}} 日期</span>
@@ -329,7 +332,7 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-danger  -->
+          <div class="modal-header"><!-- bg-danger  -->
             <!-- modal-header -->
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'all'">
               <span>刪除{{infoModalObj.restaurant_name}}餐廳</span>
@@ -337,7 +340,7 @@
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'">
               <span>刪除到訪紀錄</span>
             </h5>
-            <button type="button" class="close" aria-label="Close text-white" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -345,7 +348,9 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div v-if="visibility === 'all'">
-              警告！<br /><strong class="text-danger">刪除{{infoModalObj.restaurant_name}}</strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+               警告 <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+              <br />刪除<strong class="text-danger"> {{infoModalObj.restaurant_name}} </strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
             </div>
             <div v-if="visibility === 'record'">
               是否刪除<br /><strong class="text-danger">{{editVisitModalObj.visit_date}}</strong>到訪<strong>{{editVisitModalObj.restaurant_name}}</strong>的紀錄？
@@ -700,7 +705,7 @@ export default {
           .then((response) => {
             // console.log('addRestaurant:', response.data)
             this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', 'success')
-            this.searchRestaurant = ''
+            // this.searchRestaurant = ''
             this.initList()
           })
           .catch((err) => {
@@ -979,6 +984,10 @@ export default {
 
 .deep-color {
   color: $deep;
+  font-weight: 400;
+  background-color: rgb(255, 255, 255);
+  margin: 0 1rem;
+  border-radius: 1px;
 }
 .input-group-text{
   background-color: $second;
@@ -989,6 +998,7 @@ export default {
   color: $light-background;
   border: none;
   outline: none;
+  box-shadow: none;
 }
 .card{
   .card-header, .card-footer{
@@ -997,7 +1007,8 @@ export default {
 }
 .modal{
   .modal-header{
-    background-color: $point;
+    background-color:#e3e3e3;
+    color: #575757;
   }
   .modal-body{
     background-color: $light-background;
@@ -1012,21 +1023,54 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
+  background-color: rgba(0, 0, 0, 0.125);
 
   // 以下在card裡面
   .main-area {
+    border-radius: 0.25rem;
     margin: 20px auto;
+    border: none;
+    background-color: #fff;
     .card-header{
+      background-color: transparent;
+      padding-bottom: 20px;
       // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
-      .nav-tabs  .nav-link,
-      .nav-tabs  .nav-link:hover,
-      .nav-tabs  .nav-link:active{
+      .nav-tabs .nav-link,
+      .nav-tabs .nav-link:hover,
+      .nav-tabs .nav-link:active{
         border: none;
+        border-radius: 1px;
         cursor: pointer;
+      }
+      .nav-tabs .nav-link:hover,
+      .nav-tabs .nav-link:active,
+      .active{
+        background-color: #e9e7de;
       }
     }
     .card-body{
+      .quickly-search{
+        .input-group {
+          .input-group-text{
+            border:none;
+            background-color: #e9e7de;
+            border-radius: 1px;
+          }
+          .form-control{
+            border:none;
+            background-color: #e9e7de;
+            border-radius: 1px;
+            box-shadow: none;
+          }
+          .btn{
+            border-radius: 1px;
+            box-shadow: none;
+          }
+          .btn:hover{
+            color:#fff;
+          }
+        }
+      }
       .list-length {
         text-align: right;
         margin: 10px 0;
@@ -1041,6 +1085,7 @@ export default {
       }
       .list-group{
         .main-list{
+          background-color: transparent;
           .restaurant-area {
             width: 75%;
             .restaurant-name {
@@ -1093,9 +1138,19 @@ export default {
             }
           }
         }
+        .addnew{
+          .btn{
+            border-radius: 1px;
+          }
+          .btn:hover{
+            border-radius: 1px;
+            color: #fff;
+          }
+        }
       }
     }
     .card-footer{
+      background-color: transparent;
       display: flex;
       justify-content: flex-start;
     }
@@ -1160,6 +1215,7 @@ export default {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 10vh;
     .modal-header{
       h5{
         font-size: 1.2rem;
@@ -1170,8 +1226,11 @@ export default {
     }
     .modal-footer{
       border-top: none;
-      background-color: #fff;
+      background-color: transparent;
       padding-top: 0;
+    }
+    .btn-danger{
+      background-color: $danger;
     }
   }
 
