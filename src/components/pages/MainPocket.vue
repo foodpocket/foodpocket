@@ -135,37 +135,40 @@
             <a class="pencil-icon" v-if="visibility !== 'record'" @click.prevent="openEditModal(infoModalObj)">
               <i class="fas fa-pen"></i>
             </a>
-            <div class="text-left form-group">
-              <div>
-                <label>餐廳名稱：</label>
-                <span>{{infoModalObj.restaurant_name}}</span>
-              </div>
-
-              <div>
-                <label>備註：</label>
-                <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
-                <span v-if="!infoModalObj.note">尚無備註</span>
-              </div>
-
-              <div>
-                <label>推薦模式：</label>
-                <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
-                <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
-                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
-              </div>
-
-              <div v-if="infoModalObj.visit_dates">
-                <label>造訪次數：</label>
-                <span>{{infoModalObj.visit_dates.length}}次</span>
-              </div>
-
-              <div v-if="infoModalObj.visit_dates">
-                <label>到訪日期：</label>
-                <ul>
-                  <li v-for="(item,key) in infoModalObj.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</li>
-                </ul>
-              </div>
-            </div>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td style="width: 30%;">餐廳名稱：</td>
+                  <td style="width: 70%;">{{ infoModalObj.restaurant_name }}</td>
+                </tr>
+                <tr>
+                  <td>備註：</td>
+                  <td>
+                    <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
+                    <span v-if="!infoModalObj.note">尚無備註</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>推薦模式：</td>
+                  <td>
+                    <span v-if="infoModalObj.status === 'RANDOM'">(預設)隨機</span>
+                    <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
+                    <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
+                  </td>
+                </tr>
+                <tr v-if="infoModalObj.visit_dates">
+                  <td>造訪次數：</td>
+                  <td v-if="infoModalObj.visit_dates.length > 0">共 {{ infoModalObj.visit_dates.length }} 次</td>
+                  <td v-if="infoModalObj.visit_dates.length === 0">尚未造訪過</td>
+                </tr>
+                <tr v-if="infoModalObj.visit_dates && infoModalObj.visit_dates.length > 0">
+                  <td>到訪日期：</td>
+                  <td>
+                    <li v-for="(item,key) in infoModalObj.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</li>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="modal-footer">
@@ -212,15 +215,15 @@
               <div class="status text-left d-flex">
                 <div class="random-input m-0 mr-4">
                   <input type="radio" id="random" name="status" value="RANDOM" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="random">隨機(預設)</label>
+                  <label for="random">(預設)隨機</label>
                 </div>
                 <div class="active-input m-0 mr-4">
                   <input type="radio" id="active" name="status" value="ACTIVE" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="active">永遠</label>
+                  <label for="active"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</label>
                 </div>
                 <div class="hide-input m-0 mr-4">
                   <input type="radio" id="hide" name="status" value="HIDE" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="hide">不推薦</label>
+                  <label for="hide"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦</label>
                   <div v-if="editModalObj.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
                     <select name="days" id="days" v-model="nextHideDay">
@@ -1227,10 +1230,20 @@ export default {
     .modal-footer{
       border-top: none;
       background-color: transparent;
-      padding-top: 0;
     }
     .btn-danger{
       background-color: $danger;
+    }
+    .table {
+      margin: 0;
+      td {
+        border: none;
+        text-align: left;
+        padding: 5px 0;
+        li{
+          list-style-type: none;
+        }
+      }
     }
   }
 
