@@ -6,11 +6,26 @@
     </navbar>
 
     <div class="container">
-      <div class="txt text-left mt-3">
-        <h4>帳號：<span> {{username}}</span></h4>
-        <h4>口袋數：<span> {{pocketnum}}個</span></h4>
-        <!-- <h4>token：<span class="token">{{token}}</span></h4> -->
-      </div>
+      <table class="table">
+        <tbody>
+          <tr>
+            <td style="width: 30%;">帳號：</td>
+            <td style="width: 70%;">{{username}}</td>
+          </tr>
+          <tr>
+            <td>口袋數：</td>
+            <td>{{pocketnum}}個</td>
+          </tr>
+        </tbody>
+      </table>
+      <!-- <ul class="list-group list-group-flush text-left">
+        <li class="txt text-left list-group-item">
+          <h4>帳號：<span> {{username}}</span></h4>
+        </li>
+        <li class="txt text-left list-group-item">
+          <h4>口袋數：<span> {{pocketnum}}個</span></h4>
+        </li>
+      </ul>-->
     </div>
   </div>
 </template>
@@ -55,23 +70,20 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.userinfo{
+.userinfo {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
-  .txt{
-    background: $second;
-    border-radius: 10px;
-    padding: 10px;
-    h4{
-      background-color: #fff;
-      padding: 10px;
-      border-radius: 10px;
-      margin: 5px 0;
-      font-size: 1rem;
-      .token{
-        word-wrap:break-word;
+  background-color: rgba(0, 0, 0, 0.125);
+  .container{
+    margin-top: 20px;
+    .table {
+      border-radius: 0.25rem;
+      background: #fff;
+      margin: 0;
+      td {
+        text-align: left;
+        font-size: 1.2rem;
       }
     }
   }

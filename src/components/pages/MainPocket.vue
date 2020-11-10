@@ -40,9 +40,9 @@
             <div class="input-group">
               <div class="col-12 input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">搜尋餐廳</span>
+                  <label class="input-group-text" for="search">搜尋餐廳</label>
                 </div>
-                <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="searchRestaurant" @keyup.enter="quicklyAdd"/>
+                <input type="text" class="form-control" id="search" placeholder="請輸入餐廳名稱" v-model="searchRestaurant" @keyup.enter="quicklyAdd"/>
                 <div class="input-group-prepend" v-if="searchRestaurant">
                   <span class="input-group-text" @click="searchRestaurant = ''">&times;</span>
                 </div>
@@ -50,7 +50,7 @@
 
               <div class="col-12 input-group mb-3">
                 <div class="input-group-prepend">
-                  <span class="input-group-text" id="basic-addon1">到訪日期</span>
+                  <label class="input-group-text" for="date">到訪日期</label>
                 </div>
                 <input type="date" class="form-control" id="date" v-model="newDate" />
               </div>
@@ -1036,8 +1036,10 @@ export default {
     background-color: #fff;
     .card-header{
       background-color: transparent;
-      padding-bottom: 20px;
       // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
+      .nav-tabs{
+        margin: auto;
+      }
       .nav-tabs .nav-link,
       .nav-tabs .nav-link:hover,
       .nav-tabs .nav-link:active{

@@ -8,15 +8,11 @@
     <bus />
 
     <div class="container">
-      <!-- <div class="txt mt-3">
-        您已將
-        <span>{{seletedName}}</span>設為主要口袋
-      </div>-->
 
       <ul class="list-group list-group-flush text-left">
         <li class="main-list list-group-item" v-for="(item, key) in pocketlist" :key="key">
-          <div class="item d-flex align-items-center">
-            <div class="pockets-list" @click="seletedPocket(item)">
+          <div class="pockets d-flex align-items-center">
+            <div class="item" @click="seletedPocket(item)">
 
               <div v-if="seletedID === item.pocket_uid" style="color: rgb(211, 0, 0);">
                 <div class="pocket-name">
@@ -63,11 +59,11 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
           <!-- header(標題) -->
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <h5 class="modal-title" id="addPocketLabel">
               <span>新增食物口袋</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -107,11 +103,11 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
           <!-- header(標題) -->
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <h5 class="modal-title" id="editPocketLabel">
               <span>編輯食物口袋</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -153,12 +149,12 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <!-- modal-header -->
             <h5 class="modal-title" id="removePocketModalLabel">
               <span>刪除{{copyModalObj.name}}口袋</span>
             </h5>
-            <button type="button" class="close text-white" aria-label="Close" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -379,7 +375,7 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
+  background-color: rgba(0, 0, 0, 0.125);
   .txt {
     background: rgba(255, 166, 0, 0.3);
     border-radius: 10px;
@@ -391,35 +387,13 @@ export default {
       margin: 0 10px;
     }
   }
-  .icon-button {
-    display: flex;
-    a {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      width: 3rem;
-      height: 3rem;
-      border-radius: 100%;
-      font-size: 1.1rem;
-      transition: transform 0.3s;
-    }
-    a:active,
-    a:hover {
-      transform: scale(1.2, 1.2);
-    }
-    i {
-      font-size: 1.4rem;
-    }
-  }
   .list-group {
     margin-top: 20px;
-    li {
-      padding: 10px 0;
-      .item {
-        padding: 10px 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 2px $point;
-        .pockets-list {
+    border-radius: 0.25rem;
+    .main-list {
+      background-color: white;
+      .pockets {
+        .item {
           width: 75%;
           .pocket-name {
             font-size: 1.2rem;
@@ -443,6 +417,26 @@ export default {
       }
     }
   }
+  .icon-button {
+    display: flex;
+    a {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 100%;
+      font-size: 1.1rem;
+      transition: transform 0.3s;
+    }
+    a:active,
+    a:hover {
+      transform: scale(1.2, 1.2);
+    }
+    i {
+      font-size: 1.4rem;
+    }
+  }
   .addpocket-btn {
     justify-content: center;
     align-items: center;
@@ -460,14 +454,21 @@ export default {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 10vh;
     .modal-header {
-      background-color: $point;
+      background-color:#e3e3e3;
+      color: #575757;
+      h5{
+        font-size: 1.2rem;
+      }
     }
     .modal-body {
       background-color: $light-background;
+      padding-bottom: 0;
     }
     .modal-footer {
-      background-color: $second;
+      border-top: none;
+      background-color: transparent;
     }
     .btn {
       background-color: $primary;
