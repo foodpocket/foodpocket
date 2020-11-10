@@ -47,6 +47,11 @@ export default {
       email: ''
     }
   },
+  computed: {
+    dangerbus () {
+      return this.$store.state.dangerbus
+    }
+  },
   methods: {
     back () {
       this.$router.push('/landingpage')
@@ -69,7 +74,7 @@ export default {
               this.$router.push('/loginpage') // 應跳轉到失敗頁
             }
             if (err.response.status === 409) {
-              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', 'danger')
+              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', this.dangerbus)
               this.password = ''
               this.checkpassword = ''
             }

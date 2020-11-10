@@ -39,6 +39,17 @@ export default {
       password: ''
     }
   },
+  computed: {
+    infobus () {
+      return this.$store.state.infobus
+    },
+    dangerbus () {
+      return this.$store.state.dangerbus
+    }
+  },
+  components: {
+    bus
+  },
   methods: {
     back () {
       this.$router.push('/landingpage')
@@ -56,7 +67,7 @@ export default {
     signin () {
       this.isLoading = true
       const loadingMsgId = Math.floor(new Date() / 1000)
-      this.$bus.$emit('message:show', '登入中...', loadingMsgId, 'info')
+      this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus)
       const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
       const formdata = new FormData()
       formdata.append('username', this.username)
@@ -73,31 +84,21 @@ export default {
           this.$cookies.set('getpocketid', pocketid) // 放到cookies
           this.$cookies.set('getpocketname', pocketname) // 放到cookies
           this.$cookies.set('username', this.username)
-          // this.$store.dispatch('getpocketid', pocketid) // 放到vuex
-          // this.$store.dispatch('getpocketname', pocketname) // 放到vuex
           this.$bus.$emit('message:remove', loadingMsgId)
           this.$router.push('/foodpocket')
           this.isLoading = false
         } else {
           this.isLoading = false
           this.$bus.$emit('message:remove', loadingMsgId)
-          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', 'danger')
+          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', this.dangerbus)
           this.password = ''
         }
       }).catch((err) => {
         console.log(err)
         this.$bus.$emit('message:remove', loadingMsgId)
-        this.$bus.$emit('message:push', '網路異常，請稍候再試', 'danger')
+        this.$bus.$emit('message:push', '網路異常，請稍候再試', this.dangerbus)
       })
     }
-  },
-  computed: {
-    pocketlist () {
-      return this.$store.state.pocketlist
-    }
-  },
-  components: {
-    bus
   }
 }
 </script>

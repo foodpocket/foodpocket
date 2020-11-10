@@ -405,7 +405,7 @@ export default {
       isNew: false,
       recommendList: [],
       visibility: 'all', // 'all' 'record' 'recommend'
-      justifyContent: 'end' // 'between' 'end'
+      justifyContent: 'end' // 'between' 'end',
     }
   },
   created () {
@@ -413,6 +413,12 @@ export default {
     this.touchendActive()
   },
   computed: {
+    successbus () {
+      return this.$store.state.successbus
+    },
+    dangerbus () {
+      return this.$store.state.dangerbus
+    },
     seletedID () {
       return this.$cookies.get('getpocketid')
     },
@@ -707,7 +713,7 @@ export default {
           .post(api, formdata)
           .then((response) => {
             // console.log('addRestaurant:', response.data)
-            this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', 'success')
+            this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', this.successbus)
             // this.searchRestaurant = ''
             this.initList()
           })
@@ -717,7 +723,7 @@ export default {
             }
           })
       } else {
-        this.$bus.$emit('message:push', '這間餐廳已經存在', 'danger')
+        this.$bus.$emit('message:push', '這間餐廳已經存在', this.dangerbus)
       }
     },
     editRestaurant (item) { // 傳進來的item是editModalObj
@@ -749,21 +755,21 @@ export default {
             // console.log('editRestaurant:', response.data) // 發送api成功的話
             if (this.infoModalObj.restaurant_name !== item.restaurant_name) {
               // 狀況一：更改名稱
-              this.$bus.$emit('message:push', '成功編輯餐廳名稱', 'success')
+              this.$bus.$emit('message:push', '成功編輯餐廳名稱', this.successbus)
             }
             if (this.infoModalObj.note !== item.note) {
               // 狀況二：更改備註
-              this.$bus.$emit('message:push', '成功編輯餐廳備註', 'success')
+              this.$bus.$emit('message:push', '成功編輯餐廳備註', this.successbus)
             }
             if (this.infoModalObj.status !== item.status) {
               // 狀況三：更改狀態
-              this.$bus.$emit('message:push', '成功編輯推薦模式', 'success')
+              this.$bus.$emit('message:push', '成功編輯推薦模式', this.successbus)
             }
             if (this.infoModalObj.status === item.status && item.status === 'HIDE') {
               // 狀況四：維持HIDE狀態
               if (this.infoModalObj.hide_until !== this.nextHideUntil) {
                 // 隱藏時間改變
-                this.$bus.$emit('message:push', '成功編輯隱藏天數', 'success') // 就只顯示成功編輯hide_until的提示
+                this.$bus.$emit('message:push', '成功編輯隱藏天數', this.successbus) // 就只顯示成功編輯hide_until的提示
                 // dirty fix: update hide_until for infoModalObj
                 item.hide_until = this.nextHideUntil
               }
@@ -780,17 +786,17 @@ export default {
                 this.$bus.$emit(
                   'message:push',
                   'err.response.status === 401',
-                  'danger'
+                  this.dangerbus
                 )
                 this.$router.push('/loginpage')
               }
               if (err.response.status === 400) {
-                this.$bus.$emit('message:push', '餐廳名稱不可重複', 'danger')
+                this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus)
                 item.restaurant_name = this.tempname // 將input恢復原狀
               }
             })
         } else {
-          this.$bus.$emit('message:push', '餐廳名稱不能為空', 'danger')
+          this.$bus.$emit('message:push', '餐廳名稱不能為空', this.dangerbus)
         }
       } else {
         // console.log('所有條件都並未改變')
@@ -806,7 +812,7 @@ export default {
         .post(api, formdata)
         .then((response) => {
           // console.log('removeRestaurant:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', 'success')
+          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', this.successbus)
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -829,7 +835,7 @@ export default {
         .then((response) => {
           // console.log('addVisitRecord:', response.data)
           $('#addRecordModal').modal('hide')
-          this.$bus.$emit('message:push', '成功增加造訪次數', 'success')
+          this.$bus.$emit('message:push', '成功增加造訪次數', this.successbus)
           this.initList()
         })
         .catch((err) => {
@@ -850,7 +856,7 @@ export default {
           .then((response) => {
             // console.log('editVisitRecord:', response.data)
             // console.log('成功編輯造訪日期')
-            this.$bus.$emit('message:push', '成功編輯造訪日期', 'success')
+            this.$bus.$emit('message:push', '成功編輯造訪日期', this.successbus)
             $('#editVisitModal').modal('hide')
             this.initList()
           })
@@ -873,7 +879,7 @@ export default {
         .post(api, formdata)
         .then((response) => {
           // console.log('removeVisitRecord:', response.data)
-          this.$bus.$emit('message:push', '成功刪除Record', 'success')
+          this.$bus.$emit('message:push', '成功刪除Record', this.successbus)
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -1038,6 +1044,7 @@ export default {
       background-color: transparent;
       // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
       .nav-tabs{
+        justify-content: center;
         margin: auto;
       }
       .nav-tabs .nav-link,

@@ -162,12 +162,13 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div>
-              警告！
-              <br />
-              <strong class="text-danger">刪除</strong>
-              {{copyModalObj.name}} 口袋後
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>警告<i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+              <br />刪除
+              <strong class="text-danger">{{copyModalObj.name}} </strong>
+              口袋後
               <br />此口袋內的餐廳及到訪記錄
               <strong class="text-danger">都會被刪除</strong>
+              <div>(刪除後將無法恢復)</div>
             </div>
           </div>
 
@@ -176,7 +177,7 @@
             <button type="button" class="btn btn-sm" @click="doNotDelete">取消</button>
             <button
               type="button"
-              class="btn btn-sm"
+              class="btn btn-sm btn-danger"
               @click="removePocket(copyModalObj)"
               data-dismiss="modal"
             >確認刪除</button>
@@ -215,7 +216,14 @@ export default {
     this.getToken()
     this.getPocketList()
   },
-  computed: {},
+  computed: {
+    successbus () {
+      return this.$store.state.successbus
+    },
+    dangerbus () {
+      return this.$store.state.dangerbus
+    }
+  },
   methods: {
     // 必要的 --------
     getToken () {
@@ -311,7 +319,9 @@ export default {
               // console.log('editPocket:', response.data)
               this.getPocketList()
               $('#editPocket').modal('hide')
-              this.$bus.$emit('message:push', '成功編輯口袋名稱', 'success')
+              this.$cookies.set('getpocketid', item.pocket_uid) // 放到cookies
+              this.$cookies.set('getpocketname', item.name) // 放到cookies
+              this.$bus.$emit('message:push', '成功編輯口袋名稱', this.successbus)
             })
             .catch(err => {
               if (err.response.status === 401) {
@@ -319,7 +329,7 @@ export default {
               }
             })
         } else {
-          this.$bus.$emit('message:push', '口袋名稱不能為空', 'danger')
+          this.$bus.$emit('message:push', '口袋名稱不能為空', this.dangerbus)
         }
       } else {
         console.log('並未改變')
@@ -339,7 +349,7 @@ export default {
           this.$bus.$emit(
             'message:push',
             '成功刪除 ' + item.name + ' 口袋',
-            'success'
+            this.successbus
           )
           this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid) // 放到cookies
           this.$cookies.set('getpocketname', this.pocketlist[0].name) // 放到cookies
@@ -353,7 +363,7 @@ export default {
             this.$bus.$emit(
               'message:push',
               '不可刪除，帳號內至少需要一個口袋',
-              'danger'
+              this.dangerbus
             )
           }
         })
@@ -469,6 +479,9 @@ export default {
     .modal-footer {
       border-top: none;
       background-color: transparent;
+      .btn-danger{
+        background-color: $danger;
+      }
     }
     .btn {
       background-color: $primary;
