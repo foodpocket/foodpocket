@@ -112,7 +112,7 @@ export default {
 .login {
   min-height: 100vh;
   height: 100%;
-  background-color: $background;
+  background-color: $outside-background;
   .container {
     margin: auto;
     padding-top: 50px;
@@ -148,7 +148,7 @@ export default {
           line-height: 3;
         }
         input {
-          background-color: $primary;
+          background-color: $word-background-dark;
           -webkit-appearance: none;
           font-size: 16px;
           width: 100%;
@@ -162,12 +162,12 @@ export default {
           outline: none;
         }
         input::placeholder{
-          color: $background;
+          color: $milk-white;
         }
       }
       .login-btn{
-        background-color: $point;
-        color: $background;
+        background-color: $point-btn;
+        color: $milk-white;
         width: 100%;
         margin-top: 50px;
         outline: none;

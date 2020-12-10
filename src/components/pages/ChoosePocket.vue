@@ -385,14 +385,14 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.125);
+  background-color: $main-background;
   .txt {
     background: rgba(255, 166, 0, 0.3);
     border-radius: 10px;
     text-align: center;
     padding: 3px 0;
     span {
-      color: rgb(211, 0, 0);
+      color: $main-red;
       padding: 0 10px;
       margin: 0 10px;
     }
@@ -401,7 +401,7 @@ export default {
     margin-top: 20px;
     border-radius: 0.25rem;
     .main-list {
-      background-color: white;
+      background-color: $white-background;
       .pockets {
         .item {
           width: 75%;
@@ -417,11 +417,11 @@ export default {
           justify-content: flex-end;
           a:active,
           a:hover {
-            color: #ffa600;
+            color: $main-yellow;
           }
           .pen-icon {
-            border: solid 1px #ffa600;
-            color: #ffa600;
+            border: solid 1px $main-yellow;
+            color: $main-yellow;
           }
         }
       }
@@ -453,11 +453,11 @@ export default {
     margin: 40px;
     a:active,
     a:hover {
-      color: #54cc24;
+      color: $main-green;
     }
     .plus-icon {
-      border: solid 1px #54cc24;
-      color: #54cc24;
+      border: solid 1px $main-green;
+      color: $main-green;
     }
   }
   .modal {
@@ -473,7 +473,7 @@ export default {
       }
     }
     .modal-body {
-      background-color: $light-background;
+      background-color: $white-background;
       padding-bottom: 0;
     }
     .modal-footer {
@@ -484,8 +484,8 @@ export default {
       }
     }
     .btn {
-      background-color: $primary;
-      color: $light-background;
+      background-color: $normal-btn;
+      color: #fff;
       border: none;
       outline: none;
     }

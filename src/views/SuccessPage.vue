@@ -34,7 +34,7 @@ export default {
 .successpage {
   min-height: 100vh;
   height: 100%;
-  background-color: $background;
+  background-color: $outside-background;
   .container {
     color: #555;
     padding-top: 50px;
@@ -69,8 +69,8 @@ export default {
       }
     }
     button {
-      background-color: $point;
-      color: $background;
+      background-color: $point-btn;
+      color: $milk-white;
       width: 100%;
       border-radius: 50px;
       margin-top: 50px;

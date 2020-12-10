@@ -34,15 +34,7 @@ export default {
   },
   data () {
     return {
-      isLoading: false,
-      color: [
-        { name: '$background', info: 'outsidepage-bg / sidebar-hightlight', color: '#FCFBEF' },
-        { name: '$lightbackground', info: 'pockets-bacground', color: '#ffffff' },
-        { name: '$primary', info: 'outsidepage-input / quicklyAdd-btn', color: '#bb925f' },
-        { name: '$second', info: 'sidebar-bg', color: '#daceb4' },
-        { name: '$point', info: 'outsidepage-btn / navbar', color: '#906441' },
-        { name: '$deep', info: 'sidebar-words', color: '#26190D' }
-      ]
+      isLoading: false
     }
   }
 }
@@ -53,7 +45,7 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
+  background-color: $white-background;
   .colorcard{
     box-shadow: 0 0 3px #ddd;
     padding: 10px;

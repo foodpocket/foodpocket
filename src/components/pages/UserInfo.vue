@@ -18,14 +18,6 @@
           </tr>
         </tbody>
       </table>
-      <!-- <ul class="list-group list-group-flush text-left">
-        <li class="txt text-left list-group-item">
-          <h4>帳號：<span> {{username}}</span></h4>
-        </li>
-        <li class="txt text-left list-group-item">
-          <h4>口袋數：<span> {{pocketnum}}個</span></h4>
-        </li>
-      </ul>-->
     </div>
   </div>
 </template>
@@ -74,12 +66,12 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.125);
+  background-color: $main-background;
   .container{
     margin-top: 20px;
     .table {
       border-radius: 0.25rem;
-      background: #fff;
+      background: $white-background;
       margin: 0;
       td {
         text-align: left;

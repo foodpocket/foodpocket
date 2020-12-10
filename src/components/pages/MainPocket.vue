@@ -142,18 +142,18 @@
                   <td style="width: 70%;">{{ infoModalObj.restaurant_name }}</td>
                 </tr>
                 <tr>
-                  <td>備註：</td>
-                  <td>
-                    <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
-                    <span v-if="!infoModalObj.note">尚無備註</span>
-                  </td>
-                </tr>
-                <tr>
                   <td>推薦模式：</td>
                   <td>
                     <span v-if="infoModalObj.status === 'RANDOM'">(預設)隨機</span>
                     <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
                     <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>備註：</td>
+                  <td>
+                    <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
+                    <span v-if="!infoModalObj.note">尚無備註</span>
                   </td>
                 </tr>
                 <tr v-if="infoModalObj.visit_dates">
@@ -209,19 +209,20 @@
               <label for="name">餐廳名稱</label>
               <input type="text" class="form-control mb-2" id="name" placeholder="請輸入餐廳名稱" v-model="editModalObj.restaurant_name"/>
               <label for="note">備註</label>
-              <input type="text" class="form-control mb-2" id="note" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"/>
+              <textarea name="note" id="note" class="form-control mb-2" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"></textarea>
+              <!-- <input type="text" class="form-control mb-2" id="note" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"/> -->
 
               <label for="status" class="mt-3">推薦模式</label>
-              <div class="status text-left d-flex">
-                <div class="random-input m-0 mr-4">
+              <div class="status text-left d-flex justify-content-between">
+                <div class="random-input m-0">
                   <input type="radio" id="random" name="status" value="RANDOM" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="random">(預設)隨機</label>
                 </div>
-                <div class="active-input m-0 mr-4">
+                <div class="active-input m-0">
                   <input type="radio" id="active" name="status" value="ACTIVE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="active"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</label>
                 </div>
-                <div class="hide-input m-0 mr-4">
+                <div class="hide-input m-0">
                   <input type="radio" id="hide" name="status" value="HIDE" class="status-input mr-2" v-model="editModalObj.status"/>
                   <label for="hide"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦</label>
                   <div v-if="editModalObj.status === 'HIDE'">
@@ -401,7 +402,7 @@ export default {
       AddrecordModalObj: {}, // 增加次數頁-Modal取得object暫放處
       editVisitModalObj: {}, // 造訪日期編輯頁-Modal取得object暫放處
       tempdate: '',
-      nextHideDay: 0, // only use this in edit modal
+      nextHideDay: 2, // only use this in edit modal
       isNew: false,
       recommendList: [],
       visibility: 'all', // 'all' 'record' 'recommend'
@@ -999,19 +1000,19 @@ export default {
   border-radius: 1px;
 }
 .input-group-text{
-  background-color: $second;
-  border: solid 1px $second;
+  background-color: $word-background-light;
+  border: solid 1px $word-background-light;
 }
 .btn{
-  background-color: $primary;
-  color: $light-background;
+  background-color: $normal-btn;
+  color: #fff;
   border: none;
   outline: none;
   box-shadow: none;
 }
 .card{
   .card-header, .card-footer{
-    background-color: $second;
+    background-color: $word-background-light;
   }
 }
 .modal{
@@ -1020,10 +1021,10 @@ export default {
     color: #575757;
   }
   .modal-body{
-    background-color: $light-background;
+    background-color: $white-background;
   }
   .modal-footer{
-    background-color: $second;
+    background-color: $word-background-light;
   }
 }
 // 以上是試色區----------------------------
@@ -1032,14 +1033,14 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.125);
+  background-color: $main-background;
 
   // 以下在card裡面
   .main-area {
     border-radius: 0.25rem;
     margin: 20px auto;
     border: none;
-    background-color: #fff;
+    background-color: $white-background;
     .card-header{
       background-color: transparent;
       // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
@@ -1053,6 +1054,7 @@ export default {
         border: none;
         border-radius: 1px;
         cursor: pointer;
+        padding: 8px;
       }
       .nav-tabs .nav-link:hover,
       .nav-tabs .nav-link:active,
@@ -1107,7 +1109,7 @@ export default {
               }
               .note-icon {
                 font-size: 1.4rem;
-                color: #ffa600;
+                color: $main-yellow;
               }
               .status-icon{
                 font-size: 1.2rem;
@@ -1135,15 +1137,15 @@ export default {
               transform: scale(1.2, 1.2);
             }
             .plus-icon {
-              border: solid 1px #54cc24;
-              color: #54cc24;
+              border: solid 1px$main-green;
+              color: $main-green;
               i{
                 font-size: 1.4rem;
               }
             }
             .calendar-icon {
-              border: solid 1px #ffc107;
-              color: #ffc107;
+              border: solid 1px $main-yellow;
+              color: $main-yellow;
               i{
                 font-size: 1.6rem;
               }
@@ -1192,11 +1194,18 @@ export default {
         border: solid 1px #555;
         font-size: 1.4rem;
       }
+      table{
+        table-layout: fixed;
+        td{
+          text-align: justify;
+        }
+      }
       .modal-note{
-        background-color:#ffa600;
+        display: block;
+        background-color: $main-yellow;
         color:#fff;
         border-radius:10px;
-        padding: 0 10px;
+        padding: 2px 10px;
       }
     }
   }
@@ -1215,8 +1224,8 @@ export default {
           padding: 5px;
         }
         input:checked+label {
-          background-color: $second;
-          border: 1px solid $second;
+          background-color: $word-background-light;
+          border: 1px solid $word-background-light;
         }
       }
     }

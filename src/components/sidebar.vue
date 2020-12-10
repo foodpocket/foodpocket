@@ -75,20 +75,20 @@ a:focus {
 
 .activee{
   color: $deep;
-  background: $background;
+  background: $sidebar-second;
 }
 
 #sidebar {
   min-width: 250px;
   max-width: 250px;
   min-height: 100%;
-  background: $second;
+  background: $sidebar-main;
   color: $deep;
   transition: all 0.3s;
   box-shadow: 0 0 5px #777;
   .sidebar-header {
     padding: 20px;
-    background: $background;
+    background: $sidebar-second;
     h1{
       font-size: 1.6rem;
     }
@@ -96,7 +96,7 @@ a:focus {
   ul.components {
     text-align: left;
     padding: 20px 0;
-    border-bottom: 1px solid $background;
+    border-bottom: 1px solid $sidebar-second;
     li a {
       padding: 10px;
       font-size: 1.1em;
@@ -107,19 +107,19 @@ a:focus {
     }
     li a:hover {
       color: $deep;
-      background: $background;
+      background: $sidebar-second;
     }
     li.logout {
       margin: 50px 0;
       text-align: center;
-      color: rgb(180, 0, 0);
-      background: $background;
+      color: $main-red;
+      background: $sidebar-second;
     }
   }
   // ul li.active > a,
   // a[aria-expanded="true"] {
   //   color: $word;
-  //   background: $background;
+  //   background: $sidebar-second;
   // }
 }
 
