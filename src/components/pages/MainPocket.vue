@@ -10,26 +10,6 @@
 
     <!-- 主畫面 -->
     <div class="container">
-      <!-- 快速新增 -->
-      <div class="quicklyAdd input-group mt-3">
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">餐廳名稱</span>
-          </div>
-          <input type="text" class="form-control" placeholder="請輸入餐廳名稱" v-model="tempRestaurant_name" @keyup.enter="quicklyAdd"/>
-        </div>
-
-        <div class="col-12 input-group mb-3">
-          <div class="input-group-prepend">
-            <span class="input-group-text" id="basic-addon1">到訪日期</span>
-          </div>
-          <input type="date" class="form-control" id="date" v-model="newDate" />
-        </div>
-
-        <div class="col-12 input-group mb-3">
-          <button class="btn w-100" type="button" @click="quicklyAdd">快速新增</button>
-        </div>
-      </div>
       <!-- 主要卡片內容區(分三塊 頭、身體、腳) -->
       <div class="main-area card text-center">
         <div class="card-header">
@@ -47,69 +27,79 @@
           </ul>
         </div>
 
-        <!-- list內容區域(身體) -->
+        <div class="card-body p-0">
+          <!-- list-length -->
+          <div class="list-length col-12">
+            <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
+            <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
+            <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="getRecommendList()"></i></span>
+            <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
+          </div>
 
-        <!-- 搜尋區 -->
-        <div class="input-group mt-3" v-if="visibility === 'all'">
-          <div class="col-12 input-group">
-            <input type="text" class="form-control" placeholder="搜尋或新增餐廳"  v-model="searchRestaurant"/>
-            <div class="input-group-append">
-              <span class="input-group-text" @click="searchRestaurant = ''">清除</span>
+          <div class="quickly-search" v-if="visibility === 'all'">
+            <div class="input-group">
+              <div class="col-12 input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="search">搜尋餐廳</label>
+                </div>
+                <input type="text" class="form-control" id="search" placeholder="請輸入餐廳名稱" v-model="searchRestaurant" @keyup.enter="quicklyAdd"/>
+                <div class="input-group-prepend" v-if="searchRestaurant">
+                  <span class="input-group-text" @click="searchRestaurant = ''">&times;</span>
+                </div>
+              </div>
+
+              <div class="col-12 input-group mb-3">
+                <div class="input-group-prepend">
+                  <label class="input-group-text" for="date">到訪日期</label>
+                </div>
+                <input type="date" class="form-control" id="date" v-model="newDate" />
+              </div>
+
+              <div class="col-12 input-group mb-3">
+                <button class="btn w-100" type="button" @click="quicklyAdd">快速新增</button>
+              </div>
             </div>
           </div>
-        </div>
-        <div class="list-length text-right mr-3">
-          <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家已登記的餐廳</span>
-          <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
-          <span v-if="visibility === 'recommend'" class="redo">推薦 {{recommendList.length}} 家餐廳<i class="fas fa-redo-alt ml-3" @click="getRecommendList()"></i></span>
-          <span v-if="visibility === 'record'">總共吃了 {{visitRecords.length}} 餐</span>
-        </div>
-        <!-- 列表顯示區 -->
-        <ul class="list-group list-group-flush text-left">
-          <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
-            <div class="d-flex align-items-center">
-              <!-- 基本資訊 -->
-              <div class="restaurant-list" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
-                <div class="restaurant-name">
-                  {{ item.restaurant_name }}
-                  <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
-                  <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
-                  <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
-                </div>
-                <div>
+
+          <!-- 列表顯示區 -->
+          <ul class="list-group list-group-flush text-left">
+            <li class="main-list list-group-item" v-for="(item, key) in filteredMethod" :key="key">
+              <div class="d-flex align-items-center">
+                <!-- 基本資訊 -->
+                <div class="restaurant-area" style="cursor:pointer;" @click.prevent="openInfoModal(item)">
+                  <div class="restaurant-name">
+                    {{ item.restaurant_name }}
+                    <i v-if="visibility !== 'record' && item.note !== ''" class="note-icon fas fa-exclamation-circle"></i>
+                    <i v-if="item.status === 'ACTIVE'" class="status-icon fas fa-thumbtack"></i>
+                    <i v-if="item.status === 'HIDE'" class="status-icon fas fa-eye-slash"></i>
+                  </div>
                   <div class="restaurant-description">
                     <div class="lastTime" v-if="visibility === 'all'">上次到訪日期： {{item.visit_dates[0]}}</div>
                     <div class="visited-times" v-if="visibility !== 'record'">吃過 {{item.visit_count}} 次</div>
                     <div class="lastTime" v-if="visibility === 'record'">日期： {{item.visit_date}}</div>
                   </div>
                 </div>
-              </div>
-
-              <!-- icon-btn -->
-              <div class="button-area" :class="justifyContent">
-                <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
-                <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
-              </div>
-
-            </div>
-          </li>
-
-          <!-- 新增餐廳的按鈕 -->
-          <li class="list-group-item addnew" v-if="visibility === 'all' && searchRestaurant!==''">
-            <div class="d-flex align-items-center justify-content-center">
-              <div class="restaurant-list">
-                <div class="restaurant-name">
-                  <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
-                    新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
-                  </button>
+                <!-- icon-btn -->
+                <div class="button-area" :class="justifyContent">
+                  <a v-if="visibility !== 'record'" @click.prevent="openAddrecordModal(item)" class="plus-icon"><i class="fas fa-plus"></i></a>
+                  <a v-if="visibility === 'record'" @click.prevent="openEditVisitModal(item)" class="calendar-icon"><i class="far fa-calendar-alt"></i></a>
                 </div>
               </div>
-            </div>
-          </li>
-        </ul>
+            </li>
+
+            <!-- 新增餐廳的按鈕 -->
+            <li class="addnew list-group-item px-0" v-if="visibility === 'all' && searchRestaurant!==''">
+              <div class="col-12 input-group">
+                <button class="btn w-100" type="button" @click="addRestaurant(searchRestaurant)">
+                  新增<strong class="deep-color"> {{searchRestaurant}} </strong>餐廳
+                </button>
+              </div>
+            </li>
+          </ul>
+        </div>
 
         <!-- card-footer註腳區域(腳) -->
-        <div class="card-footer d-flex justify-content-between">
+        <div class="card-footer">
           <span v-if="visibility === 'all'&& searchRestaurant ===''">總共有 {{restaurantList.length}} 家餐廳</span>
           <span v-if="visibility === 'all' && searchRestaurant !==''">總共有 {{searchList.length}} 家相符的餐廳</span>
           <span v-if="visibility === 'recommend'">推薦 {{recommendList.length}} 家餐廳</span>
@@ -131,11 +121,11 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header "> <!-- bg-dark -->
             <h5 class="modal-title" id="openInfoModalLabel">
               <span>{{infoModalObj.restaurant_name}} 資訊欄</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -145,36 +135,40 @@
             <a class="pencil-icon" v-if="visibility !== 'record'" @click.prevent="openEditModal(infoModalObj)">
               <i class="fas fa-pen"></i>
             </a>
-            <div class="text-left form-group">
-              <div>
-                <label>餐廳名稱：</label>
-                <span>{{infoModalObj.restaurant_name}}</span>
-              </div>
-
-              <div>
-                <label>備註：</label>
-                <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
-              </div>
-
-              <div>
-                <label>推薦模式：</label>
-                <span v-if="infoModalObj.status === 'RANDOM'">隨機(預設)</span>
-                <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
-                <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
-              </div>
-
-              <div v-if="infoModalObj.visit_dates">
-                <label>造訪次數：</label>
-                <span>{{infoModalObj.visit_dates.length}}次</span>
-              </div>
-
-              <div v-if="infoModalObj.visit_dates">
-                <label>到訪日期：</label>
-                <ul>
-                  <li v-for="(item,key) in infoModalObj.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</li>
-                </ul>
-              </div>
-            </div>
+            <table class="table">
+              <tbody>
+                <tr>
+                  <td style="width: 30%;">餐廳名稱：</td>
+                  <td style="width: 70%;">{{ infoModalObj.restaurant_name }}</td>
+                </tr>
+                <tr>
+                  <td>推薦模式：</td>
+                  <td>
+                    <span v-if="infoModalObj.status === 'RANDOM'">(預設)隨機</span>
+                    <span v-if="infoModalObj.status === 'ACTIVE'"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</span>
+                    <span v-if="infoModalObj.status === 'HIDE'"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦 (直到{{infoModalObj.hide_until}})</span>
+                  </td>
+                </tr>
+                <tr>
+                  <td>備註：</td>
+                  <td>
+                    <span v-if="infoModalObj.note" class="modal-note">{{infoModalObj.note}}</span>
+                    <span v-if="!infoModalObj.note">尚無備註</span>
+                  </td>
+                </tr>
+                <tr v-if="infoModalObj.visit_dates">
+                  <td>造訪次數：</td>
+                  <td v-if="infoModalObj.visit_dates.length > 0">共 {{ infoModalObj.visit_dates.length }} 次</td>
+                  <td v-if="infoModalObj.visit_dates.length === 0">尚未造訪過</td>
+                </tr>
+                <tr v-if="infoModalObj.visit_dates && infoModalObj.visit_dates.length > 0">
+                  <td>到訪日期：</td>
+                  <td>
+                    <li v-for="(item,key) in infoModalObj.visit_dates.slice(0,3)" :key="key">最近{{key+1}}次：{{item}}</li>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
 
           <div class="modal-footer">
@@ -197,13 +191,13 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-dark -->
+          <div class="modal-header"><!-- bg-dark -->
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editInfoModalLabel">
               <!-- 全部餐廳列表顯示編輯餐廳 -->
               <span>編輯 {{infoModalObj.restaurant_name}}</span>
             </h5>
-            <button type="button" class="close text-white" @click="backtoNote()" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" @click="backtoNote()" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -215,21 +209,22 @@
               <label for="name">餐廳名稱</label>
               <input type="text" class="form-control mb-2" id="name" placeholder="請輸入餐廳名稱" v-model="editModalObj.restaurant_name"/>
               <label for="note">備註</label>
-              <input type="text" class="form-control mb-2" id="note" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"/>
+              <textarea name="note" id="note" class="form-control mb-2" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"></textarea>
+              <!-- <input type="text" class="form-control mb-2" id="note" placeholder="任何備註都可以打在這裡" v-model="editModalObj.note"/> -->
 
               <label for="status" class="mt-3">推薦模式</label>
-              <div class="status text-left d-flex">
-                <div class="random-input m-0 mr-4">
+              <div class="status text-left d-flex justify-content-between">
+                <div class="random-input m-0">
                   <input type="radio" id="random" name="status" value="RANDOM" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="random">隨機(預設)</label>
+                  <label for="random">(預設)隨機</label>
                 </div>
-                <div class="active-input m-0 mr-4">
+                <div class="active-input m-0">
                   <input type="radio" id="active" name="status" value="ACTIVE" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="active">永遠</label>
+                  <label for="active"><i class="mr-1 fas fa-thumbtack" style="font-size:1rem;"></i>永遠</label>
                 </div>
-                <div class="hide-input m-0 mr-4">
+                <div class="hide-input m-0">
                   <input type="radio" id="hide" name="status" value="HIDE" class="status-input mr-2" v-model="editModalObj.status"/>
-                  <label for="hide">不推薦</label>
+                  <label for="hide"><i class="mr-1 fas fa-eye-slash" style="font-size:1rem;"></i>不推薦</label>
                   <div v-if="editModalObj.status === 'HIDE'">
                     <label for="days" class="mr-2">隱藏</label>
                     <select name="days" id="days" v-model="nextHideDay">
@@ -266,12 +261,12 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header"> <!-- bg-dark -->
             <!-- 編輯卡片-header -->
             <h5 class="modal-title" id="editVisitModalLabel">
               <span v-if="visibility === 'record'">編輯到訪 {{editVisitModalObj.restaurant_name}} 日期</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <!-- 叉叉鈕 -->
               <span aria-hidden="true">&times;</span>
             </button>
@@ -304,7 +299,7 @@
     >
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"> <!-- bg-dark -->
+          <div class="modal-header"> <!-- bg-dark -->
             <!-- 編輯卡片區-header -->
             <h5 class="modal-title" id="addModalLabel">
               <span>新增到訪 {{AddrecordModalObj.restaurant_name}} 日期</span>
@@ -341,7 +336,7 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white"><!-- bg-danger  -->
+          <div class="modal-header"><!-- bg-danger  -->
             <!-- modal-header -->
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'all'">
               <span>刪除{{infoModalObj.restaurant_name}}餐廳</span>
@@ -349,7 +344,7 @@
             <h5 class="modal-title" id="delRestaurantModalLabel" v-if="visibility === 'record'">
               <span>刪除到訪紀錄</span>
             </h5>
-            <button type="button" class="close" aria-label="Close text-white" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -357,7 +352,9 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div v-if="visibility === 'all'">
-              警告！<br /><strong class="text-danger">刪除{{infoModalObj.restaurant_name}}</strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+               警告 <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+              <br />刪除<strong class="text-danger"> {{infoModalObj.restaurant_name}} </strong>餐廳後<br />所有造訪此餐廳的紀錄也將⼀併刪除
             </div>
             <div v-if="visibility === 'record'">
               是否刪除<br /><strong class="text-danger">{{editVisitModalObj.visit_date}}</strong>到訪<strong>{{editVisitModalObj.restaurant_name}}</strong>的紀錄？
@@ -368,9 +365,9 @@
           <div class="modal-footer">
             <!-- 刪除卡片確認區-footer -->
             <button type="button" class="btn btn-sm" @click="doNotDelete" >取消</button> <!-- btn-outline-secondary  -->
-            <button type="button" class="btn btn-sm"
+            <button type="button" class="btn btn-sm btn-danger"
             @click="removeRestaurant(infoModalObj)" data-dismiss="modal" v-if="visibility === 'all'">確認刪除</button> <!-- btn-danger -->
-            <button type="button" class="btn btn-sm"
+            <button type="button" class="btn btn-sm btn-danger"
             @click="removeVisitRecord(editVisitModalObj)" data-dismiss="modal" v-if="visibility === 'record'">確認刪除</button> <!-- btn-danger  -->
           </div>
         </div>
@@ -395,7 +392,7 @@ export default {
       token: '',
       isLoading: false,
       searchRestaurant: '', // 搜尋的字串
-      tempRestaurant_name: '', // 快速新增-內容暫放處
+      // tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
       newDate: this.changedateFormat(Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)), // 快速新增-內容暫放處(預設是'今天')
       restaurantList: [], // 由API匯入
@@ -405,11 +402,11 @@ export default {
       AddrecordModalObj: {}, // 增加次數頁-Modal取得object暫放處
       editVisitModalObj: {}, // 造訪日期編輯頁-Modal取得object暫放處
       tempdate: '',
-      nextHideDay: 0, // only use this in edit modal
+      nextHideDay: 2, // only use this in edit modal
       isNew: false,
       recommendList: [],
       visibility: 'all', // 'all' 'record' 'recommend'
-      justifyContent: 'end' // 'between' 'end'
+      justifyContent: 'end' // 'between' 'end',
     }
   },
   created () {
@@ -417,6 +414,12 @@ export default {
     this.touchendActive()
   },
   computed: {
+    successbus () {
+      return this.$store.state.successbus
+    },
+    dangerbus () {
+      return this.$store.state.dangerbus
+    },
     seletedID () {
       return this.$cookies.get('getpocketid')
     },
@@ -556,7 +559,7 @@ export default {
       // console.log('timestampFormat:', timestamp)
 
       // 這裡處理餐廳名稱欄位------------------------
-      const restaurantName = this.tempRestaurant_name.trim() // 修掉輸入的空白
+      const restaurantName = this.searchRestaurant.trim() // 修掉輸入的空白
       if (!restaurantName) {
         return
       }
@@ -586,7 +589,7 @@ export default {
         this.quicklyAddVisit(this.tempRestaurant_uid, timestamp) // 增加歷史紀錄
       }
       // 完成後將input復原原樣的------------------------
-      this.tempRestaurant_name = ''
+      this.searchRestaurant = ''
       this.newDate = this.changedateFormat(
         Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)
       ) // 恢復
@@ -711,6 +714,8 @@ export default {
           .post(api, formdata)
           .then((response) => {
             // console.log('addRestaurant:', response.data)
+            this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', this.successbus)
+            // this.searchRestaurant = ''
             this.initList()
           })
           .catch((err) => {
@@ -719,7 +724,7 @@ export default {
             }
           })
       } else {
-        this.$bus.$emit('message:push', '這間餐廳已經存在', 'danger')
+        this.$bus.$emit('message:push', '這間餐廳已經存在', this.dangerbus)
       }
     },
     editRestaurant (item) { // 傳進來的item是editModalObj
@@ -751,21 +756,21 @@ export default {
             // console.log('editRestaurant:', response.data) // 發送api成功的話
             if (this.infoModalObj.restaurant_name !== item.restaurant_name) {
               // 狀況一：更改名稱
-              this.$bus.$emit('message:push', '成功編輯餐廳名稱', 'success')
+              this.$bus.$emit('message:push', '成功編輯餐廳名稱', this.successbus)
             }
             if (this.infoModalObj.note !== item.note) {
               // 狀況二：更改備註
-              this.$bus.$emit('message:push', '成功編輯餐廳備註', 'success')
+              this.$bus.$emit('message:push', '成功編輯餐廳備註', this.successbus)
             }
             if (this.infoModalObj.status !== item.status) {
               // 狀況三：更改狀態
-              this.$bus.$emit('message:push', '成功編輯推薦模式', 'success')
+              this.$bus.$emit('message:push', '成功編輯推薦模式', this.successbus)
             }
             if (this.infoModalObj.status === item.status && item.status === 'HIDE') {
               // 狀況四：維持HIDE狀態
               if (this.infoModalObj.hide_until !== this.nextHideUntil) {
                 // 隱藏時間改變
-                this.$bus.$emit('message:push', '成功編輯隱藏天數', 'success') // 就只顯示成功編輯hide_until的提示
+                this.$bus.$emit('message:push', '成功編輯隱藏天數', this.successbus) // 就只顯示成功編輯hide_until的提示
                 // dirty fix: update hide_until for infoModalObj
                 item.hide_until = this.nextHideUntil
               }
@@ -782,17 +787,17 @@ export default {
                 this.$bus.$emit(
                   'message:push',
                   'err.response.status === 401',
-                  'danger'
+                  this.dangerbus
                 )
                 this.$router.push('/loginpage')
               }
               if (err.response.status === 400) {
-                this.$bus.$emit('message:push', '餐廳名稱不可重複', 'danger')
+                this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus)
                 item.restaurant_name = this.tempname // 將input恢復原狀
               }
             })
         } else {
-          this.$bus.$emit('message:push', '餐廳名稱不能為空', 'danger')
+          this.$bus.$emit('message:push', '餐廳名稱不能為空', this.dangerbus)
         }
       } else {
         // console.log('所有條件都並未改變')
@@ -808,7 +813,7 @@ export default {
         .post(api, formdata)
         .then((response) => {
           // console.log('removeRestaurant:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', 'success')
+          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', this.successbus)
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -831,7 +836,7 @@ export default {
         .then((response) => {
           // console.log('addVisitRecord:', response.data)
           $('#addRecordModal').modal('hide')
-          this.$bus.$emit('message:push', '成功增加造訪次數', 'success')
+          this.$bus.$emit('message:push', '成功增加造訪次數', this.successbus)
           this.initList()
         })
         .catch((err) => {
@@ -852,7 +857,7 @@ export default {
           .then((response) => {
             // console.log('editVisitRecord:', response.data)
             // console.log('成功編輯造訪日期')
-            this.$bus.$emit('message:push', '成功編輯造訪日期', 'success')
+            this.$bus.$emit('message:push', '成功編輯造訪日期', this.successbus)
             $('#editVisitModal').modal('hide')
             this.initList()
           })
@@ -875,7 +880,7 @@ export default {
         .post(api, formdata)
         .then((response) => {
           // console.log('removeVisitRecord:', response.data)
-          this.$bus.$emit('message:push', '成功刪除Record', 'success')
+          this.$bus.$emit('message:push', '成功刪除Record', this.successbus)
           $('#delRestaurantModal').modal('hide')
           this.initList()
         })
@@ -989,119 +994,183 @@ export default {
 
 .deep-color {
   color: $deep;
+  font-weight: 400;
+  background-color: rgb(255, 255, 255);
+  margin: 0 1rem;
+  border-radius: 1px;
 }
-
 .input-group-text{
-  background-color: $second;
-  border: solid 1px $second;
+  background-color: $word-background-light;
+  border: solid 1px $word-background-light;
 }
 .btn{
-  background-color: $primary;
-  color: $light-background;
+  background-color: $normal-btn;
+  color: #fff;
   border: none;
   outline: none;
+  box-shadow: none;
 }
 .card{
   .card-header, .card-footer{
-    background-color: $second;
+    background-color: $word-background-light;
   }
 }
 .modal{
   .modal-header{
-    background-color: $point;
+    background-color:#e3e3e3;
+    color: #575757;
   }
   .modal-body{
-    background-color: $light-background;
+    background-color: $white-background;
   }
   .modal-footer{
-    background-color: $second;
+    background-color: $word-background-light;
   }
 }
 // 以上是試色區----------------------------
-.nav-tabs  .nav-link,
-.nav-tabs  .nav-link:hover,
-.nav-tabs  .nav-link:active{
-  border: none;
-  cursor: pointer;
-}
+
 .mainpocket{
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
+  background-color: $main-background;
 
-  .quicklyAdd{
-    .col-12{
-      padding: 0;
-    }
-  }
-
+  // 以下在card裡面
   .main-area {
+    border-radius: 0.25rem;
     margin: 20px auto;
-    .list-length {
-      margin: 10px 0;
-      .redo{
-        display: flex;
-        justify-content: flex-end;
-        align-items: center;
-        i {
-          font-size: 1.5rem;
-        }
-      }
-    }
-    .restaurant-list {
-      width: 75%;
-      .restaurant-name {
-        font-size: 1.2rem;
-        i{
-          margin-left: 10px;
-        }
-        .note-icon {
-          font-size: 1.4rem;
-          color: #ffa600;
-        }
-        .status-icon{
-          font-size: 1.2rem;
-        }
-      }
-      .restaurant-description {
-        font-size: 0.8rem;
-      }
-    }
-    .button-area {
-      width: 40%;
-      display: flex;
-      a {
-        display: flex;
+    border: none;
+    background-color: $white-background;
+    .card-header{
+      background-color: transparent;
+      // 全部餐廳、推薦餐廳、歷史紀錄的分頁tab
+      .nav-tabs{
         justify-content: center;
-        align-items: center;
-        width: 3rem;
-        height: 3rem;
-        border-radius: 100%;
-        font-size: 1.1rem;
-        transition: transform 0.3s;
+        margin: auto;
       }
-      a:active,
-      a:hover {
-        transform: scale(1.2, 1.2);
+      .nav-tabs .nav-link,
+      .nav-tabs .nav-link:hover,
+      .nav-tabs .nav-link:active{
+        border: none;
+        border-radius: 1px;
+        cursor: pointer;
+        padding: 8px;
       }
-      .plus-icon {
-        border: solid 1px #54cc24;
-        color: #54cc24;
-        i{
-          font-size: 1.4rem;
+      .nav-tabs .nav-link:hover,
+      .nav-tabs .nav-link:active,
+      .active{
+        background-color: #e9e7de;
+      }
+    }
+    .card-body{
+      .quickly-search{
+        .input-group {
+          .input-group-text{
+            border:none;
+            background-color: #e9e7de;
+            border-radius: 1px;
+          }
+          .form-control{
+            border:none;
+            background-color: #e9e7de;
+            border-radius: 1px;
+            box-shadow: none;
+          }
+          .btn{
+            border-radius: 1px;
+            box-shadow: none;
+          }
+          .btn:hover{
+            color:#fff;
+          }
         }
       }
-      .calendar-icon {
-        border: solid 1px #ffc107;
-        color: #ffc107;
-        i{
-          font-size: 1.6rem;
+      .list-length {
+        text-align: right;
+        margin: 10px 0;
+        .redo{
+          display: flex;
+          justify-content: flex-end;
+          align-items: center;
+          i {
+            font-size: 1.5rem;
+          }
         }
       }
+      .list-group{
+        .main-list{
+          background-color: transparent;
+          .restaurant-area {
+            width: 75%;
+            .restaurant-name {
+              font-size: 1.2rem;
+              i{
+                margin-left: 10px;
+              }
+              .note-icon {
+                font-size: 1.4rem;
+                color: $main-yellow;
+              }
+              .status-icon{
+                font-size: 1.2rem;
+              }
+            }
+            .restaurant-description {
+              font-size: 0.8rem;
+            }
+          }
+          .button-area {
+            width: 40%;
+            display: flex;
+            a {
+              display: flex;
+              justify-content: center;
+              align-items: center;
+              width: 3rem;
+              height: 3rem;
+              border-radius: 100%;
+              font-size: 1.1rem;
+              transition: transform 0.3s;
+            }
+            a:active,
+            a:hover {
+              transform: scale(1.2, 1.2);
+            }
+            .plus-icon {
+              border: solid 1px$main-green;
+              color: $main-green;
+              i{
+                font-size: 1.4rem;
+              }
+            }
+            .calendar-icon {
+              border: solid 1px $main-yellow;
+              color: $main-yellow;
+              i{
+                font-size: 1.6rem;
+              }
+            }
+          }
+        }
+        .addnew{
+          .btn{
+            border-radius: 1px;
+          }
+          .btn:hover{
+            border-radius: 1px;
+            color: #fff;
+          }
+        }
+      }
+    }
+    .card-footer{
+      background-color: transparent;
+      display: flex;
+      justify-content: flex-start;
     }
   }
 
+  // modal單獨使用
   #openInfoModal {
     .modal-body {
       position: relative;
@@ -1120,20 +1189,26 @@ export default {
       }
       .pencil-icon {
         position: absolute;
-        top: 10px;
-        right: 10px;
+        top: 1rem;
+        right: 1rem;
         border: solid 1px #555;
         font-size: 1.4rem;
       }
+      table{
+        table-layout: fixed;
+        td{
+          text-align: justify;
+        }
+      }
       .modal-note{
-        background-color:#ffa600;
+        display: block;
+        background-color: $main-yellow;
         color:#fff;
         border-radius:10px;
-        padding: 0 10px;
+        padding: 2px 10px;
       }
     }
   }
-
   #editInfoModal {
     .modal-body{
       .status{
@@ -1149,21 +1224,53 @@ export default {
           padding: 5px;
         }
         input:checked+label {
-          background-color: $second;
-          border: 1px solid $second;
+          background-color: $word-background-light;
+          border: 1px solid $word-background-light;
         }
       }
     }
   }
 
+   // modal共用
   .modal{
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 10vh;
+    .modal-header{
+      h5{
+        font-size: 1.2rem;
+      }
+    }
+    .modal-body{
+      padding-bottom: 0;
+    }
+    .modal-footer{
+      border-top: none;
+      background-color: transparent;
+    }
+    .btn-danger{
+      background-color: $danger;
+    }
+    .table {
+      margin: 0;
+      td {
+        border: none;
+        text-align: left;
+        padding: 5px 0;
+        li{
+          list-style-type: none;
+        }
+      }
+    }
   }
+
+  // 整篇共用
   .fa-thumbtack{
+    // modal有 主畫面也有
     transform: rotate(-35deg);
   }
+
   // :class
   .between {
     justify-content: space-between;

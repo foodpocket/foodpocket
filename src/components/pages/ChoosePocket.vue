@@ -8,22 +8,27 @@
     <bus />
 
     <div class="container">
-      <div class="txt mt-3">
-        您已將
-        <span>{{seletedName}}</span>設為主要口袋
-      </div>
 
       <ul class="list-group list-group-flush text-left">
         <li class="main-list list-group-item" v-for="(item, key) in pocketlist" :key="key">
-          <div class="item d-flex align-items-center">
-            <div class="pockets-list" @click="seletedPocket(item)">
-              <div class="pocket-name">
-                {{ item.name }}
-                <span v-if="seletedID === item.pocket_uid">
-                  <i class="fas fa-check-double ml-2" style="color: rgb(211, 0, 0);"></i>
-                </span>
+          <div class="pockets d-flex align-items-center">
+            <div class="item" @click="seletedPocket(item)">
+
+              <div v-if="seletedID === item.pocket_uid" style="color: rgb(211, 0, 0);">
+                <div class="pocket-name">
+                  {{ item.name }}
+                  <span>
+                    <i class="fas fa-check-double ml-2" style="color: rgb(211, 0, 0);"></i>
+                  </span>
+                </div>
+                <div class="pocket-size">共有{{item.size}}間餐廳</div>
               </div>
-              <div class="pocket-size">共有{{item.size}}間餐廳</div>
+
+              <div v-if="seletedID !== item.pocket_uid">
+                <div class="pocket-name">{{ item.name }}</div>
+                <div class="pocket-size">共有{{item.size}}間餐廳</div>
+              </div>
+
             </div>
 
             <div class="icon-button edit-btn">
@@ -54,11 +59,11 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
           <!-- header(標題) -->
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <h5 class="modal-title" id="addPocketLabel">
               <span>新增食物口袋</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -98,11 +103,11 @@
       <div class="modal-dialog modal-lg" role="document">
         <div class="modal-content border-0">
           <!-- header(標題) -->
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <h5 class="modal-title" id="editPocketLabel">
               <span>編輯食物口袋</span>
             </h5>
-            <button type="button" class="close text-white" data-dismiss="modal" aria-label="Close">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -144,12 +149,12 @@
     >
       <div class="modal-dialog" role="document">
         <div class="modal-content border-0">
-          <div class="modal-header text-white">
+          <div class="modal-header">
             <!-- modal-header -->
             <h5 class="modal-title" id="removePocketModalLabel">
               <span>刪除{{copyModalObj.name}}口袋</span>
             </h5>
-            <button type="button" class="close text-white" aria-label="Close" @click="doNotDelete">
+            <button type="button" class="close" aria-label="Close" @click="doNotDelete">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -157,12 +162,13 @@
           <div class="modal-body">
             <!-- 刪除卡片確認區-body -->
             <div>
-              警告！
-              <br />
-              <strong class="text-danger">刪除</strong>
-              {{copyModalObj.name}} 口袋後
+              <i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>警告<i class="fas fa-exclamation-triangle text-warning" style="font-size:1.5rem;"></i>
+              <br />刪除
+              <strong class="text-danger">{{copyModalObj.name}} </strong>
+              口袋後
               <br />此口袋內的餐廳及到訪記錄
               <strong class="text-danger">都會被刪除</strong>
+              <div>(刪除後將無法恢復)</div>
             </div>
           </div>
 
@@ -171,7 +177,7 @@
             <button type="button" class="btn btn-sm" @click="doNotDelete">取消</button>
             <button
               type="button"
-              class="btn btn-sm"
+              class="btn btn-sm btn-danger"
               @click="removePocket(copyModalObj)"
               data-dismiss="modal"
             >確認刪除</button>
@@ -211,6 +217,12 @@ export default {
     this.getPocketList()
   },
   computed: {
+    successbus () {
+      return this.$store.state.successbus
+    },
+    dangerbus () {
+      return this.$store.state.dangerbus
+    }
   },
   methods: {
     // 必要的 --------
@@ -247,12 +259,14 @@ export default {
       this.newPocketName = '' // 清空
       $('#addPocket').modal('show')
     },
-    openEditPocketModal (item) { // item是pocketlist的其中一個object
+    openEditPocketModal (item) {
+      // item是pocketlist的其中一個object
       $('#editPocket').modal('show')
       this.editModalObj = Object.assign({}, item)
       this.copyModalObj = Object.assign({}, item)
     },
-    openRemovePocketModal (item) { // item是copyModalObj
+    openRemovePocketModal (item) {
+      // item是copyModalObj
       $('#editPocket').modal('hide')
       $('#removePocket').modal('show')
     },
@@ -305,7 +319,9 @@ export default {
               // console.log('editPocket:', response.data)
               this.getPocketList()
               $('#editPocket').modal('hide')
-              this.$bus.$emit('message:push', '成功編輯口袋名稱', 'success')
+              this.$cookies.set('getpocketid', item.pocket_uid) // 放到cookies
+              this.$cookies.set('getpocketname', item.name) // 放到cookies
+              this.$bus.$emit('message:push', '成功編輯口袋名稱', this.successbus)
             })
             .catch(err => {
               if (err.response.status === 401) {
@@ -313,7 +329,7 @@ export default {
               }
             })
         } else {
-          this.$bus.$emit('message:push', '口袋名稱不能為空', 'danger')
+          this.$bus.$emit('message:push', '口袋名稱不能為空', this.dangerbus)
         }
       } else {
         console.log('並未改變')
@@ -330,7 +346,11 @@ export default {
         .post(api, formdata)
         .then(response => {
           // console.log('removePocket:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.name + ' 口袋', 'success')
+          this.$bus.$emit(
+            'message:push',
+            '成功刪除 ' + item.name + ' 口袋',
+            this.successbus
+          )
           this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid) // 放到cookies
           this.$cookies.set('getpocketname', this.pocketlist[0].name) // 放到cookies
           this.getPocketList()
@@ -340,7 +360,11 @@ export default {
             this.$router.push('/loginpage')
           }
           if (err.response.status === 403) {
-            this.$bus.$emit('message:push', '不可刪除，帳號內至少需要一個口袋', 'danger')
+            this.$bus.$emit(
+              'message:push',
+              '不可刪除，帳號內至少需要一個口袋',
+              this.dangerbus
+            )
           }
         })
       $('#removePocket').modal('hide')
@@ -361,16 +385,46 @@ export default {
   min-height: 100vh;
   height: 100%;
   width: 100%;
-  background-color: $light-background;
+  background-color: $main-background;
   .txt {
     background: rgba(255, 166, 0, 0.3);
     border-radius: 10px;
     text-align: center;
     padding: 3px 0;
     span {
-      color: rgb(211, 0, 0);
+      color: $main-red;
       padding: 0 10px;
       margin: 0 10px;
+    }
+  }
+  .list-group {
+    margin-top: 20px;
+    border-radius: 0.25rem;
+    .main-list {
+      background-color: $white-background;
+      .pockets {
+        .item {
+          width: 75%;
+          .pocket-name {
+            font-size: 1.2rem;
+          }
+          .pocket-size {
+            font-size: 0.8rem;
+          }
+        }
+        .edit-btn {
+          width: 40%;
+          justify-content: flex-end;
+          a:active,
+          a:hover {
+            color: $main-yellow;
+          }
+          .pen-icon {
+            border: solid 1px $main-yellow;
+            color: $main-yellow;
+          }
+        }
+      }
     }
   }
   .icon-button {
@@ -393,67 +447,45 @@ export default {
       font-size: 1.4rem;
     }
   }
-  .list-group {
-    margin-top: 20px;
-    li {
-      padding: 10px 0;
-      .item {
-        padding: 10px 20px;
-        border-radius: 10px;
-        box-shadow: 0px 0px 2px $point;
-        .pockets-list {
-          width: 75%;
-          .pocket-name {
-            font-size: 1.2rem;
-          }
-          .pocket-size {
-            font-size: 0.8rem;
-          }
-        }
-        .edit-btn {
-          width: 40%;
-          justify-content: flex-end;
-          a:active,
-          a:hover {
-            color: #ffa600;
-          }
-          .pen-icon {
-            border: solid 1px #ffa600;
-            color: #ffa600;
-          }
-        }
-      }
-    }
-  }
   .addpocket-btn {
     justify-content: center;
     align-items: center;
     margin: 40px;
     a:active,
     a:hover {
-      color: #54cc24;
+      color: $main-green;
     }
     .plus-icon {
-      border: solid 1px #54cc24;
-      color: #54cc24;
+      border: solid 1px $main-green;
+      color: $main-green;
     }
   }
   .modal {
     max-height: 100%;
     overflow-x: hidden;
     overflow-y: auto;
+    padding-top: 10vh;
     .modal-header {
-      background-color: $point;
+      background-color:#e3e3e3;
+      color: #575757;
+      h5{
+        font-size: 1.2rem;
+      }
     }
     .modal-body {
-      background-color: $light-background;
+      background-color: $white-background;
+      padding-bottom: 0;
     }
     .modal-footer {
-      background-color: $second;
+      border-top: none;
+      background-color: transparent;
+      .btn-danger{
+        background-color: $danger;
+      }
     }
     .btn {
-      background-color: $primary;
-      color: $light-background;
+      background-color: $normal-btn;
+      color: #fff;
       border: none;
       outline: none;
     }

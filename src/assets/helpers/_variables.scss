@@ -4,12 +4,29 @@
 // consistent naming. Ex: $nav-link-disabled-color and $modal-content-box-shadow-xs.
 
 // Color system
-$background:#fcfcfc;
-$light-background: #ffffff;
-$primary:#a0a0a0;
-$second: #e9e7de;
-$point: #776f68;
+
+
+$main-yellow: #ffa600;
+$main-green: #54cc24;
+$main-red: #d30000;
+$milk-white:#fcfcfc;
 $deep:#26190D;
+
+$main-background: rgba(0, 0, 0, 0.125);
+$white-background: #ffffff;
+$outside-background: #fcfcfc;
+$navbar-background: #776f68;
+
+$word-background-light: #e9e7de;
+$word-background-dark: #a0a0a0;
+
+$sidebar-main: #e9e7de;
+$sidebar-second: #fcfcfc;
+
+$normal-btn: #a0a0a0;
+$point-btn: #776f68;
+
+// ------------------------
 
 $white:    #fff !default;
 $gray-100: #f8f9fa !default;

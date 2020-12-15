@@ -47,6 +47,11 @@ export default {
       email: ''
     }
   },
+  computed: {
+    dangerbus () {
+      return this.$store.state.dangerbus
+    }
+  },
   methods: {
     back () {
       this.$router.push('/landingpage')
@@ -69,7 +74,7 @@ export default {
               this.$router.push('/loginpage') // 應跳轉到失敗頁
             }
             if (err.response.status === 409) {
-              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', 'danger')
+              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', this.dangerbus)
               this.password = ''
               this.checkpassword = ''
             }
@@ -90,7 +95,7 @@ export default {
 .registerpage {
   min-height: 100vh;
   height: 100%;
-  background-color: $background;
+  background-color: $outside-background;
   .container {
     margin: auto;
     padding-top: 50px;
@@ -130,7 +135,7 @@ export default {
           width: 100%;
           border-radius: 5px;
           outline: none;
-          border: 1px solid $primary;
+          border: 1px solid $word-background-dark;
           padding: 5px 15px;
         }
         input:focus {
@@ -138,8 +143,8 @@ export default {
         }
       }
       .login-btn{
-        background-color: $point;
-        color: $background;
+        background-color: $point-btn;
+        color: $milk-white;
         width: 100%;
         border-radius: 50px;
         margin-top: 50px;

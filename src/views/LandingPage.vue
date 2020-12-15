@@ -103,7 +103,7 @@ export default {
 .landingpage {
   min-height: 100vh;
   // height: 100%;
-  background-color: $background;
+  background-color: $outside-background;
   .easy-area {
     height: 100vh;
     .container {
@@ -143,8 +143,8 @@ export default {
         margin-top: 30px;
         .loginpage-btn {
           width: 100%;
-          background-color: $point;
-          color: $background;
+          background-color: $point-btn;
+          color: $milk-white;
         }
       }
     }
@@ -174,7 +174,7 @@ export default {
     }
     .test:hover,
     .test:active{
-      background-color: $point;
+      background-color: $point-btn;
       color: #fff;
       cursor: pointer;
     }

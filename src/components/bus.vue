@@ -1,7 +1,7 @@
 <template>
   <div class="message-alert">
     <div class="alert alert-dismissible px-2 py-2 m-0"
-      :class="'alert-' + item.status"
+      :style="{'backgroundColor': item.status.bg, 'color': item.status.color}"
       v-for="(item, i) in messages" :key="i">
       {{ item.message }}
       <button type="button" class="close p-2" @click="removeMessage(i)" aria-label="Close">
@@ -19,7 +19,10 @@ export default {
       messages: [
         // {
         //   message: '輸入錯誤',
-        //   status: 'danger'
+        //   status: {
+        //     bg: 'green',
+        //     color: '#fff'
+        //   }
         // }
       ]
     }
@@ -35,7 +38,7 @@ export default {
       })
 
       // auto remove message
-      this.removeMessageById(timestamp, 3000)
+      this.removeMessageById(timestamp, 5000)
     },
 
     // push message with self-defined trackId
@@ -70,7 +73,7 @@ export default {
 
     // 自定義名稱 'messsage:push'
     // message: 傳入參數
-    // status: 樣式，預設值為 warning
+    // status: 樣式，預設值為 warning //改為色號了
     vm.$bus.$on('message:push', (message, status = 'warning') => {
       vm.updateMessage(message, status)
     })
@@ -78,7 +81,7 @@ export default {
 
     // 自定義名稱 'messsage:show'
     // message: 傳入參數
-    // status: 樣式，預設值為 warning
+    // status: 樣式，預設值為 warning //改為色號了
     // trackId: 自定義id, 用於刪除此message
     vm.$bus.$on('message:show', (message, trackId, status = 'warning') => {
       vm.showMessage(message, trackId, status)

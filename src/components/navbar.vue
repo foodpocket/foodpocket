@@ -29,8 +29,8 @@ export default {
 <style scoped lang="scss">
 
 .navbar {
-  background-color: $point;
-  color: $light-background;
+  background-color: $navbar-background;
+  color: #fff;
   .container{
     display: flex;
     justify-content: center;
