@@ -1,0 +1,20 @@
+{
+    "files.eol": "\n",
+    "editor.formatOnSave": true,
+    "eslint.lintTask.enable": true,
+    "eslint.format.enable": true,
+    "vetur.format.enable": false,
+    "eslint.validate": [
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "html",
+      "vue"
+    ],
+    "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+    "editor.codeActionsOnSave": {
+      "source.fixAll.eslint": true
+    },
+    "editor.tabSize": 2
+  }
