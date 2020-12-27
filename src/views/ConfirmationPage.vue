@@ -19,22 +19,22 @@
 </template>
 
 <script>
-import foodPocketLogo from '@/assets/foodpocket_logo.svg'
+import foodPocketLogo from '@/assets/foodpocket_logo.svg';
 
 export default {
-  data () {
-    return { foodPocketLogo }
+  data() {
+    return { foodPocketLogo };
   },
   methods: {
-    back () {
-      this.$router.push('/landingpage')
+    back() {
+      this.$router.push('/landingpage');
     },
-    tips () {
-      this.$router.push('/successpage')
-    }
+    tips() {
+      this.$router.push('/successpage');
+    },
   },
-  components: {}
-}
+  components: {},
+};
 </script>
 
 <style lang="scss" scoped>

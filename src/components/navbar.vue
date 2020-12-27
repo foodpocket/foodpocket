@@ -10,20 +10,21 @@
 </template>
 
 <script>
-import $ from 'jquery'
+import $ from 'jquery';
+
 export default {
-  data () {
+  data() {
     return {
-    }
+    };
   },
   methods: {
-    controlsidebar () {
+    controlsidebar() {
       // 配合sidebar使用
-      $('#sidebar').toggleClass('active')
-      $('#overlay').toggleClass('active')
-    }
-  }
-}
+      $('#sidebar').toggleClass('active');
+      $('#overlay').toggleClass('active');
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">

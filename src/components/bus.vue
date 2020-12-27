@@ -14,7 +14,7 @@
 <script>
 export default {
   name: 'Navbar',
-  data () {
+  data() {
     return {
       messages: [
         // {
@@ -24,59 +24,59 @@ export default {
         //     color: '#fff'
         //   }
         // }
-      ]
-    }
+      ],
+    };
   },
   methods: {
     // push message and auto remove it after 3 seconds
-    updateMessage (message, status) {
-      const timestamp = Math.floor(new Date() / 1000)
+    updateMessage(message, status) {
+      const timestamp = Math.floor(new Date() / 1000);
       this.messages.push({
         message,
         status,
-        id: timestamp // use push timestamp as id
-      })
+        id: timestamp, // use push timestamp as id
+      });
 
       // auto remove message
-      this.removeMessageById(timestamp, 5000)
+      this.removeMessageById(timestamp, 5000);
     },
 
     // push message with self-defined trackId
     // message will not be removed until user remove it by trackId
-    showMessage (message, trackId, status) {
+    showMessage(message, trackId, status) {
       this.messages.push({
         message,
         status,
-        id: trackId
-      })
+        id: trackId,
+      });
     },
 
     // remove message by index
-    removeMessage (index) {
-      this.messages.splice(index, 1)
+    removeMessage(index) {
+      this.messages.splice(index, 1);
     },
 
     // remove message by id with delay (ms)
-    removeMessageById (id, delay = 0) {
-      const vm = this
+    removeMessageById(id, delay = 0) {
+      const vm = this;
       setTimeout(() => {
         vm.messages.forEach((item, i) => {
           if (item.id === id) {
-            vm.messages.splice(i, 1)
+            vm.messages.splice(i, 1);
           }
-        })
-      }, delay)
-    }
+        });
+      }, delay);
+    },
   },
-  created () {
-    const vm = this
+  created() {
+    const vm = this;
 
     // 自定義名稱 'messsage:push'
     // message: 傳入參數
     // status: 樣式，預設值為 warning //改為色號了
     vm.$bus.$on('message:push', (message, status = 'warning') => {
-      vm.updateMessage(message, status)
-    })
+      vm.updateMessage(message, status);
+    });
     // vm.$bus.$emit('message:push');
 
     // 自定義名稱 'messsage:show'
@@ -84,16 +84,16 @@ export default {
     // status: 樣式，預設值為 warning //改為色號了
     // trackId: 自定義id, 用於刪除此message
     vm.$bus.$on('message:show', (message, trackId, status = 'warning') => {
-      vm.showMessage(message, trackId, status)
-    })
+      vm.showMessage(message, trackId, status);
+    });
 
     // 自定義名稱 'messsage:remove'
     // trackId: 指定欲刪除的message id
     vm.$bus.$on('message:remove', (trackId) => {
-      vm.removeMessageById(trackId)
-    })
-  }
-}
+      vm.removeMessageById(trackId);
+    });
+  },
+};
 </script>
 
 <style lang="scss" scope>

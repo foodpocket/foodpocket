@@ -39,28 +39,28 @@
 </template>
 
 <script>
-import $ from 'jquery'
+import $ from 'jquery';
 
 export default {
   methods: {
-    logout () {
+    logout() {
       if (this.$cookies.isKey('token')) {
-        this.$cookies.remove('token')
-        this.$cookies.remove('getpocketid')
-        this.$cookies.remove('getpocketname')
-        this.$cookies.remove('username')
-        this.$cookies.remove('pocketnum')
+        this.$cookies.remove('token');
+        this.$cookies.remove('getpocketid');
+        this.$cookies.remove('getpocketname');
+        this.$cookies.remove('username');
+        this.$cookies.remove('pocketnum');
       }
-      window.alert('登出成功')
-      this.$router.push('/landingpage')
+      window.alert('登出成功');
+      this.$router.push('/landingpage');
     },
-    controlsidebar () {
+    controlsidebar() {
       // 配合sidebar使用 用id就會只有一個，就不會呼叫錯了
-      $('#sidebar').toggleClass('active')
-      $('#overlay').toggleClass('active')
-    }
-  }
-}
+      $('#sidebar').toggleClass('active');
+      $('#overlay').toggleClass('active');
+    },
+  },
+};
 </script>
 
 <style scoped lang="scss">

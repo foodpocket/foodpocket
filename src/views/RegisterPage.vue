@@ -31,62 +31,62 @@
 </template>
 
 <script>
-import foodPocketLogo from '@/assets/foodpocket_logo.svg'
-import bus from '@/components/bus.vue'
+import foodPocketLogo from '@/assets/foodpocket_logo.svg';
+import bus from '@/components/bus.vue';
 
 export default {
   components: {
-    bus
+    bus,
   },
-  data () {
+  data() {
     return {
       foodPocketLogo,
       username: '',
       password: '',
       checkpassword: '',
-      email: ''
-    }
+      email: '',
+    };
   },
   computed: {
-    dangerbus () {
-      return this.$store.state.dangerbus
-    }
+    dangerbus() {
+      return this.$store.state.dangerbus;
+    },
   },
   methods: {
-    back () {
-      this.$router.push('/landingpage')
+    back() {
+      this.$router.push('/landingpage');
     },
-    registerAccount () {
+    registerAccount() {
       if (this.password === this.checkpassword) {
-        const api = `${process.env.VUE_APP_APIPATH}api/rest/registerAccount/`
-        const formdata = new FormData()
-        formdata.append('username', this.username)
-        formdata.append('password', this.checkpassword)
-        formdata.append('email', this.email)
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/registerAccount/`;
+        const formdata = new FormData();
+        formdata.append('username', this.username);
+        formdata.append('password', this.checkpassword);
+        formdata.append('email', this.email);
         this.axios
           .post(api, formdata)
           .then((response) => {
-            console.log('registerAccount:', response.data)
-            this.$router.push('/confirmationpage') // 跳轉到成功頁
+            console.log('registerAccount:', response.data);
+            this.$router.push('/confirmationpage'); // 跳轉到成功頁
           })
           .catch((err) => {
             if (err.response.status === 401) {
-              this.$router.push('/loginpage') // 應跳轉到失敗頁
+              this.$router.push('/loginpage'); // 應跳轉到失敗頁
             }
             if (err.response.status === 409) {
-              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', this.dangerbus)
-              this.password = ''
-              this.checkpassword = ''
+              this.$bus.$emit('message:push', '帳號或email重複註冊，請再試一次', this.dangerbus);
+              this.password = '';
+              this.checkpassword = '';
             }
-          })
+          });
       } else {
-        window.alert('確認密碼必須與設定密碼一致')
-        this.password = ''
-        this.checkpassword = ''
+        window.alert('確認密碼必須與設定密碼一致');
+        this.password = '';
+        this.checkpassword = '';
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

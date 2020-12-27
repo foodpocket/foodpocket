@@ -27,80 +27,80 @@
 </template>
 
 <script>
-import bus from '@/components/bus.vue'
-import foodPocketLogo from '@/assets/foodpocket_logo.svg'
+import bus from '@/components/bus.vue';
+import foodPocketLogo from '@/assets/foodpocket_logo.svg';
 
 export default {
-  data () {
+  data() {
     return {
       foodPocketLogo,
       isLoading: false,
       username: '',
-      password: ''
-    }
+      password: '',
+    };
   },
   computed: {
-    infobus () {
-      return this.$store.state.infobus
+    infobus() {
+      return this.$store.state.infobus;
     },
-    dangerbus () {
-      return this.$store.state.dangerbus
-    }
+    dangerbus() {
+      return this.$store.state.dangerbus;
+    },
   },
   components: {
-    bus
+    bus,
   },
   methods: {
-    back () {
-      this.$router.push('/landingpage')
+    back() {
+      this.$router.push('/landingpage');
     },
-    RegisterPage () {
-      this.$router.push('/registerpage')
+    RegisterPage() {
+      this.$router.push('/registerpage');
     },
-    clear () {
-      this.username = ''
-      this.password = ''
+    clear() {
+      this.username = '';
+      this.password = '';
     },
-    forget () {
-      this.$router.push('/forgetpasswordpage')
+    forget() {
+      this.$router.push('/forgetpasswordpage');
     },
-    signin () {
-      this.isLoading = true
-      const loadingMsgId = Math.floor(new Date() / 1000)
-      this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus)
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`
-      const formdata = new FormData()
-      formdata.append('username', this.username)
-      formdata.append('password', this.password)
+    signin() {
+      this.isLoading = true;
+      const loadingMsgId = Math.floor(new Date() / 1000);
+      this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus);
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`;
+      const formdata = new FormData();
+      formdata.append('username', this.username);
+      formdata.append('password', this.password);
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
         // this.isLoading = false
         if (response.data.result === 'successful') {
-          const token = response.data.data.token
-          this.$cookies.set('token', token) // 放到cookies
-          const pocket = response.data.data.last_pocket
-          const pocketid = pocket.pocket_uid
-          const pocketname = pocket.name
-          this.$cookies.set('getpocketid', pocketid) // 放到cookies
-          this.$cookies.set('getpocketname', pocketname) // 放到cookies
-          this.$cookies.set('username', this.username)
-          this.$bus.$emit('message:remove', loadingMsgId)
-          this.$router.push('/foodpocket')
-          this.isLoading = false
+          const { token } = response.data.data;
+          this.$cookies.set('token', token); // 放到cookies
+          const pocket = response.data.data.last_pocket;
+          const pocketid = pocket.pocket_uid;
+          const pocketname = pocket.name;
+          this.$cookies.set('getpocketid', pocketid); // 放到cookies
+          this.$cookies.set('getpocketname', pocketname); // 放到cookies
+          this.$cookies.set('username', this.username);
+          this.$bus.$emit('message:remove', loadingMsgId);
+          this.$router.push('/foodpocket');
+          this.isLoading = false;
         } else {
-          this.isLoading = false
-          this.$bus.$emit('message:remove', loadingMsgId)
-          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', this.dangerbus)
-          this.password = ''
+          this.isLoading = false;
+          this.$bus.$emit('message:remove', loadingMsgId);
+          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', this.dangerbus);
+          this.password = '';
         }
       }).catch((err) => {
-        console.log(err)
-        this.$bus.$emit('message:remove', loadingMsgId)
-        this.$bus.$emit('message:push', '網路異常，請稍候再試', this.dangerbus)
-      })
-    }
-  }
-}
+        console.log(err);
+        this.$bus.$emit('message:remove', loadingMsgId);
+        this.$bus.$emit('message:push', '網路異常，請稍候再試', this.dangerbus);
+      });
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
