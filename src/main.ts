@@ -18,7 +18,7 @@ Vue.use(VueCookies);
 Vue.$cookies.config('1d');
 Vue.use(Vuex);
 
-new Vue({
+export default new Vue({
   router,
   store,
   render: (h) => h(App),
