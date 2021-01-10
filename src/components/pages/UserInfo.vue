@@ -23,42 +23,42 @@
 </template>
 
 <script>
-import navbar from '@/components/navbar.vue'
+import navbar from '@/components/navbar.vue';
 
 export default {
   components: {
-    navbar
+    navbar,
   },
-  data () {
+  data() {
     return {
       token: '',
-      isLoading: false
-    }
+      isLoading: false,
+    };
   },
-  created () {
-    this.getToken()
+  created() {
+    this.getToken();
   },
   computed: {
-    username () {
-      return this.$cookies.get('username')
+    username() {
+      return this.$cookies.get('username');
     },
-    pocketnum () {
-      return this.$cookies.get('pocketnum')
-    }
+    pocketnum() {
+      return this.$cookies.get('pocketnum');
+    },
   },
   methods: {
-    getToken () {
-      this.isLoading = true
+    getToken() {
+      this.isLoading = true;
       if (this.$cookies.isKey('token')) {
-        this.token = this.$cookies.get('token')
+        this.token = this.$cookies.get('token');
         // console.log('getToken:', this.token)
-        this.isLoading = false
+        this.isLoading = false;
       } else {
-        this.$router.push('/loginpage')
+        this.$router.push('/loginpage');
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

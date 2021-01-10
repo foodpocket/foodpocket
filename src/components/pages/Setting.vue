@@ -26,18 +26,18 @@
 </template>
 
 <script>
-import navbar from '@/components/navbar.vue'
+import navbar from '@/components/navbar.vue';
 
 export default {
   components: {
-    navbar
+    navbar,
   },
-  data () {
+  data() {
     return {
-      isLoading: false
-    }
-  }
-}
+      isLoading: false,
+    };
+  },
+};
 </script>
 
 <style lang="scss" scoped>

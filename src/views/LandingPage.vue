@@ -65,16 +65,16 @@
 </template>
 
 <script>
-import foodPocketLogo from '@/assets/foodpocket_logo.svg'
-import choosepocketpage from '@/assets/choosepocketpage.jpg'
-import recommendlist from '@/assets/recommendlist.jpg'
-import restaurantlist from '@/assets/restaurantlist.jpg'
-import visitrecords from '@/assets/visitrecords.jpg'
-import food from '@/assets/food.jpg'
-import download from '@/assets/download.png'
+import foodPocketLogo from '@/assets/foodpocket_logo.svg';
+import choosepocketpage from '@/assets/choosepocketpage.jpg';
+import recommendlist from '@/assets/recommendlist.jpg';
+import restaurantlist from '@/assets/restaurantlist.jpg';
+import visitrecords from '@/assets/visitrecords.jpg';
+import food from '@/assets/food.jpg';
+import download from '@/assets/download.png';
 
 export default {
-  data () {
+  data() {
     return {
       foodPocketLogo,
       choosepocketpage,
@@ -82,21 +82,21 @@ export default {
       restaurantlist,
       visitrecords,
       food,
-      download
-    }
+      download,
+    };
   },
   methods: {
-    loginpage () {
-      this.$router.push('/loginpage')
+    loginpage() {
+      this.$router.push('/loginpage');
     },
-    RegisterPage () {
-      this.$router.push('/registerpage')
-    }
+    RegisterPage() {
+      this.$router.push('/registerpage');
+    },
   },
-  created () {
+  created() {
     // console.log(process.env.VUE_APP_APIPATH)
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

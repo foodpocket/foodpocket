@@ -15,24 +15,24 @@
 </template>
 
 <script>
-import $ from 'jquery'
-import sidebar from '@/components/sidebar.vue'
+import $ from 'jquery';
+import sidebar from '@/components/sidebar.vue';
 
 export default {
   components: {
-    sidebar
+    sidebar,
   },
-  data () {
+  data() {
     return {
-    }
+    };
   },
   methods: {
-    controlsidebar () { // 配合sidebar使用
-      $('#sidebar').toggleClass('active')
-      $('#overlay').toggleClass('active')
-    }
-  }
-}
+    controlsidebar() { // 配合sidebar使用
+      $('#sidebar').toggleClass('active');
+      $('#overlay').toggleClass('active');
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

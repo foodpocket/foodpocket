@@ -18,26 +18,26 @@
 </template>
 
 <script>
-import foodPocketLogo from '@/assets/foodpocket_logo.svg'
+import foodPocketLogo from '@/assets/foodpocket_logo.svg';
 
 export default {
-  data () {
+  data() {
     return {
       foodPocketLogo,
-      email: ''
-    }
+      email: '',
+    };
   },
   methods: {
-    back () {
-      this.$router.push('/loginpage')
+    back() {
+      this.$router.push('/loginpage');
     },
-    forgetpassword () {
-      window.alert('已成功寄信')
-      this.$router.push('/loginpage')
-    }
+    forgetpassword() {
+      window.alert('已成功寄信');
+      this.$router.push('/loginpage');
+    },
   },
-  components: {}
-}
+  components: {},
+};
 </script>
 
 <style lang="scss" scoped>

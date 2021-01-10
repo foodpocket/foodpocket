@@ -378,16 +378,16 @@
 </template>
 
 <script>
-import $ from 'jquery'
-import navbar from '@/components/navbar.vue'
-import bus from '@/components/bus.vue'
+import $ from 'jquery';
+import navbar from '@/components/navbar.vue';
+import bus from '@/components/bus.vue';
 
 export default {
   components: {
     navbar,
-    bus
+    bus,
   },
-  data () {
+  data() {
     return {
       token: '',
       isLoading: false,
@@ -406,588 +406,583 @@ export default {
       isNew: false,
       recommendList: [],
       visibility: 'all', // 'all' 'record' 'recommend'
-      justifyContent: 'end' // 'between' 'end',
-    }
+      justifyContent: 'end', // 'between' 'end',
+    };
   },
-  created () {
-    this.getToken()
-    this.touchendActive()
+  created() {
+    this.getToken();
+    this.touchendActive();
   },
   computed: {
-    successbus () {
-      return this.$store.state.successbus
+    successbus() {
+      return this.$store.state.successbus;
     },
-    dangerbus () {
-      return this.$store.state.dangerbus
+    dangerbus() {
+      return this.$store.state.dangerbus;
     },
-    seletedID () {
-      return this.$cookies.get('getpocketid')
+    seletedID() {
+      return this.$cookies.get('getpocketid');
     },
-    seletedName () {
-      return this.$cookies.get('getpocketname')
+    seletedName() {
+      return this.$cookies.get('getpocketname');
     },
-    nextHideUntil () {
+    nextHideUntil() {
       const today = Math.floor(
-        new Date(Math.floor(Date.now())).getTime() / 1000
-      )
+        new Date(Math.floor(Date.now())).getTime() / 1000,
+      );
       if (this.nextHideDay === undefined || this.nextHideDay === 0) {
-        const result = this.changedateFormat(today)
-        return result
-      } else {
-        const result = this.changedateFormat(today + 86400 * this.nextHideDay) // 加幾天的運算
-        return result
+        const result = this.changedateFormat(today);
+        return result;
       }
+      const result = this.changedateFormat(today + 86400 * this.nextHideDay); // 加幾天的運算
+      return result;
     },
-    trimSearchRestaurant () {
-      const name = this.searchRestaurant.trim() // 修掉輸入的空白
+    trimSearchRestaurant() {
+      const name = this.searchRestaurant.trim(); // 修掉輸入的空白
       if (!name) {
-        return name
+        return name;
       }
-      return name
+      return name;
     },
-    searchList () {
-      const fitnameArray = []
+    searchList() {
+      const fitnameArray = [];
       this.restaurantList.forEach((restaurantObject) => {
-        const listName = restaurantObject.restaurant_name
-        const inputName = this.trimSearchRestaurant
-        const indexOf = listName.toUpperCase().indexOf(inputName.toUpperCase())
+        const listName = restaurantObject.restaurant_name;
+        const inputName = this.trimSearchRestaurant;
+        const indexOf = listName.toUpperCase().indexOf(inputName.toUpperCase());
         if (indexOf >= 0) {
-          fitnameArray.push(listName)
+          fitnameArray.push(listName);
         }
-      })
-      const result = []
-      for (let i = 0; i < this.restaurantList.length; i++) {
+      });
+      const result = [];
+      for (let i = 0; i < this.restaurantList.length; i += 1) {
         fitnameArray.forEach((fitname) => {
           if (this.restaurantList[i].restaurant_name === fitname) {
-            result.push(this.restaurantList[i])
+            result.push(this.restaurantList[i]);
           }
-        })
+        });
       }
-      return result
+      return result;
     },
-    filteredMethod () {
+    filteredMethod() {
       if (this.visibility === 'all') {
         if (this.trimSearchRestaurant !== '') {
-          return this.searchList
-        } else {
-          return this.restaurantList
+          return this.searchList;
         }
-      } else if (this.visibility === 'recommend') {
-        return this.recommendList
-      } else if (this.visibility === 'record') {
-        return this.visitRecords
+        return this.restaurantList;
+      } if (this.visibility === 'recommend') {
+        return this.recommendList;
+      } if (this.visibility === 'record') {
+        return this.visitRecords;
       }
-      return ''
-    }
+      return '';
+    },
   },
   methods: {
     // 必備----------------------------
-    getToken () {
+    getToken() {
       if (this.$cookies.isKey('token')) {
-        this.token = this.$cookies.get('token')
+        this.token = this.$cookies.get('token');
         // console.log('getToken:', this.token)
-        this.initList()
+        this.initList();
       } else {
-        this.$router.push('/loginpage')
+        this.$router.push('/loginpage');
       }
     },
-    getRestaurantList () {
-      this.isLoading = true
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`
-      const vm = this
+    getRestaurantList() {
+      this.isLoading = true;
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`;
+      const vm = this;
       this.$http
         .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
-          this.isLoading = false
+          this.isLoading = false;
           // console.log('restaurantList:', response.data)
-          vm.restaurantList = response.data.data
+          vm.restaurantList = response.data.data;
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
-    getRecommendList () {
-      this.isLoading = true
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRecommendList/`
-      const vm = this
+    getRecommendList() {
+      this.isLoading = true;
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRecommendList/`;
+      const vm = this;
       this.$http
         .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
-          this.isLoading = false
-          console.log('recommendList:', response.data)
-          vm.recommendList = response.data.data
+          this.isLoading = false;
+          console.log('recommendList:', response.data);
+          vm.recommendList = response.data.data;
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
-    getVisitRecords () {
-      this.isLoading = true
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`
-      const vm = this
+    getVisitRecords() {
+      this.isLoading = true;
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/getVisitRecords/`;
+      const vm = this;
       this.$http
         .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
         .then((response) => {
-          this.isLoading = false
+          this.isLoading = false;
           // console.log('getVisitRecords:', response.data)
-          vm.visitRecords = response.data.data
+          vm.visitRecords = response.data.data;
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
-    initList () {
-      this.getRestaurantList()
-      this.getRecommendList()
-      this.getVisitRecords()
+    initList() {
+      this.getRestaurantList();
+      this.getRecommendList();
+      this.getVisitRecords();
     },
 
     // 快速新增鈕------------------------------
-    quicklyAdd () {
+    quicklyAdd() {
       // 這裡處理日期欄位------------------------
       const timestampNumber = Math.floor(
-        new Date(this.newDate).getTime() / 1000
-      )
-      const timestamp = this.changedateFormat(timestampNumber)
+        new Date(this.newDate).getTime() / 1000,
+      );
+      const timestamp = this.changedateFormat(timestampNumber);
       // console.log('timestampNumber:', timestampNumber)
       // console.log('timestampFormat:', timestamp)
 
       // 這裡處理餐廳名稱欄位------------------------
-      const restaurantName = this.searchRestaurant.trim() // 修掉輸入的空白
+      const restaurantName = this.searchRestaurant.trim(); // 修掉輸入的空白
       if (!restaurantName) {
-        return
+        return;
       }
-      const NEWupper = restaurantName.toUpperCase()
+      const NEWupper = restaurantName.toUpperCase();
       // --------------------- 確定輸入的名稱是否曾經輸入過
-      const array = []
-      const list = this.restaurantList
+      const array = [];
+      const list = this.restaurantList;
       list.forEach((item) => {
-        const restaurant = item.restaurant_name
-        const upperrestaurant = restaurant.toUpperCase()
-        array.push(upperrestaurant)
-      })
-      const index = array.indexOf(NEWupper)
+        const restaurant = item.restaurant_name;
+        const upperrestaurant = restaurant.toUpperCase();
+        array.push(upperrestaurant);
+      });
+      const index = array.indexOf(NEWupper);
       // console.log('array.indexOf:', index)
       if (index === -1) {
-        this.isNew = true // 新的
+        this.isNew = true; // 新的
       } else {
-        this.isNew = false // 舊的
+        this.isNew = false; // 舊的
       }
       // --------------------- 用isNew分辨是否是新的餐廳，再做出相應的動作
       if (this.isNew === true) {
         // console.log('這是新的餐廳，已加入餐廳列表中，並同時增加次數一次')
-        this.quicklyAddRestaurant(restaurantName, timestamp) // 輸入的字
+        this.quicklyAddRestaurant(restaurantName, timestamp); // 輸入的字
       } else {
         // console.log('這間餐廳已經存在，已增加次數一次')
-        this.tempRestaurant_uid = this.restaurantList[index].restaurant_uid // 取出記錄中的餐廳id
-        this.quicklyAddVisit(this.tempRestaurant_uid, timestamp) // 增加歷史紀錄
+        this.tempRestaurant_uid = this.restaurantList[index].restaurant_uid; // 取出記錄中的餐廳id
+        this.quicklyAddVisit(this.tempRestaurant_uid, timestamp); // 增加歷史紀錄
       }
       // 完成後將input復原原樣的------------------------
-      this.searchRestaurant = ''
+      this.searchRestaurant = '';
       this.newDate = this.changedateFormat(
-        Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000)
-      ) // 恢復
+        Math.floor(new Date(Math.floor(Date.now())).getTime() / 1000),
+      ); // 恢復
     },
-    quicklyAddRestaurant (restaurantName, timestamp) {
+    quicklyAddRestaurant(restaurantName, timestamp) {
       // 類似addRestaurant() + addVisitRecord()
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
-      const formdata = new FormData()
-      formdata.append('name', restaurantName)
-      formdata.append('user_token', this.token)
-      formdata.append('pocket_uid', this.seletedID)
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`;
+      const formdata = new FormData();
+      formdata.append('name', restaurantName);
+      formdata.append('user_token', this.token);
+      formdata.append('pocket_uid', this.seletedID);
       this.axios
         .post(api, formdata)
         .then((response) => {
           // console.log('quicklyAddRestaurant:', response.data)
-          this.tempRestaurant_uid = response.data.data.restaurant_uid
-          this.quicklyAddVisit(this.tempRestaurant_uid, timestamp)
+          this.tempRestaurant_uid = response.data.data.restaurant_uid;
+          this.quicklyAddVisit(this.tempRestaurant_uid, timestamp);
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
-    quicklyAddVisit (id, timestamp) {
+    quicklyAddVisit(id, timestamp) {
       // 類似addVisitRecord()
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
-      const formdata = new FormData()
-      formdata.append('user_token', this.token)
-      formdata.append('restaurant_uid', id)
-      formdata.append('visit_date', timestamp)
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`;
+      const formdata = new FormData();
+      formdata.append('user_token', this.token);
+      formdata.append('restaurant_uid', id);
+      formdata.append('visit_date', timestamp);
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(() => {
           // console.log('quicklyAddVisit:', response.data)
-          this.initList()
+          this.initList();
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
 
     // openModal---------------------------
-    openInfoModal (item) { // 按資訊欄
+    openInfoModal(item) { // 按資訊欄
       if (this.visibility !== 'record') {
-        $('#openInfoModal').modal('show')
-        this.infoModalObj = item
+        $('#openInfoModal').modal('show');
+        this.infoModalObj = item;
         // console.log('打開資訊欄、將item內容放入infoModalObj')
       }
     },
-    openEditModal (item) { // 按鉛筆鈕
-      $('#openInfoModal').modal('hide')
-      $('#editInfoModal').modal('show')
-      this.editModalObj = Object.assign({}, item)
+    openEditModal(item) { // 按鉛筆鈕
+      $('#openInfoModal').modal('hide');
+      $('#editInfoModal').modal('show');
+      this.editModalObj = { ...item };
 
-      this.editModalObj.hideDay = this.calculateDiffDate(new Date(this.editModalObj.hide_until), Date.now())
-      this.nextHideDay = this.editModalObj.hideDay
+      this.editModalObj.hideDay = this.calculateDiffDate(new Date(this.editModalObj.hide_until), Date.now());
+      this.nextHideDay = this.editModalObj.hideDay;
       if (this.editModalObj.hideDay !== 2 && this.editModalObj.hideDay !== 7 && this.editModalObj.hideDay !== 10 && this.editModalObj.hideDay !== 30 && this.editModalObj.hideDay !== 60) {
-        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60, this.editModalObj.hideDay] // hard copy hideDay into options
-        this.editModalObj.hideDayOptions.sort((a, b) => a - b) // sort array
+        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60, this.editModalObj.hideDay]; // hard copy hideDay into options
+        this.editModalObj.hideDayOptions.sort((a, b) => a - b); // sort array
       } else {
-        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60]
+        this.editModalObj.hideDayOptions = [2, 7, 10, 30, 60];
       }
 
       // console.log('關閉資訊欄、打開編輯卡、複製infoModalObj變成editModalObj')
     },
-    openEditVisitModal (item) { // 按日曆
-      $('#editVisitModal').modal('show')
-      this.editVisitModalObj = Object.assign({}, item)
-      this.tempdate = this.editVisitModalObj.visit_date
+    openEditVisitModal(item) { // 按日曆
+      $('#editVisitModal').modal('show');
+      this.editVisitModalObj = { ...item };
+      this.tempdate = this.editVisitModalObj.visit_date;
     },
-    openAddrecordModal (item) { // 按加號鈕
-      $('#addRecordModal').modal('show')
-      this.AddrecordModalObj = Object.assign({}, item)
+    openAddrecordModal(item) { // 按加號鈕
+      $('#addRecordModal').modal('show');
+      this.AddrecordModalObj = { ...item };
       const today = Math.floor(
-        new Date(Math.floor(Date.now())).getTime() / 1000
-      )
-      this.AddrecordModalObj.visit_date = this.changedateFormat(today)
+        new Date(Math.floor(Date.now())).getTime() / 1000,
+      );
+      this.AddrecordModalObj.visit_date = this.changedateFormat(today);
     },
-    openDeleteModal () { // 按刪除鈕
-      $('#delRestaurantModal').modal('show')
+    openDeleteModal() { // 按刪除鈕
+      $('#delRestaurantModal').modal('show');
       if (this.visibility === 'all') {
-        $('#openInfoModal').modal('hide')
+        $('#openInfoModal').modal('hide');
       }
       if (this.visibility === 'record') {
-        $('#editVisitModal').modal('hide')
+        $('#editVisitModal').modal('hide');
       }
     },
 
     // Restaurant--------------------------
-    addRestaurant (name) {
-      const restaurantName = name.trim() // 修掉輸入的空白
+    addRestaurant(name) {
+      const restaurantName = name.trim(); // 修掉輸入的空白
       if (!restaurantName) {
-        return
+        return;
       }
-      const NEWupper = restaurantName.toUpperCase()
+      const NEWupper = restaurantName.toUpperCase();
 
-      const array = []
-      const list = this.restaurantList
+      const array = [];
+      const list = this.restaurantList;
       list.forEach((item) => {
-        const restaurant = item.restaurant_name
-        const upperrestaurant = restaurant.toUpperCase()
-        array.push(upperrestaurant)
-      })
-      const index = array.indexOf(NEWupper)
+        const restaurant = item.restaurant_name;
+        const upperrestaurant = restaurant.toUpperCase();
+        array.push(upperrestaurant);
+      });
+      const index = array.indexOf(NEWupper);
       if (index === -1) {
-        this.isNew = true // 新的
+        this.isNew = true; // 新的
       } else {
-        this.isNew = false // 舊的
+        this.isNew = false; // 舊的
       }
 
       if (this.isNew === true) {
         // console.log('這是新的餐廳，已加入餐廳列表中')
-        const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`
-        const formdata = new FormData()
-        formdata.append('user_token', this.token)
-        formdata.append('name', restaurantName)
-        formdata.append('pocket_uid', this.seletedID)
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`;
+        const formdata = new FormData();
+        formdata.append('user_token', this.token);
+        formdata.append('name', restaurantName);
+        formdata.append('pocket_uid', this.seletedID);
         this.axios
           .post(api, formdata)
-          .then((response) => {
+          .then(() => {
             // console.log('addRestaurant:', response.data)
-            this.$bus.$emit('message:push', '已新增 ' + this.searchRestaurant + ' 餐廳', this.successbus)
+            this.$bus.$emit('message:push', `已新增 ${this.searchRestaurant} 餐廳`, this.successbus);
             // this.searchRestaurant = ''
-            this.initList()
+            this.initList();
           })
           .catch((err) => {
             if (err.response.status === 401) {
-              this.$router.push('/loginpage')
+              this.$router.push('/loginpage');
             }
-          })
+          });
       } else {
-        this.$bus.$emit('message:push', '這間餐廳已經存在', this.dangerbus)
+        this.$bus.$emit('message:push', '這間餐廳已經存在', this.dangerbus);
       }
     },
-    editRestaurant (item) { // 傳進來的item是editModalObj
+    editRestaurant(item) { // 傳進來的item是editModalObj
       if (
-        this.infoModalObj.restaurant_name !== item.restaurant_name ||
-        this.infoModalObj.note !== item.note ||
-        this.infoModalObj.status !== item.status ||
-        (
-          item.status === 'HIDE' &&
-          this.infoModalObj.hide_until !== this.nextHideUntil
+        this.infoModalObj.restaurant_name !== item.restaurant_name
+        || this.infoModalObj.note !== item.note
+        || this.infoModalObj.status !== item.status
+        || (
+          item.status === 'HIDE'
+          && this.infoModalObj.hide_until !== this.nextHideUntil
         )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
-          const api = `${process.env.VUE_APP_APIPATH}api/rest/editRestaurant/`
-          const formdata = new FormData()
-          formdata.append('user_token', this.token)
-          formdata.append('restaurant_uid', item.restaurant_uid)
-          formdata.append('name', item.restaurant_name) // 更改name
-          formdata.append('note', item.note) // 更改note
+          const api = `${process.env.VUE_APP_APIPATH}api/rest/editRestaurant/`;
+          const formdata = new FormData();
+          formdata.append('user_token', this.token);
+          formdata.append('restaurant_uid', item.restaurant_uid);
+          formdata.append('name', item.restaurant_name); // 更改name
+          formdata.append('note', item.note); // 更改note
           if (item.status === 'HIDE' && this.nextHideDay === 0) {
-            item.status = 'RANDOM'
+            // eslint-disable-next-line no-param-reassign
+            item.status = 'RANDOM';
           }
-          formdata.append('status', item.status) // 更改status
+          formdata.append('status', item.status); // 更改status
           if (item.status === 'HIDE') {
-            formdata.append('hide_until', this.nextHideUntil) // 更改hide_until
+            formdata.append('hide_until', this.nextHideUntil); // 更改hide_until
           }
 
-          this.axios.post(api, formdata).then((response) => {
+          this.axios.post(api, formdata).then(() => {
             // console.log('editRestaurant:', response.data) // 發送api成功的話
             if (this.infoModalObj.restaurant_name !== item.restaurant_name) {
               // 狀況一：更改名稱
-              this.$bus.$emit('message:push', '成功編輯餐廳名稱', this.successbus)
+              this.$bus.$emit('message:push', '成功編輯餐廳名稱', this.successbus);
             }
             if (this.infoModalObj.note !== item.note) {
               // 狀況二：更改備註
-              this.$bus.$emit('message:push', '成功編輯餐廳備註', this.successbus)
+              this.$bus.$emit('message:push', '成功編輯餐廳備註', this.successbus);
             }
             if (this.infoModalObj.status !== item.status) {
               // 狀況三：更改狀態
-              this.$bus.$emit('message:push', '成功編輯推薦模式', this.successbus)
+              this.$bus.$emit('message:push', '成功編輯推薦模式', this.successbus);
             }
             if (this.infoModalObj.status === item.status && item.status === 'HIDE') {
               // 狀況四：維持HIDE狀態
               if (this.infoModalObj.hide_until !== this.nextHideUntil) {
                 // 隱藏時間改變
-                this.$bus.$emit('message:push', '成功編輯隱藏天數', this.successbus) // 就只顯示成功編輯hide_until的提示
+                this.$bus.$emit('message:push', '成功編輯隱藏天數', this.successbus); // 就只顯示成功編輯hide_until的提示
                 // dirty fix: update hide_until for infoModalObj
-                item.hide_until = this.nextHideUntil
+                // eslint-disable-next-line no-param-reassign
+                item.hide_until = this.nextHideUntil;
               }
             }
 
             // DANGEROUS: infoModalObj will reference to editModalObj (which is item), infoModalObj SHOULD reference to restaurantList item
             // API會更新整個restaurantList, 用restaurant uid找到API更新過後的原始object in restaurantList
-            this.openInfoModal(item)
-            $('#editInfoModal').modal('hide')
-            this.initList()
+            this.openInfoModal(item);
+            $('#editInfoModal').modal('hide');
+            this.initList();
           })
             .catch((err) => {
               if (err.response.status === 401) {
                 this.$bus.$emit(
                   'message:push',
                   'err.response.status === 401',
-                  this.dangerbus
-                )
-                this.$router.push('/loginpage')
+                  this.dangerbus,
+                );
+                this.$router.push('/loginpage');
               }
               if (err.response.status === 400) {
-                this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus)
-                item.restaurant_name = this.tempname // 將input恢復原狀
+                this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus);
+                // eslint-disable-next-line no-param-reassign
+                item.restaurant_name = this.tempname; // 將input恢復原狀
               }
-            })
+            });
         } else {
-          this.$bus.$emit('message:push', '餐廳名稱不能為空', this.dangerbus)
+          this.$bus.$emit('message:push', '餐廳名稱不能為空', this.dangerbus);
         }
       } else {
         // console.log('所有條件都並未改變')
-        this.backtoNote()
+        this.backtoNote();
       }
     },
-    removeRestaurant (item) { // item是infoModalObj
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeRestaurant/`
-      const formdata = new FormData()
-      formdata.append('user_token', this.token)
-      formdata.append('restaurant_uid', item.restaurant_uid)
+    removeRestaurant(item) { // item是infoModalObj
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeRestaurant/`;
+      const formdata = new FormData();
+      formdata.append('user_token', this.token);
+      formdata.append('restaurant_uid', item.restaurant_uid);
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(() => {
           // console.log('removeRestaurant:', response.data)
-          this.$bus.$emit('message:push', '成功刪除 ' + item.restaurant_name + ' 餐廳', this.successbus)
-          $('#delRestaurantModal').modal('hide')
-          this.initList()
+          this.$bus.$emit('message:push', `成功刪除 ${item.restaurant_name} 餐廳`, this.successbus);
+          $('#delRestaurantModal').modal('hide');
+          this.initList();
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
 
     // VisitRecord-------------------------
-    addVisitRecord (item) {
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`
-      const formdata = new FormData()
-      formdata.append('user_token', this.token)
-      formdata.append('restaurant_uid', item.restaurant_uid)
-      formdata.append('visit_date', item.visit_date)
+    addVisitRecord(item) {
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/newVisit/`;
+      const formdata = new FormData();
+      formdata.append('user_token', this.token);
+      formdata.append('restaurant_uid', item.restaurant_uid);
+      formdata.append('visit_date', item.visit_date);
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(() => {
           // console.log('addVisitRecord:', response.data)
-          $('#addRecordModal').modal('hide')
-          this.$bus.$emit('message:push', '成功增加造訪次數', this.successbus)
-          this.initList()
+          $('#addRecordModal').modal('hide');
+          this.$bus.$emit('message:push', '成功增加造訪次數', this.successbus);
+          this.initList();
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
-    editVisitRecord (item) {
+    editVisitRecord(item) {
       if (this.tempdate !== item.visit_date) {
-        const api = `${process.env.VUE_APP_APIPATH}api/rest/editVisitRecord/`
-        const formdata = new FormData()
-        formdata.append('user_token', this.token)
-        formdata.append('visitrecord_uid', item.visitrecord_uid)
-        formdata.append('visit_date', item.visit_date)
+        const api = `${process.env.VUE_APP_APIPATH}api/rest/editVisitRecord/`;
+        const formdata = new FormData();
+        formdata.append('user_token', this.token);
+        formdata.append('visitrecord_uid', item.visitrecord_uid);
+        formdata.append('visit_date', item.visit_date);
         this.axios
           .post(api, formdata)
-          .then((response) => {
+          .then(() => {
             // console.log('editVisitRecord:', response.data)
             // console.log('成功編輯造訪日期')
-            this.$bus.$emit('message:push', '成功編輯造訪日期', this.successbus)
-            $('#editVisitModal').modal('hide')
-            this.initList()
+            this.$bus.$emit('message:push', '成功編輯造訪日期', this.successbus);
+            $('#editVisitModal').modal('hide');
+            this.initList();
           })
           .catch((err) => {
             if (err.response.status === 401) {
-              this.$router.push('/loginpage')
+              this.$router.push('/loginpage');
             }
-          })
+          });
       } else {
         // console.log('造訪日期並未改變')
-        $('#editVisitModal').modal('hide')
+        $('#editVisitModal').modal('hide');
       }
     },
-    removeVisitRecord (item) {
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeVisitRecord/`
-      const formdata = new FormData()
-      formdata.append('user_token', this.token)
-      formdata.append('visitrecord_uid', item.visitrecord_uid)
+    removeVisitRecord(item) {
+      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeVisitRecord/`;
+      const formdata = new FormData();
+      formdata.append('user_token', this.token);
+      formdata.append('visitrecord_uid', item.visitrecord_uid);
       this.axios
         .post(api, formdata)
-        .then((response) => {
+        .then(() => {
           // console.log('removeVisitRecord:', response.data)
-          this.$bus.$emit('message:push', '成功刪除Record', this.successbus)
-          $('#delRestaurantModal').modal('hide')
-          this.initList()
+          this.$bus.$emit('message:push', '成功刪除Record', this.successbus);
+          $('#delRestaurantModal').modal('hide');
+          this.initList();
         })
         .catch((err) => {
           if (err.response.status === 401) {
-            this.$router.push('/loginpage')
+            this.$router.push('/loginpage');
           }
-        })
+        });
     },
 
     // 其他---------------------------------
-    backtoNote () { // 從編輯區回資訊欄
-      $('#editInfoModal').modal('hide')
-      $('#openInfoModal').modal('show')
+    backtoNote() { // 從編輯區回資訊欄
+      $('#editInfoModal').modal('hide');
+      $('#openInfoModal').modal('show');
       // console.log('回到資訊欄 (關閉編輯卡片、開啟資訊欄卡片)')
     },
-    doNotDelete () {
-      $('#delRestaurantModal').modal('hide')
+    doNotDelete() {
+      $('#delRestaurantModal').modal('hide');
       if (this.visibility === 'all') {
-        $('#openInfoModal').modal('show')
+        $('#openInfoModal').modal('show');
         // console.log('取消刪除餐廳 (關閉取消卡片、開啟資訊欄)')
       }
       if (this.visibility === 'record') {
-        $('#editVisitModal').modal('show')
+        $('#editVisitModal').modal('show');
         // console.log('取消刪除紀錄 (關閉取消卡片、開啟日曆)')
       }
     },
-    changedateFormat (timestamp) {
-      const date = new Date(timestamp * 1000)
-      const year = date.getFullYear()
-      const month = date.getMonth() + 1
-      const day = date.getDate()
+    changedateFormat(timestamp) {
+      const date = new Date(timestamp * 1000);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1;
+      const day = date.getDate();
       if (month < 10) {
-        const addzeromonth = '0' + month
+        const addzeromonth = `0${month}`;
         if (day < 10) {
-          const addzeroday = '0' + day
-          const currentDateTime =
-            String(year) +
-            '-' +
-            String(addzeromonth) +
-            '-' +
-            String(addzeroday)
-          return currentDateTime
-        } else {
-          const currentDateTime =
-            String(year) + '-' + String(addzeromonth) + '-' + String(day)
-          return currentDateTime
+          const addzeroday = `0${day}`;
+          const currentDateTime = `${String(year)
+          }-${
+            String(addzeromonth)
+          }-${
+            String(addzeroday)}`;
+          return currentDateTime;
         }
+        const currentDateTime = `${String(year)}-${String(addzeromonth)}-${String(day)}`;
+        return currentDateTime;
       }
       if (day < 10) {
-        const addzeroday = '0' + day
+        const addzeroday = `0${day}`;
         if (month < 10) {
-          const addzeromonth = '0' + month
-          const currentDateTime =
-            String(year) +
-            '-' +
-            String(addzeromonth) +
-            '-' +
-            String(addzeroday)
-          return currentDateTime
-        } else {
-          const currentDateTime =
-            String(year) + '-' + String(month) + '-' + String(addzeroday)
-          return currentDateTime
+          const addzeromonth = `0${month}`;
+          const currentDateTime = `${String(year)
+          }-${
+            String(addzeromonth)
+          }-${
+            String(addzeroday)}`;
+          return currentDateTime;
         }
-      } else {
-        const currentDateTime =
-          String(year) + '-' + String(month) + '-' + String(day)
-        return currentDateTime
+        const currentDateTime = `${String(year)}-${String(month)}-${String(addzeroday)}`;
+        return currentDateTime;
       }
+      const currentDateTime = `${String(year)}-${String(month)}-${String(day)}`;
+      return currentDateTime;
     },
     // Replaced by getRecommendList
-    recommendListShow () {
-      this.recommendList = []
+    recommendListShow() {
+      this.recommendList = [];
       this.restaurantList.forEach((item) => {
-        item.show = false
+        // eslint-disable-next-line no-param-reassign
+        item.show = false;
         if (item.status === 'RANDOM') {
-          const randomNum = Math.floor(Math.random() * Math.floor(10))
+          const randomNum = Math.floor(Math.random() * Math.floor(10));
           if (randomNum < 3) { // 原本是放5啦，現在改放3
-            item.show = true
+            // eslint-disable-next-line no-param-reassign
+            item.show = true;
           }
         }
         if (item.status === 'ACTIVE') {
-          item.show = true
+        // eslint-disable-next-line no-param-reassign
+          item.show = true;
         }
         if (item.show === true) {
-          this.recommendList.push(item)
+          this.recommendList.push(item);
         }
         // console.log(item)
-      })
-      this.recommendList.reverse()
+      });
+      this.recommendList.reverse();
     },
-    touchendActive () {
-      document.body.addEventListener('touchend', function () {})
+    touchendActive() {
+      document.body.addEventListener('touchend', () => {});
     },
-    calculateDiffDate (date1, date2) { // date1 and date2 are Date object
-      if (date2 >= date1) {
-        return 0
-      }
+    calculateDiffDate(date1, date2) { // date1 and date2 are Date object
       if (date2 < date1) {
-        const diffTime = Math.abs(date2 - date1)
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24))
-        return diffDays
+        const diffTime = Math.abs(date2 - date1);
+        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        return diffDays;
       }
-    }
-  }
-}
+
+      return 0;
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
