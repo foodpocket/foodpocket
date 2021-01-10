@@ -15,7 +15,7 @@ Vue.config.productionTip = false;
 Vue.use(VueAxios, axios);
 Vue.component('Loading', Loading);
 Vue.use(VueCookies);
-Vue.$cookies.config('1d');
+Vue.$cookies.config('30d');
 Vue.use(Vuex);
 
 export default new Vue({
