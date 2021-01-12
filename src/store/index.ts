@@ -18,10 +18,18 @@ export default new Vuex.Store({
       bg: '#ffc107cc',
       color: '#000',
     },
+
+    isLoading: false,
   },
   actions: {
   },
   mutations: {
+    stopLoading(state) {
+      state.isLoading = false;
+    },
+    startLoading(state) {
+      state.isLoading = true;
+    },
   },
   getters: {},
 });
