@@ -1,7 +1,7 @@
 /* eslint-disable camelcase */
 import AccountApi from '@/apis/AccountApi';
 import vm from '@/main';
-import bus from '@/components/bus.vue';
+import bus, { MessageType } from '@/bus';
 
 export default class AccountHandler {
   /**
@@ -11,8 +11,12 @@ export default class AccountHandler {
    * @param password
    */
   static async login(username: string, password: string): Promise<void> {
+    const loadingMsgId = Math.floor((Number)(new Date()) / 1000);
     try {
       vm.$store.commit('startLoading');
+
+      bus.$emit('message:show', '登入中...', loadingMsgId, MessageType.infobus);
+
       const { token, last_pocket } = await AccountApi.login(username, password);
 
       vm.$cookies.set('token', token);
@@ -23,8 +27,11 @@ export default class AccountHandler {
 
       vm.$router.push('/foodpocket');
     } catch (error) {
-      // vm.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', vm.$store.state.dangerbus);
+      // the error is not 401, but failed to retrive pacoket_uid
+      bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', MessageType.dangerbus);
+      throw error;
     } finally {
+      bus.$emit('message:remove', loadingMsgId);
       vm.$store.commit('stopLoading');
     }
   }

@@ -1,7 +1,7 @@
 <template>
   <div class="message-alert">
     <div class="alert alert-dismissible px-2 py-2 m-0"
-      :style="{'backgroundColor': item.status.bg, 'color': item.status.color}"
+      :style="{'backgroundColor': item.messageType.bg, 'color': item.messageType.color}"
       v-for="(item, i) in messages" :key="i">
       {{ item.message }}
       <button type="button" class="close p-2" @click="removeMessage(i)" aria-label="Close">
@@ -12,6 +12,8 @@
 </template>
 
 <script>
+import { MessageType } from '@/bus';
+
 export default {
   name: 'Navbar',
   data() {
@@ -19,7 +21,7 @@ export default {
       messages: [
         // {
         //   message: '輸入錯誤',
-        //   status: {
+        //   messageType: {
         //     bg: 'green',
         //     color: '#fff'
         //   }
@@ -29,11 +31,11 @@ export default {
   },
   methods: {
     // push message and auto remove it after 3 seconds
-    updateMessage(message, status) {
+    updateMessage(message, messageType) {
       const timestamp = Math.floor(new Date() / 1000);
       this.messages.push({
         message,
-        status,
+        messageType,
         id: timestamp, // use push timestamp as id
       });
 
@@ -43,10 +45,10 @@ export default {
 
     // push message with self-defined trackId
     // message will not be removed until user remove it by trackId
-    showMessage(message, trackId, status) {
+    showMessage(message, trackId, messageType) {
       this.messages.push({
         message,
-        status,
+        messageType,
         id: trackId,
       });
     },
@@ -73,18 +75,18 @@ export default {
 
     // 自定義名稱 'messsage:push'
     // message: 傳入參數
-    // status: 樣式，預設值為 warning //改為色號了
-    vm.$bus.$on('message:push', (message, status = 'warning') => {
-      vm.updateMessage(message, status);
+    // messageType: 樣式，預設值為 infobus
+    vm.$bus.$on('message:push', (message, messageType = MessageType.infobus) => {
+      vm.updateMessage(message, messageType);
     });
     // vm.$bus.$emit('message:push');
 
     // 自定義名稱 'messsage:show'
     // message: 傳入參數
-    // status: 樣式，預設值為 warning //改為色號了
+    // messageType: 樣式，預設值為 infobus
     // trackId: 自定義id, 用於刪除此message
-    vm.$bus.$on('message:show', (message, trackId, status = 'warning') => {
-      vm.showMessage(message, trackId, status);
+    vm.$bus.$on('message:show', (message, trackId, messageType = MessageType.infobus) => {
+      vm.showMessage(message, trackId, messageType);
     });
 
     // 自定義名稱 'messsage:remove'

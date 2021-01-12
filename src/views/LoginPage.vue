@@ -29,6 +29,7 @@
 <script>
 import bus from '@/components/bus.vue';
 import foodPocketLogo from '@/assets/foodpocket_logo.svg';
+import AccountHandler from '@/libs/handlers/AccountHandler';
 
 export default {
   data() {
@@ -65,6 +66,12 @@ export default {
       this.$router.push('/forgetpasswordpage');
     },
     signin() {
+      AccountHandler.login(this.username, this.password).catch(() => {
+        this.password = '';
+      });
+    },
+    // deprecated, see AccountHandler.login
+    signin_backup() {
       this.isLoading = true;
       const loadingMsgId = Math.floor(new Date() / 1000);
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus);
