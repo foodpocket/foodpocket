@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import AccountApi from '@/apis/AccountApi';
+import AccountApi from '@/libs/apis/AccountApi';
 import vm from '@/main';
 import bus, { MessageType } from '@/bus';
 

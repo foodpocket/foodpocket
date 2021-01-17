@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import api from '@/apis/BaseApi';
+import api from '@/libs/apis/BaseApi';
 
 export interface LoginResultModel {
   token: string;
