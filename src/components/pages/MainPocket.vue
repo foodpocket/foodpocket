@@ -381,6 +381,7 @@
 import $ from 'jquery';
 import navbar from '@/components/navbar.vue';
 import bus from '@/components/bus.vue';
+import RestaurantApi from '@/libs/apis/RestaurantApi';
 
 export default {
   components: {
@@ -491,37 +492,19 @@ export default {
     },
     getRestaurantList() {
       this.isLoading = true;
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRestaurantList/`;
-      const vm = this;
-      this.$http
-        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
-        .then((response) => {
-          this.isLoading = false;
-          // console.log('restaurantList:', response.data)
-          vm.restaurantList = response.data.data;
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-        });
+      RestaurantApi.getRestaurantList(this.seletedID).then((restaurantList) => {
+        this.restaurantList = restaurantList;
+      }).finally(() => {
+        this.isLoading = false;
+      });
     },
     getRecommendList() {
       this.isLoading = true;
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getRecommendList/`;
-      const vm = this;
-      this.$http
-        .get(api, { params: { user_token: vm.token, pocket_uid: vm.seletedID } })
-        .then((response) => {
-          this.isLoading = false;
-          console.log('recommendList:', response.data);
-          vm.recommendList = response.data.data;
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-        });
+      RestaurantApi.getRecommendList(this.seletedID).then((recommendList) => {
+        this.recommendList = recommendList;
+      }).finally(() => {
+        this.isLoading = false;
+      });
     },
     getVisitRecords() {
       this.isLoading = true;
@@ -594,23 +577,10 @@ export default {
     },
     quicklyAddRestaurant(restaurantName, timestamp) {
       // 類似addRestaurant() + addVisitRecord()
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`;
-      const formdata = new FormData();
-      formdata.append('name', restaurantName);
-      formdata.append('user_token', this.token);
-      formdata.append('pocket_uid', this.seletedID);
-      this.axios
-        .post(api, formdata)
-        .then((response) => {
-          // console.log('quicklyAddRestaurant:', response.data)
-          this.tempRestaurant_uid = response.data.data.restaurant_uid;
-          this.quicklyAddVisit(this.tempRestaurant_uid, timestamp);
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-        });
+      RestaurantApi.create(restaurantName, this.seletedID).then((restaurantId) => {
+        this.tempRestaurant_uid = restaurantId;
+        this.quicklyAddVisit(this.tempRestaurant_uid, timestamp);
+      });
     },
     quicklyAddVisit(id, timestamp) {
       // 類似addVisitRecord()
@@ -703,24 +673,11 @@ export default {
 
       if (this.isNew === true) {
         // console.log('這是新的餐廳，已加入餐廳列表中')
-        const api = `${process.env.VUE_APP_APIPATH}api/rest/newRestaurant/`;
-        const formdata = new FormData();
-        formdata.append('user_token', this.token);
-        formdata.append('name', restaurantName);
-        formdata.append('pocket_uid', this.seletedID);
-        this.axios
-          .post(api, formdata)
-          .then(() => {
-            // console.log('addRestaurant:', response.data)
-            this.$bus.$emit('message:push', `已新增 ${this.searchRestaurant} 餐廳`, this.successbus);
-            // this.searchRestaurant = ''
-            this.initList();
-          })
-          .catch((err) => {
-            if (err.response.status === 401) {
-              this.$router.push('/loginpage');
-            }
-          });
+        RestaurantApi.create(restaurantName, this.seletedID).then(() => {
+          this.$bus.$emit('message:push', `已新增 ${this.searchRestaurant} 餐廳`, this.successbus);
+          // this.searchRestaurant = ''
+          this.initList();
+        });
       } else {
         this.$bus.$emit('message:push', '這間餐廳已經存在', this.dangerbus);
       }
@@ -736,23 +693,12 @@ export default {
         )
       ) { // 確認note有改過、餐廳名稱、餐廳狀態、隱藏時長有改過(四擇一即可)
         if (item.restaurant_name !== '') { // 且注意餐廳名稱不等於空
-          const api = `${process.env.VUE_APP_APIPATH}api/rest/editRestaurant/`;
-          const formdata = new FormData();
-          formdata.append('user_token', this.token);
-          formdata.append('restaurant_uid', item.restaurant_uid);
-          formdata.append('name', item.restaurant_name); // 更改name
-          formdata.append('note', item.note); // 更改note
           if (item.status === 'HIDE' && this.nextHideDay === 0) {
             // eslint-disable-next-line no-param-reassign
-            item.status = 'RANDOM';
-          }
-          formdata.append('status', item.status); // 更改status
-          if (item.status === 'HIDE') {
-            formdata.append('hide_until', this.nextHideUntil); // 更改hide_until
+            item.status = 'RANDOM'; // 改成預設值 (RANDOM)
           }
 
-          this.axios.post(api, formdata).then(() => {
-            // console.log('editRestaurant:', response.data) // 發送api成功的話
+          RestaurantApi.update(item.restaurant_uid, item.restaurant_name, item.note, item.status, this.nextHideUntil).then(() => {
             if (this.infoModalObj.restaurant_name !== item.restaurant_name) {
               // 狀況一：更改名稱
               this.$bus.$emit('message:push', '成功編輯餐廳名稱', this.successbus);
@@ -781,22 +727,13 @@ export default {
             this.openInfoModal(item);
             $('#editInfoModal').modal('hide');
             this.initList();
-          })
-            .catch((err) => {
-              if (err.response.status === 401) {
-                this.$bus.$emit(
-                  'message:push',
-                  'err.response.status === 401',
-                  this.dangerbus,
-                );
-                this.$router.push('/loginpage');
-              }
-              if (err.response.status === 400) {
-                this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus);
-                // eslint-disable-next-line no-param-reassign
-                item.restaurant_name = this.tempname; // 將input恢復原狀
-              }
-            });
+          }).catch((err) => {
+            if (err.response.status === 400) {
+              this.$bus.$emit('message:push', '餐廳名稱不可重複', this.dangerbus);
+              // eslint-disable-next-line no-param-reassign
+              item.restaurant_name = this.tempname; // 將input恢復原狀
+            }
+          });
         } else {
           this.$bus.$emit('message:push', '餐廳名稱不能為空', this.dangerbus);
         }
@@ -806,23 +743,11 @@ export default {
       }
     },
     removeRestaurant(item) { // item是infoModalObj
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/removeRestaurant/`;
-      const formdata = new FormData();
-      formdata.append('user_token', this.token);
-      formdata.append('restaurant_uid', item.restaurant_uid);
-      this.axios
-        .post(api, formdata)
-        .then(() => {
-          // console.log('removeRestaurant:', response.data)
-          this.$bus.$emit('message:push', `成功刪除 ${item.restaurant_name} 餐廳`, this.successbus);
-          $('#delRestaurantModal').modal('hide');
-          this.initList();
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-        });
+      RestaurantApi.remove(item.restaurant_uid).then(() => {
+        this.$bus.$emit('message:push', `成功刪除 ${item.restaurant_name} 餐廳`, this.successbus);
+        $('#delRestaurantModal').modal('hide');
+        this.initList();
+      });
     },
 
     // VisitRecord-------------------------

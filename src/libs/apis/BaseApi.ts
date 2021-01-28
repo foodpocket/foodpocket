@@ -27,4 +27,12 @@ api.interceptors.response.use((response) => response, (error) => {
   return Promise.reject(error);
 });
 
+export const getToken = () => {
+  if (vm.$cookies.isKey('token')) {
+    return vm.$cookies.get('token');
+  }
+  vm.$router.push('/loginpage');
+  throw new Error('token not found');
+};
+
 export default api;
