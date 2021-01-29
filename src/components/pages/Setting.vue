@@ -1,6 +1,5 @@
 <template>
   <div class="setting">
-    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>設定</h1>
     </navbar>
@@ -34,7 +33,6 @@ export default {
   },
   data() {
     return {
-      isLoading: false,
     };
   },
 };

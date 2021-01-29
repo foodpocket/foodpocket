@@ -1,6 +1,5 @@
 <template>
   <div class="choosepocket">
-    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>選擇口袋名單</h1>
     </navbar>
@@ -203,7 +202,6 @@ export default {
   data() {
     return {
       token: '',
-      isLoading: false,
       seletedName: '',
       seletedID: '',
       newPocketName: '',
@@ -237,7 +235,7 @@ export default {
       }
     },
     getPocketList() {
-      this.isLoading = true;
+      this.$store.commit('startLoading');
       PocketApi.getPockets().then((pocketList) => {
         // console.log('getPocketList:', response.data)
         this.pocketlist = pocketList;
@@ -245,7 +243,7 @@ export default {
         this.seletedID = this.$cookies.get('getpocketid');
         this.$cookies.set('pocketnum', this.pocketlist.length);
       }).finally(() => {
-        this.isLoading = false;
+        this.$store.commit('stopLoading');
       });
     },
 

@@ -1,6 +1,5 @@
 <template>
   <div class="login">
-    <loading :active.sync="isLoading"></loading>
     <bus/>
     <div class="container">
       <form class="form" @submit.prevent="signin">
@@ -35,7 +34,6 @@ export default {
   data() {
     return {
       foodPocketLogo,
-      isLoading: false,
       username: '',
       password: '',
     };
@@ -72,7 +70,7 @@ export default {
     },
     // deprecated, see AccountHandler.login
     signin_backup() {
-      this.isLoading = true;
+      this.$store.commit('startLoading');
       const loadingMsgId = Math.floor(new Date() / 1000);
       this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus);
       const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`;
@@ -81,7 +79,7 @@ export default {
       formdata.append('password', this.password);
       this.$http.post(api, formdata).then((response) => {
         // console.log(response.data)
-        // this.isLoading = false
+        // this.$store.commit('stopLoading');
         if (response.data.result === 'successful') {
           const { token } = response.data.data;
           this.$cookies.set('token', token); // 放到cookies
@@ -93,9 +91,9 @@ export default {
           this.$cookies.set('username', this.username);
           this.$bus.$emit('message:remove', loadingMsgId);
           this.$router.push('/foodpocket');
-          this.isLoading = false;
+          this.$store.commit('stopLoading');
         } else {
-          this.isLoading = false;
+          this.$store.commit('stopLoading');
           this.$bus.$emit('message:remove', loadingMsgId);
           this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', this.dangerbus);
           this.password = '';

@@ -1,6 +1,5 @@
 <template>
   <div class="userinfo">
-    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>個人資訊</h1>
     </navbar>
@@ -32,7 +31,6 @@ export default {
   data() {
     return {
       token: '',
-      isLoading: false,
     };
   },
   created() {
@@ -48,11 +46,11 @@ export default {
   },
   methods: {
     getToken() {
-      this.isLoading = true;
+      this.$store.commit('startLoading');
       if (this.$cookies.isKey('token')) {
         this.token = this.$cookies.get('token');
         // console.log('getToken:', this.token)
-        this.isLoading = false;
+        this.$store.commit('stopLoading');
       } else {
         this.$router.push('/loginpage');
       }

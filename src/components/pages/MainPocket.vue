@@ -1,7 +1,5 @@
 <template>
   <div class="mainpocket">
-    <loading :active.sync="isLoading"></loading>
-
     <navbar>
       <h1>{{seletedName}}</h1>
     </navbar>
@@ -393,7 +391,6 @@ export default {
   data() {
     return {
       token: '',
-      isLoading: false,
       searchRestaurant: '', // 搜尋的字串
       // tempRestaurant_name: '', // 快速新增-內容暫放處
       tempRestaurant_uid: '', // 快速新增-內容暫放處
@@ -493,19 +490,19 @@ export default {
       }
     },
     getRestaurantList() {
-      this.isLoading = true;
+      this.$store.commit('startLoading');
       RestaurantApi.getRestaurantList(this.seletedID).then((restaurantList) => {
         this.restaurantList = restaurantList;
       }).finally(() => {
-        this.isLoading = false;
+        this.$store.commit('stopLoading');
       });
     },
     getRecommendList() {
-      this.isLoading = true;
+      this.$store.commit('startLoading');
       RestaurantApi.getRecommendList(this.seletedID).then((recommendList) => {
         this.recommendList = recommendList;
       }).finally(() => {
-        this.isLoading = false;
+        this.$store.commit('stopLoading');
       });
     },
     getVisitRecords() {
