@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <loading :active.sync="$store.state.isLoading"></loading>
     <router-view/>
   </div>
 </template>

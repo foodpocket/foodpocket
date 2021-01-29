@@ -1,6 +1,5 @@
 <template>
   <div class="choosepocket">
-    <loading :active.sync="isLoading"></loading>
     <navbar>
       <h1>選擇口袋名單</h1>
     </navbar>
@@ -192,6 +191,8 @@
 import $ from 'jquery';
 import navbar from '@/components/navbar.vue';
 import bus from '@/components/bus.vue';
+import { MessageType } from '@/bus';
+import PocketApi from '@/libs/apis/PocketApi';
 
 export default {
   components: {
@@ -201,7 +202,6 @@ export default {
   data() {
     return {
       token: '',
-      isLoading: false,
       seletedName: '',
       seletedID: '',
       newPocketName: '',
@@ -217,12 +217,6 @@ export default {
     this.getPocketList();
   },
   computed: {
-    successbus() {
-      return this.$store.state.successbus;
-    },
-    dangerbus() {
-      return this.$store.state.dangerbus;
-    },
   },
   methods: {
     // 必要的 --------
@@ -235,23 +229,16 @@ export default {
       }
     },
     getPocketList() {
-      this.isLoading = true;
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/getPocketList/`;
-      this.$http
-        .get(api, { params: { user_token: this.token } })
-        .then((response) => {
-          this.isLoading = false;
-          // console.log('getPocketList:', response.data)
-          this.pocketlist = response.data.data;
-          this.seletedName = this.$cookies.get('getpocketname');
-          this.seletedID = this.$cookies.get('getpocketid');
-          this.$cookies.set('pocketnum', this.pocketlist.length);
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-        });
+      this.$store.commit('startLoading');
+      PocketApi.getPockets().then((pocketList) => {
+        // console.log('getPocketList:', response.data)
+        this.pocketlist = pocketList;
+        this.seletedName = this.$cookies.get('getpocketname');
+        this.seletedID = this.$cookies.get('getpocketid');
+        this.$cookies.set('pocketnum', this.pocketlist.length);
+      }).finally(() => {
+        this.$store.commit('stopLoading');
+      });
     },
 
     // 開啟/關閉Modal --------
@@ -276,29 +263,15 @@ export default {
 
     // (真)針對Pocket的動作 --------
     addNewPocket() {
-      if (this.newPocketName === '') {
-        this.$bus.$emit('message:push', '口袋名稱不可為空', 'danger');
-      }
       const newPocketName = this.newPocketName.trim(); // 修掉輸入的空白
-      if (!newPocketName) {
-        return;
-      }
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/newPocket/`;
-      const formdata = new FormData();
-      formdata.append('user_token', this.token);
-      formdata.append('name', this.newPocketName);
-      this.axios
-        .post(api, formdata)
-        .then(() => {
-          // console.log('newPocket:', response.data)
+      if (newPocketName === '') {
+        this.$bus.$emit('message:push', '口袋名稱不可為空', MessageType.dangerbus);
+      } else {
+        PocketApi.create(this.newPocketName).then(() => {
           this.getPocketList();
-          $('#addPocket').modal('hide');
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
         });
+      }
+
       $('#addPocket').modal('hide');
       this.newPocketName = ''; // 清空
     },
@@ -308,65 +281,41 @@ export default {
         // 確認名字有改過
         if (this.editModalObj.name !== '') {
           // 且注意名字不等於空
-          const api = `${process.env.VUE_APP_APIPATH}api/rest/editPocket/`;
-          const formdata = new FormData();
-          formdata.append('user_token', this.token);
-          formdata.append('pocket_uid', this.editModalObj.pocket_uid);
-          formdata.append('name', this.editModalObj.name);
-          this.axios
-            .post(api, formdata)
-            .then(() => {
-              // console.log('editPocket:', response.data)
-              this.getPocketList();
-              $('#editPocket').modal('hide');
-              this.$cookies.set('getpocketid', item.pocket_uid); // 放到cookies
-              this.$cookies.set('getpocketname', item.name); // 放到cookies
-              this.$bus.$emit('message:push', '成功編輯口袋名稱', this.successbus);
-            })
-            .catch((err) => {
-              if (err.response.status === 401) {
-                this.$router.push('/loginpage');
-              }
-            });
+          PocketApi.update(this.editModalObj.pocket_uid, this.editModalObj.name).then(() => {
+            this.getPocketList();
+            this.$cookies.set('getpocketid', item.pocket_uid); // 放到cookies
+            this.$cookies.set('getpocketname', item.name); // 放到cookies
+            this.$bus.$emit('message:push', '成功編輯口袋名稱', MessageType.successbus);
+          });
         } else {
-          this.$bus.$emit('message:push', '口袋名稱不能為空', this.dangerbus);
+          this.$bus.$emit('message:push', '口袋名稱不能為空', MessageType.dangerbus);
         }
       } else {
         console.log('並未改變');
-        $('#editPocket').modal('hide');
       }
+      $('#editPocket').modal('hide');
     },
     removePocket(item) {
       // item是copyModalObj
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/removePocket/`;
-      const formdata = new FormData();
-      formdata.append('user_token', this.token);
-      formdata.append('pocket_uid', item.pocket_uid);
-      this.axios
-        .post(api, formdata)
-        .then(() => {
-          // console.log('removePocket:', response.data)
+      PocketApi.remove(item.pocket_uid).then(() => {
+        // console.log('removePocket:', response.data)
+        this.$bus.$emit(
+          'message:push',
+          `成功刪除 ${item.name} 口袋`,
+          MessageType.successbus,
+        );
+        this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid); // 放到cookies
+        this.$cookies.set('getpocketname', this.pocketlist[0].name); // 放到cookies
+        this.getPocketList();
+      }).catch((error) => {
+        if (error.response.status === 403) {
           this.$bus.$emit(
             'message:push',
-            `成功刪除 ${item.name} 口袋`,
-            this.successbus,
+            '不可刪除，帳號內至少需要一個口袋',
+            MessageType.dangerbus,
           );
-          this.$cookies.set('getpocketid', this.pocketlist[0].pocket_uid); // 放到cookies
-          this.$cookies.set('getpocketname', this.pocketlist[0].name); // 放到cookies
-          this.getPocketList();
-        })
-        .catch((err) => {
-          if (err.response.status === 401) {
-            this.$router.push('/loginpage');
-          }
-          if (err.response.status === 403) {
-            this.$bus.$emit(
-              'message:push',
-              '不可刪除，帳號內至少需要一個口袋',
-              this.dangerbus,
-            );
-          }
-        });
+        }
+      });
       $('#removePocket').modal('hide');
     },
 

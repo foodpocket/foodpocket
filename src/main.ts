@@ -8,7 +8,7 @@ import VueCookies from 'vue-cookies';
 import Vuex from 'vuex';
 import App from './App.vue';
 import router from './router';
-import './bus';
+import '@/bus';
 import store from './store';
 
 Vue.config.productionTip = false;
