@@ -39,12 +39,6 @@ export default {
     };
   },
   computed: {
-    infobus() {
-      return this.$store.state.infobus;
-    },
-    dangerbus() {
-      return this.$store.state.dangerbus;
-    },
   },
   components: {
     bus,

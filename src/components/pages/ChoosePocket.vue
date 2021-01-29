@@ -217,12 +217,6 @@ export default {
     this.getPocketList();
   },
   computed: {
-    successbus() {
-      return this.$store.state.successbus;
-    },
-    dangerbus() {
-      return this.$store.state.dangerbus;
-    },
   },
   methods: {
     // 必要的 --------

@@ -50,9 +50,7 @@ export default {
     };
   },
   computed: {
-    dangerbus() {
-      return this.$store.state.dangerbus;
-    },
+
   },
   methods: {
     back() {

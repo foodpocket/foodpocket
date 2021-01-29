@@ -414,12 +414,6 @@ export default {
     this.touchendActive();
   },
   computed: {
-    successbus() {
-      return this.$store.state.successbus;
-    },
-    dangerbus() {
-      return this.$store.state.dangerbus;
-    },
     seletedID() {
       return this.$cookies.get('getpocketid');
     },
