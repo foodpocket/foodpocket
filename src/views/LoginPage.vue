@@ -68,42 +68,6 @@ export default {
         this.password = '';
       });
     },
-    // deprecated, see AccountHandler.login
-    signin_backup() {
-      this.$store.commit('startLoading');
-      const loadingMsgId = Math.floor(new Date() / 1000);
-      this.$bus.$emit('message:show', '登入中...', loadingMsgId, this.infobus);
-      const api = `${process.env.VUE_APP_APIPATH}api/rest/loginAccount/`;
-      const formdata = new FormData();
-      formdata.append('username', this.username);
-      formdata.append('password', this.password);
-      this.$http.post(api, formdata).then((response) => {
-        // console.log(response.data)
-        // this.$store.commit('stopLoading');
-        if (response.data.result === 'successful') {
-          const { token } = response.data.data;
-          this.$cookies.set('token', token); // 放到cookies
-          const pocket = response.data.data.last_pocket;
-          const pocketid = pocket.pocket_uid;
-          const pocketname = pocket.name;
-          this.$cookies.set('getpocketid', pocketid); // 放到cookies
-          this.$cookies.set('getpocketname', pocketname); // 放到cookies
-          this.$cookies.set('username', this.username);
-          this.$bus.$emit('message:remove', loadingMsgId);
-          this.$router.push('/foodpocket');
-          this.$store.commit('stopLoading');
-        } else {
-          this.$store.commit('stopLoading');
-          this.$bus.$emit('message:remove', loadingMsgId);
-          this.$bus.$emit('message:push', '帳號或密碼輸入錯誤，請再試一次', this.dangerbus);
-          this.password = '';
-        }
-      }).catch((err) => {
-        console.log(err);
-        this.$bus.$emit('message:remove', loadingMsgId);
-        this.$bus.$emit('message:push', '網路異常，請稍候再試', this.dangerbus);
-      });
-    },
   },
 };
 </script>
